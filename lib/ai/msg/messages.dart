@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'messages.freezed.dart';
 
 @freezed
-abstract class Messages with _$Messages {
+sealed class Messages with _$Messages {
   /// Ordina all'agente di tornare alla sua posizione originaria.
   const factory Messages.goHome() = GoHome;
 
