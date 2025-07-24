@@ -28,5 +28,5 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/      # qui copierai le tue immagini (campo, palla, ecc.)
+    - assets/images/     
 
