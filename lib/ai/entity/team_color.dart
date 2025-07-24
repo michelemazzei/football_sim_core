@@ -1,0 +1,1 @@
+enum TeamColor { home, away }

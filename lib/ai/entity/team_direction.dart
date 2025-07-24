@@ -1,0 +1,1 @@
+enum TeamDirection { fromLeftToRight, fromRightToLeft }
