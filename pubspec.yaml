@@ -1,0 +1,32 @@
+name: football_sim_core
+description: "A new football manager simultar."
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.1
+
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flame: ^1.30.1
+  flame_audio: ^2.11.8
+  flame_tiled: ^3.0.5
+  pathfinding: ^3.0.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  # flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/      # qui copierai le tue immagini (campo, palla, ecc.)
+
