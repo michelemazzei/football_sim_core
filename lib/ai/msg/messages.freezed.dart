@@ -97,10 +97,7 @@ return attacking(_that);case Defending():
 return defending(_that);case PassToMe():
 return passToMe(_that);case ReceiveBall():
 return receiveBall(_that);case SupportAttacker():
-return supportAttacker(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return supportAttacker(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -183,10 +180,7 @@ return attacking();case Defending():
 return defending();case PassToMe():
 return passToMe();case ReceiveBall():
 return receiveBall();case SupportAttacker():
-return supportAttacker();case _:
-  throw StateError('Unexpected subclass');
-
-}
+return supportAttacker();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
