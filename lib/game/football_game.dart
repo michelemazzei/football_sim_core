@@ -15,5 +15,7 @@ class FootballGame extends FlameGame {
       ..position = size / 2
       ..anchor = Anchor.center;
     await add(ball);
+
+    ball.kick(Vector2(0, 1), 400);
   }
 }
