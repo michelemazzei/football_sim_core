@@ -1,29 +1,34 @@
-/// Tipi di messaggi che gli agenti possono scambiarsi durante la partita.
-enum Messages {
-  /// Un compagno deve ricevere il pallone.
-  receiveBall,
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  /// L'agente chiede un passaggio al portatore di palla.
-  passToMe,
+part 'messages.freezed.dart';
 
-  /// L'agente si posiziona per supportare l'attaccante.
-  supportAttacker,
-
+@freezed
+abstract class Messages with _$Messages {
   /// Ordina all'agente di tornare alla sua posizione originaria.
-  goHome,
+  const factory Messages.goHome() = GoHome;
 
   /// Posizionamento iniziale per il calcio d'inizio.
-  placeToKickOff,
+  const factory Messages.placeToKickOff() = PlaceToKickOff;
 
   /// L'agente deve aspettare (es. prima di entrare in gioco).
-  wait,
+  const factory Messages.wait() = Wait;
 
   /// Cambia il proprietario del pallone dopo un passaggio o recupero.
-  ballChangeOwner,
+  const factory Messages.ballChangeOwner() = BallChangeOwner;
 
   /// La squadra è in fase offensiva.
-  attacking,
+  const factory Messages.attacking() = Attacking;
 
   /// La squadra è in fase difensiva.
-  defending,
+  const factory Messages.defending() = Defending;
+
+  /// Un compagno deve ricevere il pallone.
+  const factory Messages.passToMe() = PassToMe;
+
+  /// Un compagno deve ricevere il pallone.
+  const factory Messages.receiveBall() = ReceiveBall;
+
+  /// L'agente si posiziona per supportare l'attaccante.
+
+  const factory Messages.supportAttacker() = SupportAttacker;
 }

@@ -45,7 +45,7 @@ $Res call({
 });
 
 
-
+$MessagesCopyWith<$Res> get message;
 
 }
 /// @nodoc
@@ -68,7 +68,16 @@ as String?,messageTime: freezed == messageTime ? _self.messageTime : messageTime
 as DateTime?,
   ));
 }
-
+/// Create a copy of Telegram
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MessagesCopyWith<$Res> get message {
+  
+  return $MessagesCopyWith<$Res>(_self.message, (value) {
+    return _then(_self.copyWith(message: value));
+  });
+}
 }
 
 
@@ -245,7 +254,7 @@ $Res call({
 });
 
 
-
+@override $MessagesCopyWith<$Res> get message;
 
 }
 /// @nodoc
@@ -269,7 +278,16 @@ as DateTime?,
   ));
 }
 
-
+/// Create a copy of Telegram
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MessagesCopyWith<$Res> get message {
+  
+  return $MessagesCopyWith<$Res>(_self.message, (value) {
+    return _then(_self.copyWith(message: value));
+  });
+}
 }
 
 // dart format on
