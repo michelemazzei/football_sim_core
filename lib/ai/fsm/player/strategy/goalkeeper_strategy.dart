@@ -1,11 +1,10 @@
-import 'package:helloflame/ai/fsm/state.dart';
-import 'package:helloflame/ai/soccer_player.dart';
-import 'package:helloflame/logger/logger.dart';
+import 'package:football_sim_core/ai/entity/soccer_player.dart';
+import 'package:football_sim_core/ai/fsm/state.dart';
 
 enum GoalkeeperState { attacking, defending }
 
 class GoalkeeperStrategy extends State<SoccerPlayer> {
-  final log = logFactory('🧤 Tactice');
+  // final log = logFactory('🧤 Tactice');
   final GoalkeeperState state;
 
   GoalkeeperStrategy(this.state);
@@ -13,7 +12,7 @@ class GoalkeeperStrategy extends State<SoccerPlayer> {
   void enter(SoccerPlayer entity) {
     switch (state) {
       case GoalkeeperState.attacking:
-        log.i('enter goalkeeper attacking');
+        // log.i('enter goalkeeper attacking');
         //if the goalkeeper does not control the ball
         //go to home area.
         if (entity.team.controllingPlayer != entity) {
@@ -21,7 +20,7 @@ class GoalkeeperStrategy extends State<SoccerPlayer> {
         }
         break;
       case GoalkeeperState.defending:
-        log.i('enter goalkeeper defending');
+        // log.i('enter goalkeeper defending');
         //if the goalkeeper does not control the ball
         //go to home area.
         if (entity.team.controllingPlayer != entity) {

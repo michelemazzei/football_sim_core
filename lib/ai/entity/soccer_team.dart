@@ -1,18 +1,14 @@
 import 'package:flame/components.dart';
-import 'package:flame/components.dart';
-import 'package:flame/components.dart';
-import 'package:football_sim_core/ai/config/soccer_parameters.dart';
 import 'package:football_sim_core/ai/entity/soccer_ball.dart';
 import 'package:football_sim_core/ai/entity/soccer_player.dart';
 import 'package:football_sim_core/ai/entity/team_color.dart';
 import 'package:football_sim_core/ai/entity/team_direction.dart';
 import 'package:football_sim_core/ai/fsm/state_machine.dart';
-import 'package:football_sim_core/ai/moving_entity.dart';
+import 'package:football_sim_core/ai/game/soccer_game.dart';
 import 'package:football_sim_core/ai/msg/message_dispatcher.dart';
 import 'package:football_sim_core/ai/msg/message_receiver.dart';
 import 'package:football_sim_core/ai/msg/messages.dart';
 import 'package:football_sim_core/ai/msg/telegram.dart';
-import 'package:football_sim_core/ai/steering/steering_behaviors.dart';
 
 class SoccerTeam extends MessageReceiver {
   // final logger = logFactory('SoccerTeam');
@@ -89,7 +85,7 @@ class SoccerTeam extends MessageReceiver {
   /// If  [placePlayerToKickOff] is true, then the last player is placed
   /// to the center of the pitch.
   void returnAllFieldPlayersToHome(bool placePlayerToKickOff) {
-    logger.i('Return to home $placePlayerToKickOff');
+    // logger.i('Return to home $placePlayerToKickOff');
     var numOfPlayers = placePlayerToKickOff
         ? players.length - 1
         : players.length;

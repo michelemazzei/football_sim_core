@@ -1,15 +1,15 @@
 import 'package:flame/components.dart';
-import 'package:helloflame/ai/fsm/player/wait.dart';
-import 'package:helloflame/ai/fsm/state.dart';
-import 'package:helloflame/ai/soccer_player.dart';
-import 'package:helloflame/ai/team_direction.dart';
-import 'package:helloflame/logger/logger.dart';
+import 'package:football_sim_core/ai/entity/soccer_player.dart';
+import 'package:football_sim_core/ai/entity/team_direction.dart';
+import 'package:football_sim_core/ai/fsm/player/wait_state.dart';
+import 'package:football_sim_core/ai/fsm/state.dart';
 
 enum CompactHorizontal { low, medium, high }
+
 enum CompactVertical { low, medium, high }
 
 class CompactnessStrategy extends State<SoccerPlayer> {
-  final log = logFactory('Compactness Strategy');
+  // final log = logFactory('Compactness Strategy');
   final CompactHorizontal horizontal;
   final CompactVertical vertical;
   final double lowHorizontal = 0.8;
@@ -19,12 +19,13 @@ class CompactnessStrategy extends State<SoccerPlayer> {
   final int mediumVertical = 0;
   final int highVertical = 2;
 
-  CompactnessStrategy(
-      {this.vertical = CompactVertical.medium,
-      this.horizontal = CompactHorizontal.medium});
+  CompactnessStrategy({
+    this.vertical = CompactVertical.medium,
+    this.horizontal = CompactHorizontal.medium,
+  });
   @override
   void enter(SoccerPlayer entity) {
-    log.i('enter defender ');
+    // log.i('enter defender ');
     if (entity.team.controllingPlayer != entity) {
       compactness(entity);
     }
@@ -33,8 +34,10 @@ class CompactnessStrategy extends State<SoccerPlayer> {
   void compactness(SoccerPlayer entity) {
     var pitch = entity.game.soccerPitch;
     var ball = entity.game.soccerBall;
-    var ballInDanger =
-        pitch.ballInDanger(ball.currentPosition, entity.team.direction);
+    var ballInDanger = pitch.ballInDanger(
+      ball.currentPosition,
+      entity.team.direction,
+    );
     if (!ballInDanger) {
       if (entity.matchPosition.isGoalkeeper) {
         if (entity.team.controllingPlayer != entity) {
@@ -67,24 +70,26 @@ class CompactnessStrategy extends State<SoccerPlayer> {
     var maxDist = entity.matchPosition.isDefenser
         ? pitchLength / (5 + hCoeff)
         : entity.matchPosition.isMidFielder
-            ? pitchLength / (10 + hCoeff)
-            : -pitchLength / (6 + hCoeff);
+        ? pitchLength / (10 + hCoeff)
+        : -pitchLength / (6 + hCoeff);
     if (entity.team.direction == TeamDirection.fromLeftToRight) {
       return Vector2(
         (ballPosition.x - maxDist).clamp(
-            play.leftPenalty.x,
-            entity.matchPosition.isDefenser
-                ? play.centerSpot.x
-                : play.rightPenalty.x),
+          play.leftPenalty.x,
+          entity.matchPosition.isDefenser
+              ? play.centerSpot.x
+              : play.rightPenalty.x,
+        ),
         y,
       );
     } else {
       return Vector2(
         (ballPosition.x + maxDist).clamp(
-            entity.matchPosition.isDefenser
-                ? play.centerSpot.x
-                : play.leftPenalty.x,
-            play.rightPenalty.x),
+          entity.matchPosition.isDefenser
+              ? play.centerSpot.x
+              : play.leftPenalty.x,
+          play.rightPenalty.x,
+        ),
         y,
       );
     }
@@ -94,7 +99,7 @@ class CompactnessStrategy extends State<SoccerPlayer> {
   void execute(SoccerPlayer entity) {
     if (entity.team.controllingPlayer == entity ||
         entity.team.controllingPlayer == null) {
-      entity.stateMachine.changeState(Wait());
+      entity.stateMachine.changeState(WaitState());
     }
   }
 

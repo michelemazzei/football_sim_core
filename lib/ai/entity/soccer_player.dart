@@ -1,15 +1,20 @@
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
-import 'package:flame/components.dart';
-import 'package:flame/components.dart';
 import 'package:football_sim_core/ai/common/transformations.dart';
 import 'package:football_sim_core/ai/config/soccer_parameters.dart';
+import 'package:football_sim_core/ai/entity/player/player_attributes.dart';
+import 'package:football_sim_core/ai/entity/player/player_features.dart';
 import 'package:football_sim_core/ai/entity/soccer_behaviors.dart';
-import 'package:football_sim_core/ai/entity/soccer_player.dart';
+import 'package:football_sim_core/ai/entity/soccer_team.dart';
+import 'package:football_sim_core/ai/fsm/player/global_player_state.dart';
 import 'package:football_sim_core/ai/fsm/state_machine.dart';
+import 'package:football_sim_core/ai/game/soccer_game.dart';
 import 'package:football_sim_core/ai/moving_entity.dart';
 import 'package:football_sim_core/ai/msg/telegram.dart';
-import 'package:football_sim_core/ai/steering/steering_behaviors.dart';
+import 'package:football_sim_core/ai/pitch/match_position.dart';
+import 'package:football_sim_core/ai/pitch/pitch_position.dart';
+import 'package:football_sim_core/ai/pitch/region.dart';
+import 'package:football_sim_core/ai/pitch/soccer_pitch.dart';
 
 class SoccerPlayer extends MovingEntity {
   final int number;
@@ -31,6 +36,7 @@ class SoccerPlayer extends MovingEntity {
   PitchPosition get playerPosition => matchPosition.tacticePos;
   Vector2? lastSteering;
   int lastSteeringTime = 0;
+
   SoccerPlayer({
     required this.team,
     required this.number,

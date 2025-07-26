@@ -16,7 +16,7 @@ class PlaceToKickOffState extends State<SoccerPlayer> {
   @override
   void execute(SoccerPlayer entity) {
     if (entity.isNear(entity.soccerPitch.playground!.centerSpot)) {
-      entity.game.soccerBall.stateMachine.changeState(ChangeOwner(entity));
+      entity.game.soccerBall.stateMachine.changeState(ChangeOwnerState(entity));
       var neighbors = entity.behaviors.neighbors();
       var target = neighbors.first;
       entity.team.game.soccerBall.kick(
