@@ -92,7 +92,7 @@ class SoccerPlayer extends MovingEntity {
       (SoccerParameters.ballRadius * 1.3 * SoccerParameters.ballRadius * 1.3);
 
   void trackBall() {
-    heading = (game.ball.ball.currentPosition - currentPosition).normalized();
+    heading = (game.ball.ball.position - currentPosition).normalized();
   }
 
   @override

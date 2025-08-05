@@ -1,25 +1,20 @@
 import 'package:flame/components.dart';
 import 'package:football_sim_core/components/ball_trail.dart';
+import 'package:football_sim_core/controllers/soccer_ball_controller.dart';
+import 'package:football_sim_core/model/soccer_ball_model.dart';
 
 import '../game/football_game.dart';
 
 class BallComponent extends SpriteComponent
     with HasGameReference<FootballGame> {
-  /// Velocità corrente (unità: pixel/secondo)
-  Vector2 velocity = Vector2.zero();
-
-  /// Coefficiente di attrito: riduce la velocità ogni frame
-  final double friction = 0.98;
-
-  /// Velocità massima
-  final double maxSpeed = 800;
+  final maxSpeed = 100.0; // velocità massima della palla
+  late final SoccerBallController controller;
 
   BallComponent({Vector2? initialPosition}) : super(anchor: Anchor.center) {
     if (initialPosition != null) {
       position = initialPosition;
     }
   }
-
   @override
   Future<void> onLoad() async {
     await super.onLoad();
@@ -35,61 +30,37 @@ class BallComponent extends SpriteComponent
 
     // 3. Se non ho già un position passato via costruttore, centro
     position = position.isZero() ? game.size / 2 : position;
+    final model = SoccerBallModel(
+      position: position.clone(),
+      velocity: Vector2.zero(),
+    );
+    final controller = SoccerBallController(
+      model: model,
+      size: size.clone(),
+      gameSize: game.size.clone(),
+      initialPosition: position.clone(),
+    );
+    this.controller = controller;
   }
+
+  SoccerBallModel get ball => controller.model;
 
   @override
   void update(double dt) {
     super.update(dt);
+    controller.update(dt);
+    position = controller.position;
 
-    // 4. Applica movimento
-    if (!velocity.isZero()) {
-      // Limita la velocità
-      if (velocity.length > maxSpeed) {
-        velocity = velocity.normalized() * maxSpeed;
-      }
-
-      // Muovi la palla
-      position += velocity * dt;
-
-      // Applica attrito
-      velocity *= friction;
-
-      angle += velocity.length * dt * velocity.length2 / maxSpeed * 0.001;
-      // Gestione rimbalzo sui bordi del campo
-      _handleBoundsCollision();
-    }
-    if (velocity.length2 > 20) {
+    if (controller.velocity.length2 > 20) {
       // genera una scia istantanea in corrispondenza del centro della palla
       game.add(BallTrail(position.clone()));
-    }
-  }
-
-  void _handleBoundsCollision() {
-    final halfW = size.x / 2;
-    final halfH = size.y / 2;
-
-    // X
-    if (position.x - halfW < 0) {
-      position.x = halfW;
-      velocity.x = -velocity.x;
-    } else if (position.x + halfW > game.size.x) {
-      position.x = game.size.x - halfW;
-      velocity.x = -velocity.x;
-    }
-
-    // Y
-    if (position.y - halfH < 0) {
-      position.y = halfH;
-      velocity.y = -velocity.y;
-    } else if (position.y + halfH > game.size.y) {
-      position.y = game.size.y - halfH;
-      velocity.y = -velocity.y;
     }
   }
 
   /// Metodo di utilità per "calciare" la palla
   void kick(Vector2 direction, double strength) {
     // direction dovrebbe essere normalizzato
-    velocity = direction.normalized() * strength;
+    double clampedStrength = strength.clamp(0, maxSpeed);
+    controller.velocity = direction.normalized() * clampedStrength;
   }
 }
