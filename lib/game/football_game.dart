@@ -1,7 +1,7 @@
-import 'package:flame/components.dart';
 import 'package:flame/game.dart';
-import '../components/field_component.dart';
+
 import '../components/ball_component.dart';
+import '../components/field_component.dart';
 
 class FootballGame extends FlameGame {
   @override
@@ -11,9 +11,7 @@ class FootballGame extends FlameGame {
     await add(field);
 
     // Carica e aggiungi la palla
-    final ball = BallComponent()
-      ..position = size / 2
-      ..anchor = Anchor.center;
+    final ball = await BallComponent.create(this, size / 2);
     await add(ball);
 
     ball.kick(Vector2(0, 1), 400);

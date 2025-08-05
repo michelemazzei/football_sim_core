@@ -1,9 +1,12 @@
+import 'package:flame/game.dart';
 import 'package:football_sim_core/ai/entity/soccer_ball.dart';
 import 'package:football_sim_core/ai/entity/soccer_referee.dart';
 import 'package:football_sim_core/ai/entity/soccer_team.dart';
 import 'package:football_sim_core/ai/pitch/playground.dart';
 import 'package:football_sim_core/ai/pitch/soccer_pitch.dart';
 import 'package:football_sim_core/components/ball_component.dart';
+import 'package:football_sim_core/controllers/ball_controller.dart';
+import 'package:football_sim_core/model/ball_model.dart';
 
 class SoccerGame {
   // final log = logFactory('SoccerGame');

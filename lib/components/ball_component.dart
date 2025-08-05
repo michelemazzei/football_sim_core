@@ -1,49 +1,53 @@
 import 'package:flame/components.dart';
 import 'package:football_sim_core/components/ball_trail.dart';
-import 'package:football_sim_core/controllers/soccer_ball_controller.dart';
-import 'package:football_sim_core/model/soccer_ball_model.dart';
+import 'package:football_sim_core/controllers/ball_controller.dart';
+import 'package:football_sim_core/model/ball_model.dart';
 
 import '../game/football_game.dart';
 
 class BallComponent extends SpriteComponent
     with HasGameReference<FootballGame> {
-  final maxSpeed = 100.0; // velocità massima della palla
-  late final SoccerBallController controller;
+  final maxSpeed = 100.0;
+  late final BallController controller;
 
-  BallComponent({Vector2? initialPosition}) : super(anchor: Anchor.center) {
-    if (initialPosition != null) {
-      position = initialPosition;
-    }
+  BallComponent._({required Vector2 initialPosition})
+    : super(anchor: Anchor.center) {
+    position = initialPosition;
   }
+
+  static Future<BallComponent> create(
+    FootballGame game,
+    Vector2 initialPosition,
+  ) async {
+    final image = await game.images.load('ball.png');
+    final size = Vector2.all(image.width.toDouble().clamp(16, 64));
+    final sprite = await game.loadSprite('ball.png');
+
+    final controller = BallController(
+      model: BallModel(
+        position: initialPosition.clone(),
+        velocity: Vector2.zero(),
+      ),
+      size: size.clone(),
+      gameSize: game.size.clone(),
+      initialPosition: initialPosition.clone(),
+    );
+
+    final ball = BallComponent._(initialPosition: initialPosition);
+    ball
+      ..sprite = sprite
+      ..size = size
+      ..controller = controller;
+
+    return ball;
+  }
+
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-
-    // 1. Carica lo sprite
-    sprite = await game.loadSprite('ball.png');
-
-    // 2. Imposta le dimensioni in base alla texture
-    final image = await game.images.load('ball.png');
-    size = Vector2.all(image.width.toDouble().clamp(16, 64));
-    // Qui limitiamo la dimensione tra 16 e 64 pixel;
-    // adegua i valori come preferisci
-
-    // 3. Se non ho già un position passato via costruttore, centro
-    position = position.isZero() ? game.size / 2 : position;
-    final model = SoccerBallModel(
-      position: position.clone(),
-      velocity: Vector2.zero(),
-    );
-    final controller = SoccerBallController(
-      model: model,
-      size: size.clone(),
-      gameSize: game.size.clone(),
-      initialPosition: position.clone(),
-    );
-    this.controller = controller;
   }
 
-  SoccerBallModel get ball => controller.model;
+  BallModel get ball => controller.model;
 
   @override
   void update(double dt) {
@@ -51,8 +55,12 @@ class BallComponent extends SpriteComponent
     controller.update(dt);
     position = controller.position;
 
+    // Rotazione proporzionale alla velocità
+    if (controller.velocity.length2 > 1) {
+      angle += controller.velocity.length * dt * 0.01;
+    }
+
     if (controller.velocity.length2 > 20) {
-      // genera una scia istantanea in corrispondenza del centro della palla
       game.add(BallTrail(position.clone()));
     }
   }
