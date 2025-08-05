@@ -4,16 +4,18 @@ import '../components/ball_component.dart';
 import '../components/field_component.dart';
 
 class FootballGame extends FlameGame {
+  late FieldComponent fieldComponent;
+  late BallComponent ballComponent;
   @override
   Future<void> onLoad() async {
     // Carica e aggiungi il campo
-    final field = FieldComponent();
-    await add(field);
+    fieldComponent = FieldComponent();
+    await add(fieldComponent);
 
     // Carica e aggiungi la palla
-    final ball = await BallComponent.create(this, size / 2);
-    await add(ball);
+    ballComponent = await BallComponent.create(this, size / 2);
+    await add(ballComponent);
 
-    ball.kick(Vector2(0, 1), 400);
+    ballComponent.kick(Vector2(1, 1), 400);
   }
 }

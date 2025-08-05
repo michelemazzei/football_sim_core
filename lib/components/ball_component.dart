@@ -1,26 +1,25 @@
 import 'package:flame/components.dart';
 import 'package:football_sim_core/components/ball_trail.dart';
+import 'package:football_sim_core/components/field_bound_component.dart';
 import 'package:football_sim_core/controllers/ball_controller.dart';
 import 'package:football_sim_core/model/ball_model.dart';
 
 import '../game/football_game.dart';
 
-class BallComponent extends SpriteComponent
-    with HasGameReference<FootballGame> {
-  final maxSpeed = 100.0;
-  late final BallController controller;
+class BallComponent extends FieldBoundComponent {
+  final maxSpeed = 400.0;
 
-  BallComponent._({required Vector2 initialPosition})
-    : super(anchor: Anchor.center) {
-    position = initialPosition;
-  }
+  final angleSpin = 0.02;
+
+  late final BallController controller;
+  BallModel get ball => controller.model;
 
   static Future<BallComponent> create(
     FootballGame game,
     Vector2 initialPosition,
   ) async {
     final image = await game.images.load('ball.png');
-    final size = Vector2.all(image.width.toDouble().clamp(16, 64));
+    final size = Vector2.all(image.width.toDouble().clamp(16, 62));
     final sprite = await game.loadSprite('ball.png');
 
     final controller = BallController(
@@ -42,27 +41,32 @@ class BallComponent extends SpriteComponent
     return ball;
   }
 
-  @override
-  Future<void> onLoad() async {
-    await super.onLoad();
+  BallComponent._({required Vector2 initialPosition}) {
+    anchor = Anchor.center;
+    position = initialPosition;
+    relativePosition = Vector2(0.5, 0.5);
+    sizeRatio = 0.02;
   }
-
-  BallModel get ball => controller.model;
 
   @override
   void update(double dt) {
     super.update(dt);
     controller.update(dt);
     position = controller.position;
+    updateRelativePosition();
 
-    // Rotazione proporzionale alla velocità
     if (controller.velocity.length2 > 1) {
-      angle += controller.velocity.length * dt * 0.01;
+      angle += controller.velocity.length * dt * angleSpin;
     }
-
     if (controller.velocity.length2 > 20) {
       game.add(BallTrail(position.clone()));
     }
+  }
+
+  @override
+  void onResizeAndReposition() {
+    //  Aggiorna anche il controller
+    controller.model.position = position.clone();
   }
 
   /// Metodo di utilità per "calciare" la palla
@@ -70,5 +74,6 @@ class BallComponent extends SpriteComponent
     // direction dovrebbe essere normalizzato
     double clampedStrength = strength.clamp(0, maxSpeed);
     controller.velocity = direction.normalized() * clampedStrength;
+    updateRelativePosition();
   }
 }

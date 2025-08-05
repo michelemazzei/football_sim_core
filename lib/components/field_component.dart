@@ -1,4 +1,5 @@
 import 'package:flame/components.dart';
+
 import '../game/football_game.dart';
 
 class FieldComponent extends SpriteComponent
@@ -6,11 +7,31 @@ class FieldComponent extends SpriteComponent
   FieldComponent() : super(anchor: Anchor.topLeft);
 
   @override
+  void onGameResize(Vector2 size) {
+    super.onGameResize(size);
+    _resizeField(size);
+  }
+
+  void _resizeField(Vector2 screenSize) {
+    final fieldRatio = sprite!.originalSize.x / sprite!.originalSize.y;
+    final screenRatio = screenSize.x / screenSize.y;
+
+    if (fieldRatio > screenRatio) {
+      size = Vector2(screenSize.x, screenSize.x / fieldRatio);
+    } else {
+      size = Vector2(screenSize.y * fieldRatio, screenSize.y);
+    }
+
+    position = (screenSize - size) / 2;
+  }
+
+  @override
   Future<void> onLoad() async {
     await super.onLoad();
 
     // 1. carica lo sprite del campo
     sprite = await game.loadSprite('field.png');
+    _resizeField(game.size);
 
     // 2. prendi le dimensioni reali dell'immagine
     final image = await game.images.load('field.png');
