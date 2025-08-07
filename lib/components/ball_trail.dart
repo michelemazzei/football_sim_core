@@ -28,7 +28,7 @@ class BallTrail extends ParticleSystemComponent
             acceleration: Vector2(0, 150),
             child: CircleParticle(
               radius: 3,
-              paint: Paint()..color = colors[i % colors.length],
+              paint: Paint()..color = colors[i % colors.length].withAlpha(100),
             ),
           ),
         ),
