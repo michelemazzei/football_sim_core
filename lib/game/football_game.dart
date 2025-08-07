@@ -1,6 +1,7 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:football_sim_core/components/player_component.dart';
+import 'package:football_sim_core/components/stands_component.dart';
 import 'package:football_sim_core/model/ball_model.dart';
 import 'package:football_sim_core/model/player_model.dart';
 
@@ -12,19 +13,18 @@ class FootballGame extends FlameGame {
   late BallComponent ballComponent;
   @override
   Future<void> onLoad() async {
-    // Carica e aggiungi il campo
-    fieldComponent = FieldComponent();
+    // Crea e aggiungi il campo
+    fieldComponent = FieldComponent()..position = Vector2(0, size.y * 0.1);
     await add(fieldComponent);
 
-    await Future.delayed(Duration.zero); // aspetta un frame
-
-    // Carica e aggiungi la palla
+    // Crea e aggiungi la palla
     ballComponent = BallComponent(
       game: this,
       model: BallModel(relativePosition: Vector2.all(0.5)),
     );
     await add(ballComponent);
 
+    // Crea e aggiungi il giocatore
     final player1 = PlayerComponent(
       game: this,
       model: PlayerModel(
@@ -33,17 +33,9 @@ class FootballGame extends FlameGame {
         number: 10,
       ),
     );
-    // final player2 = await PlayerComponent.create(
-    //   this,
-    //   PlayerModel(
-    //     position: size / 2 + Vector2(500, 100),
-    //     color: Colors.red,
-    //     number: 10,
-    //   ),
-    // );
-
     await add(player1);
-    // await add(player2);
+
+    // Avvia il movimento della palla
     ballComponent.kick(Vector2(1, 1), 0.5);
   }
 }
