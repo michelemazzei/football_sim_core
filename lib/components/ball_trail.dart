@@ -6,20 +6,29 @@ import '../game/football_game.dart';
 
 class BallTrail extends ParticleSystemComponent
     with HasGameReference<FootballGame> {
-  BallTrail(Vector2 spawnPosition, {Color color = Colors.greenAccent})
+  static final colors = [
+    Colors.redAccent,
+    Colors.orangeAccent,
+    Colors.yellowAccent,
+    Colors.greenAccent,
+    Colors.cyanAccent,
+    Colors.blueAccent,
+    Colors.purpleAccent,
+  ];
+
+  BallTrail(Vector2 spawnPosition)
     : super(
         position: spawnPosition,
         anchor: Anchor.center,
         particle: Particle.generate(
-          count: 4, // più particelle
-          lifespan: 0.1, // durano più a lungo
+          count: 4,
+          lifespan: 0.4,
           generator: (i) => AcceleratedParticle(
             speed: (Vector2.random() - Vector2.all(0.5)) * 80,
             acceleration: Vector2(0, 150),
-            position: spawnPosition.clone(),
             child: CircleParticle(
-              radius: 3, // raggio più grande
-              paint: Paint()..color = color,
+              radius: 3,
+              paint: Paint()..color = colors[i % colors.length],
             ),
           ),
         ),

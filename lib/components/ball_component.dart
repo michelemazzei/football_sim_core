@@ -85,8 +85,8 @@ class BallComponent extends FieldBoundComponent<BallController, BallModel> {
     if (controller.velocity.length2 > 1) {
       angle += controller.velocity.length * dt * angleSpin;
     }
-    if (controller.velocity.length2 > 20) {
-      game.add(BallTrail(controller.position.clone()));
+    if (controller.relativeVelocity.length2 > 0.1) {
+      game.add(BallTrail(position.clone()));
     }
   }
 
