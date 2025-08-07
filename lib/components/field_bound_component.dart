@@ -52,9 +52,6 @@ abstract class FieldBoundComponent<
       resizeAndReposition(); // ← imposta posizione da relativePosition
       _needsResize = false;
     } else {
-      print(
-        'Game size : ${game.size} relative position : ${controller.model.relativePosition} - absolute position: ${controller.position}',
-      );
       controller.update(dt); // ← aggiorna relativePosition
       position = controller.position; // ← calcola posizione assoluta
     }

@@ -25,10 +25,14 @@ class FootballGame extends FlameGame {
     );
     await add(ballComponent);
 
-    // final player1 = await PlayerComponent.create(
-    //   this,
-    //   PlayerModel(position: size / 4, color: Colors.blue, number: 10),
-    // );
+    final player1 = PlayerComponent(
+      game: this,
+      model: PlayerModel(
+        relativePosition: Vector2(0.4, 0.5),
+        color: Colors.blue,
+        number: 10,
+      ),
+    );
     // final player2 = await PlayerComponent.create(
     //   this,
     //   PlayerModel(
@@ -38,8 +42,8 @@ class FootballGame extends FlameGame {
     //   ),
     // );
 
-    // await add(player1);
+    await add(player1);
     // await add(player2);
-    //  ballComponent.kick(Vector2(1, 1), 400);
+    ballComponent.kick(Vector2(1, 1), 0.5);
   }
 }

@@ -9,34 +9,21 @@ class PlayerComponent
     extends FieldBoundComponent<PlayerController, PlayerModel> {
   late TextPaint textPaint;
 
-  static Future<PlayerComponent> create(
-    FootballGame game,
-    PlayerModel model,
-  ) async {
-    final anchor = Anchor.center;
+  PlayerComponent({required FootballGame game, required PlayerModel model}) {
+    anchor = Anchor.center;
+    sizeRatio = 0.025;
+    controller = PlayerController(
+      model: model,
+      game: game, // non game.size
+    )..size = size;
 
-    final textPaint = TextPaint(
+    textPaint = TextPaint(
       style: TextStyle(
         fontSize: 12,
         color: model.color,
         fontWeight: FontWeight.bold,
       ),
     );
-
-    final player = PlayerComponent._(initialPosition: model.relativePosition);
-    player
-      ..anchor = anchor
-      ..sizeRatio = 0.02
-      ..textPaint = textPaint
-      ..controller = PlayerController(model: model, game: game);
-
-    return player;
-  }
-
-  PlayerComponent._({required Vector2 initialPosition}) {
-    anchor = Anchor.center;
-
-    sizeRatio = 0.02;
   }
 
   void drawPlayerCircle(

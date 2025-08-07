@@ -10,8 +10,13 @@ import 'package:football_sim_core/model/ball_model.dart';
 
 class BallComponent extends FieldBoundComponent<BallController, BallModel> {
   final angleSpin = 0.02;
+  final double maxSpeed;
 
-  BallComponent({required FootballGame game, required BallModel model}) {
+  BallComponent({
+    required FootballGame game,
+    required BallModel model,
+    this.maxSpeed = 1.0,
+  }) {
     anchor = Anchor.center;
     sizeRatio = 0.02;
     controller = BallController(
@@ -45,7 +50,7 @@ class BallComponent extends FieldBoundComponent<BallController, BallModel> {
     // ✨ Highlight lucido
     final glossPaint = Paint()
       ..shader = RadialGradient(
-        colors: [Colors.white.withOpacity(0.5), Colors.transparent],
+        colors: [Colors.white.withAlpha(100), Colors.transparent],
         center: Alignment.topLeft,
         radius: 0.8,
       ).createShader(Rect.fromCircle(center: center, radius: radius));
@@ -81,14 +86,17 @@ class BallComponent extends FieldBoundComponent<BallController, BallModel> {
       angle += controller.velocity.length * dt * angleSpin;
     }
     if (controller.velocity.length2 > 20) {
-      // game.add(BallTrail(position.clone()));
+      game.add(BallTrail(controller.position.clone()));
     }
   }
 
   /// Metodo di utilità per "calciare" la palla
 
   void kick(Vector2 direction, double strength) {
-    double clampedStrength = strength.clamp(0, 1); // forza relativa (0–1)
+    double clampedStrength = strength.clamp(
+      0,
+      maxSpeed,
+    ); // forza relativa (0–1)
     controller.relativeVelocity = direction.normalized() * clampedStrength;
   }
 }
