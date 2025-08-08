@@ -25,26 +25,50 @@ class PlayerComponent
       ),
     );
   }
-
   void drawPlayerCircle(
     Canvas canvas,
-    Vector2 size,
+    Size fieldSize,
     Color color,
     String name,
-    TextPaint textPaint,
   ) {
-    final paint = Paint()..color = color;
-    final radius = size.x / 2;
+    final double radius = fieldSize.width * 0.012; // proporzionale al campo
 
-    // Disegna il cerchio
-    canvas.drawCircle(Offset.zero, radius, paint);
+    final Paint shadowPaint = Paint()..color = Colors.black.withAlpha(80);
+    final Paint fillPaint = Paint()..color = color.withAlpha(180);
+    final Paint borderPaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
 
-    // Misura il testo
-    final textSize = measureText(name, textPaint.style);
-    final textOffset = Offset(-textSize.width / 2, -textSize.height / 2);
+    final Offset center = Offset(0, 0);
 
-    // Disegna il nome
-    textPaint.render(canvas, name, Vector2(textOffset.dx, textOffset.dy));
+    // Ombra
+    canvas.drawCircle(center.translate(2, 2), radius, shadowPaint);
+
+    // Cerchio giocatore
+    canvas.drawCircle(center, radius, fillPaint);
+    canvas.drawCircle(center, radius, borderPaint);
+
+    // Colore adattivo per il testo
+    final Color textColor = color.computeLuminance() > 0.6
+        ? Colors.black
+        : Colors.white;
+
+    final TextPaint namePaint = TextPaint(
+      style: TextStyle(
+        color: textColor,
+        fontSize: radius * 1.2,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+
+    final textSize = measureText(name, namePaint.style);
+    final textOffset = Offset(
+      center.dx - textSize.width / 2,
+      center.dy - textSize.height / 2,
+    );
+
+    namePaint.render(canvas, name, Vector2(textOffset.dx, textOffset.dy));
   }
 
   Size measureText(String text, TextStyle style) {
@@ -60,10 +84,9 @@ class PlayerComponent
     super.render(canvas);
     drawPlayerCircle(
       canvas,
-      size,
+      game.size.toSize(),
       model.color,
       model.number.toString(),
-      textPaint,
     );
   }
 }
