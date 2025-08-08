@@ -10,8 +10,6 @@ class FieldComponent extends PositionComponent
     with HasGameReference<FootballGame> {
   FieldComponent() : super(anchor: Anchor.topLeft);
 
-  static const double fieldPadding = 30; // margine attorno al campo
-
   @override
   void onGameResize(Vector2 size) {
     super.onGameResize(size);
@@ -19,7 +17,7 @@ class FieldComponent extends PositionComponent
   }
 
   void _resizeField(Vector2 screenSize) {
-    const double padding = 30;
+    const double padding = 60;
     final usableWidth = screenSize.x - padding * 2;
     final usableHeight = screenSize.y - padding * 2;
     final fieldRatio = 16 / 9;
