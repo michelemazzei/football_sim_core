@@ -10,30 +10,302 @@ class FieldComponent extends PositionComponent
     with HasGameReference<FootballGame> {
   FieldComponent() : super(anchor: Anchor.topLeft);
 
+  static const double fieldPadding = 30; // margine attorno al campo
+
   @override
-  void onGameResize(Vector2 screenSize) {
-    super.onGameResize(screenSize);
-    _resizeField(screenSize);
+  void onGameResize(Vector2 size) {
+    super.onGameResize(size);
+    _resizeField(size);
   }
 
   void _resizeField(Vector2 screenSize) {
+    const double padding = 30;
+    final usableWidth = screenSize.x - padding * 2;
+    final usableHeight = screenSize.y - padding * 2;
     final fieldRatio = 16 / 9;
-    final screenRatio = screenSize.x / screenSize.y;
+    final screenRatio = usableWidth / usableHeight;
 
     if (fieldRatio > screenRatio) {
-      size = Vector2(screenSize.x, screenSize.x / fieldRatio);
+      size = Vector2(usableWidth, usableWidth / fieldRatio);
     } else {
-      size = Vector2(screenSize.y * fieldRatio, screenSize.y);
+      size = Vector2(usableHeight * fieldRatio, usableHeight);
     }
 
     position = (screenSize - size) / 2;
+  }
+
+  void renderGrassPixelOverlay(Canvas canvas, Size size) {
+    final pixelPaint = Paint()
+      ..color = Colors.black.withAlpha(100)
+      ..strokeWidth = 1;
+
+    final spacing = 6.0;
+    final points = <Offset>[];
+
+    for (double x = 0; x < size.width; x += spacing) {
+      for (double y = 0; y < size.height; y += spacing) {
+        if ((x + y) % (spacing * 2) == 0) {
+          points.add(Offset(x, y));
+        }
+      }
+    }
+
+    canvas.drawPoints(PointMode.points, points, pixelPaint);
+  }
+
+  void renderGoalAreas(Canvas canvas, Size size) {
+    final areaWidth = size.width * 0.08; // larghezza orizzontale
+    final areaHeight = size.height * 0.25; // altezza verticale
+    final linePaint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+
+    // Area piccola lato sinistro (porta sinistra)
+    final leftArea = Rect.fromLTWH(
+      0,
+      (size.height / 2) - (areaHeight / 2),
+      areaWidth,
+      areaHeight,
+    );
+    canvas.drawRect(leftArea, linePaint);
+
+    // Area piccola lato destro (porta destra)
+    final rightArea = Rect.fromLTWH(
+      size.width - areaWidth,
+      (size.height / 2) - (areaHeight / 2),
+      areaWidth,
+      areaHeight,
+    );
+    canvas.drawRect(rightArea, linePaint);
+  }
+
+  void renderGoalRight(Canvas canvas, Size size) {
+    final double goalWidth = 20;
+    final double goalHeight = size.height * 0.18;
+    final double goalTop = (size.height - goalHeight) / 2;
+    final double netSpacing = 8;
+    final double shift = 20; // Sposta la porta fuori dal bordo destro
+
+    final Paint goalPaint = Paint()
+      ..color = Colors.white
+      ..strokeWidth = 2;
+
+    final Paint netPaint = Paint()
+      ..color = Colors.white
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke;
+
+    final double xStart = size.width + shift - goalWidth;
+
+    // Struttura porta spostata verso destra
+    canvas.drawLine(
+      Offset(xStart, goalTop),
+      Offset(xStart + goalWidth, goalTop),
+      goalPaint,
+    );
+    canvas.drawLine(
+      Offset(xStart, goalTop),
+      Offset(xStart, goalTop + goalHeight),
+      goalPaint,
+    );
+    canvas.drawLine(
+      Offset(xStart, goalTop + goalHeight),
+      Offset(xStart + goalWidth, goalTop + goalHeight),
+      goalPaint,
+    );
+
+    // Linee verticali bombate verso sinistra (verso il campo)
+    for (double x = 0; x <= goalWidth; x += netSpacing) {
+      final Path path = Path();
+      for (double y = goalTop; y <= goalTop + goalHeight; y += 2) {
+        double offsetX = x + sin((y - goalTop) / goalHeight * pi) * 4 + 5;
+        if (y == goalTop) {
+          path.moveTo(xStart + offsetX, y);
+        } else {
+          path.lineTo(xStart + offsetX, y);
+        }
+      }
+      canvas.drawPath(path, netPaint);
+    }
+
+    // Linee orizzontali bombate verso sinistra
+    for (
+      double y = goalTop + netSpacing;
+      y <= goalTop + goalHeight;
+      y += netSpacing
+    ) {
+      final Path path = Path();
+      for (double x = 0; x <= goalWidth; x += 2) {
+        double offsetY = y - sin((x / goalWidth) * pi) * 3;
+        if (x == 0) {
+          path.moveTo(xStart, offsetY);
+        } else {
+          path.lineTo(xStart + x, offsetY);
+        }
+      }
+      canvas.drawPath(path, netPaint);
+    }
+  }
+
+  void renderGoalLeft(Canvas canvas, Size size) {
+    final double goalWidth = 20;
+    final double goalHeight = size.height * 0.18;
+    final double goalTop = (size.height - goalHeight) / 2;
+    final double netSpacing = 8;
+    final double shift = 20; // Sposta la porta fuori dal bordo sinistro
+
+    final Paint goalPaint = Paint()
+      ..color = Colors.white
+      ..strokeWidth = 2;
+
+    final Paint netPaint = Paint()
+      ..color = Colors.white
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke;
+
+    final double xStart = -shift;
+
+    // Struttura porta spostata verso sinistra
+    canvas.drawLine(
+      Offset(xStart, goalTop),
+      Offset(xStart + goalWidth, goalTop),
+      goalPaint,
+    );
+    canvas.drawLine(
+      Offset(xStart + goalWidth, goalTop),
+      Offset(xStart + goalWidth, goalTop + goalHeight),
+      goalPaint,
+    );
+    canvas.drawLine(
+      Offset(xStart + goalWidth, goalTop + goalHeight),
+      Offset(xStart, goalTop + goalHeight),
+      goalPaint,
+    );
+
+    // Linee verticali bombate verso destra (speculare)
+    for (double x = 0; x <= goalWidth; x += netSpacing) {
+      final Path path = Path();
+      for (double y = goalTop; y <= goalTop + goalHeight; y += 2) {
+        double offsetX = x - sin((y - goalTop) / goalHeight * pi) * 4;
+        if (y == goalTop) {
+          path.moveTo(xStart + offsetX, y);
+        } else {
+          path.lineTo(xStart + offsetX, y);
+        }
+      }
+      canvas.drawPath(path, netPaint);
+    }
+
+    // Linee orizzontali bombate verso destra (speculare)
+    for (
+      double y = goalTop + netSpacing;
+      y <= goalTop + goalHeight;
+      y += netSpacing
+    ) {
+      final Path path = Path();
+      for (double x = 0; x <= goalWidth; x += 2) {
+        double offsetY = y - sin((x / goalWidth) * pi) * 3;
+        if (x == 0) {
+          path.moveTo(xStart, offsetY);
+        } else {
+          path.lineTo(xStart + x, offsetY);
+        }
+      }
+      canvas.drawPath(path, netPaint);
+    }
+  }
+
+  void renderRetroCornerFlags(Canvas canvas, Size size) {
+    const poleLength = 14.0;
+    const flagWidth = 8.0;
+    const flagHeight = 6.0;
+    final polePaint = Paint()..color = Colors.grey.shade800;
+    final flagPaint = Paint()..color = Colors.red;
+
+    final corners = [
+      // Alto sinistra
+      {
+        'poleStart': Offset(4, 4),
+        'poleEnd': Offset(4 + poleLength * 0.7, 4 + poleLength * 0.7),
+        'flagOffset': Offset(4 + poleLength * 0.7, 4 + poleLength * 0.7),
+      },
+      // Alto destra
+      {
+        'poleStart': Offset(size.width - 4, 4),
+        'poleEnd': Offset(
+          size.width - 4 - poleLength * 0.7,
+          4 + poleLength * 0.7,
+        ),
+        'flagOffset': Offset(
+          size.width - 4 - poleLength * 0.7,
+          4 + poleLength * 0.7,
+        ),
+      },
+      // Basso sinistra
+      {
+        'poleStart': Offset(4, size.height - 4),
+        'poleEnd': Offset(
+          4 + poleLength * 0.7,
+          size.height - 4 - poleLength * 0.7,
+        ),
+        'flagOffset': Offset(
+          4 + poleLength * 0.7,
+          size.height - 4 - poleLength * 0.7,
+        ),
+      },
+      // Basso destra
+      {
+        'poleStart': Offset(size.width - 4, size.height - 4),
+        'poleEnd': Offset(
+          size.width - 4 - poleLength * 0.7,
+          size.height - 4 - poleLength * 0.7,
+        ),
+        'flagOffset': Offset(
+          size.width - 4 - poleLength * 0.7,
+          size.height - 4 - poleLength * 0.7,
+        ),
+      },
+    ];
+
+    for (final corner in corners) {
+      // Gambo inclinato
+      canvas.drawLine(
+        corner['poleStart'] as Offset,
+        corner['poleEnd'] as Offset,
+        polePaint..strokeWidth = 2,
+      );
+
+      // Bandierina rettangolare
+      final flagRect = Rect.fromLTWH(
+        (corner['flagOffset'] as Offset).dx,
+        (corner['flagOffset'] as Offset).dy,
+        flagWidth,
+        flagHeight,
+      );
+      canvas.drawRect(flagRect, flagPaint);
+    }
+  }
+
+  void renderGrassTexture(Canvas canvas, Size size) {
+    final stripeCount = 20;
+    final stripeWidth = size.width / stripeCount;
+
+    for (int i = 0; i < stripeCount; i++) {
+      final paint = Paint()
+        ..color = (i % 2 == 0)
+            ? const Color(0xFF2E7D32).withOpacity(0.95)
+            : const Color(0xFF388E3C).withOpacity(0.95);
+
+      final rect = Rect.fromLTWH(i * stripeWidth, 0, stripeWidth, size.height);
+      canvas.drawRect(rect, paint);
+    }
   }
 
   @override
   void render(Canvas canvas) {
     final Paint grassPaint = Paint()..color = const Color(0xFF2E7D32);
     canvas.drawRect(size.toRect(), grassPaint);
-
     final Paint linePaint = Paint()
       ..color = Colors.white
       ..strokeWidth = 2
@@ -41,6 +313,12 @@ class FieldComponent extends PositionComponent
 
     // Bordo campo
     canvas.drawRect(size.toRect(), linePaint);
+    renderGrassTexture(canvas, size.toSize());
+    renderGrassPixelOverlay(canvas, size.toSize());
+    renderRetroCornerFlags(canvas, size.toSize());
+    renderGoalAreas(canvas, size.toSize());
+    renderGoalLeft(canvas, size.toSize());
+    renderGoalRight(canvas, size.toSize());
 
     // Cerchio centrale
     final center = Offset(size.x / 2, size.y / 2);
@@ -102,13 +380,13 @@ class FieldComponent extends PositionComponent
     canvas.drawArc(rightArcRect, 3.14 - angle, 2 * angle, false, linePaint);
 
     // Porte
-    _drawGoal(canvas, Offset(0, size.y / 2), true);
-    _drawGoal(canvas, Offset(size.x, size.y / 2), false);
+    // _drawGoal(canvas, Offset(0, size.y / 2), true);
+    // _drawGoal(canvas, Offset(size.x, size.y / 2), false);
   }
 
   void _drawGoal(Canvas canvas, Offset origin, bool isLeft) {
     final Paint netPaint = Paint()
-      ..color = Colors.white.withOpacity(0.6)
+      ..color = Colors.white.withAlpha(200)
       ..strokeWidth = 1;
 
     final double goalHeight = size.y * 0.2;
