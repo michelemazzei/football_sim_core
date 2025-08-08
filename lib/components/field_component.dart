@@ -376,47 +376,6 @@ class FieldComponent extends PositionComponent
 
     canvas.drawArc(leftArcRect, -angle, 2 * angle, false, linePaint);
     canvas.drawArc(rightArcRect, 3.14 - angle, 2 * angle, false, linePaint);
-
-    // Porte
-    // _drawGoal(canvas, Offset(0, size.y / 2), true);
-    // _drawGoal(canvas, Offset(size.x, size.y / 2), false);
-  }
-
-  void _drawGoal(Canvas canvas, Offset origin, bool isLeft) {
-    final Paint netPaint = Paint()
-      ..color = Colors.white.withAlpha(200)
-      ..strokeWidth = 1;
-
-    final double goalHeight = size.y * 0.2;
-    final double depth = size.x * 0.03;
-
-    final path = Path();
-    path.moveTo(origin.dx, origin.dy - goalHeight / 2);
-    path.lineTo(origin.dx, origin.dy + goalHeight / 2);
-    path.lineTo(
-      isLeft ? origin.dx - depth : origin.dx + depth,
-      origin.dy + goalHeight / 2,
-    );
-    path.lineTo(
-      isLeft ? origin.dx - depth : origin.dx + depth,
-      origin.dy - goalHeight / 2,
-    );
-    path.close();
-
-    canvas.drawPath(path, netPaint);
-
-    final int netLines = 5;
-    for (int i = 1; i < netLines; i++) {
-      final double v = i / netLines;
-      canvas.drawLine(
-        Offset(origin.dx, origin.dy - goalHeight / 2 + v * goalHeight),
-        Offset(
-          isLeft ? origin.dx - depth : origin.dx + depth,
-          origin.dy - goalHeight / 2 + v * goalHeight,
-        ),
-        netPaint,
-      );
-    }
   }
 
   @override
