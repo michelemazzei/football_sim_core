@@ -25,6 +25,7 @@ class FootballGame extends FlameGame {
       wrapper = null;
       wrapper = PositionComponent()..position = wrapping;
       wrapper!.add(SpaltiComponent.make(size: size, type: StadiumType.medium));
+      wrapper!.priority = -1;
       add(wrapper!);
     }
   }
@@ -32,13 +33,14 @@ class FootballGame extends FlameGame {
   @override
   Future<void> onLoad() async {
     // Crea e aggiungi il campo
+
     fieldComponent = FieldComponent();
     await add(fieldComponent);
 
     wrapper = PositionComponent()..position = wrapping;
     wrapper!.add(SpaltiComponent.make(size: size, type: StadiumType.medium));
 
-    add(wrapper!);
+    await add(wrapper!);
     // Crea e aggiungi la palla
     ballComponent = BallComponent(
       game: this,
@@ -59,5 +61,18 @@ class FootballGame extends FlameGame {
       final component = PlayerComponent(model: player, game: this);
       add(component);
     }
+    add(MidlineDebug(this)..position = Vector2(0, fieldComponent.size.y / 2));
+  }
+}
+
+class MidlineDebug extends PositionComponent {
+  final FootballGame game;
+  MidlineDebug(this.game);
+  @override
+  void render(Canvas canvas) {
+    final paint = Paint()
+      ..color = Colors.green
+      ..strokeWidth = 1;
+    canvas.drawLine(Offset(0, 0), Offset(game.size.x, 0), paint);
   }
 }

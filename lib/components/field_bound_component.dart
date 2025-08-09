@@ -28,7 +28,7 @@ abstract class FieldBoundComponent<
 
     size = Vector2.all(field.size.x * sizeRatio);
 
-    position = controller.position;
+    position = controller.position + size / 2;
   }
 
   bool updateRelativePosition() {
@@ -53,7 +53,7 @@ abstract class FieldBoundComponent<
       _needsResize = false;
     } else {
       controller.update(dt); // ← aggiorna relativePosition
-      position = controller.position; // ← calcola posizione assoluta
+      position = controller.position + size / 2;
     }
 
     onPostUpdate(dt);
