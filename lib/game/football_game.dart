@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:football_sim_core/components/player_component.dart';
 import 'package:football_sim_core/components/spalti_component.dart';
 import 'package:football_sim_core/model/ball_model.dart';
-import 'package:football_sim_core/model/player_model.dart';
+import 'package:football_sim_core/model/formation.dart';
+import 'package:football_sim_core/model/team.dart';
 
 import '../components/ball_component.dart';
 import '../components/field_component.dart';
@@ -46,17 +47,17 @@ class FootballGame extends FlameGame {
     await add(ballComponent);
 
     // Crea e aggiungi il giocatore
-    final player1 = PlayerComponent(
-      game: this,
-      model: PlayerModel(
-        relativePosition: Vector2(0.4, 0.5),
-        color: Colors.blue,
-        number: 10,
-      ),
-    );
-    await add(player1);
 
-    // Avvia il movimento della palla
-    // ballComponent.kick(Vector2(1, 1), 0.5);
+    final teamA = Team(id: 'A', color: Colors.blue);
+    final teamB = Team(id: 'B', color: Colors.red);
+
+    teamA.initializePlayers(formation442, true);
+    teamB.initializePlayers(formation442, false);
+
+    // Poi aggiungi i PlayerComponent al Flame game
+    for (final player in [...teamA.players, ...teamB.players]) {
+      final component = PlayerComponent(model: player, game: this);
+      add(component);
+    }
   }
 }
