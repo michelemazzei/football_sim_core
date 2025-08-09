@@ -19,10 +19,7 @@ class BallComponent extends FieldBoundComponent<BallController, BallModel> {
   }) {
     anchor = Anchor.center;
     sizeRatio = 0.02;
-    controller = BallController(
-      model: model,
-      game: game, // non game.size
-    )..size = size;
+    controller = BallController(model: model, game: game)..size = size;
   }
 
   @override

@@ -15,7 +15,7 @@ Separazione netta tra logica e rendering:
 - I controller gestiscono la logica di movimento e interazione
 - I componenti (`Component`) si occupano del rendering su schermo
 
-## ⚽ 
+## ⚽
 
 ## 🔄 Recap: Struttura dei Giocatori
 
@@ -78,3 +78,34 @@ Ti propongo 3 direzioni creative per continuare:
    * Utile per test e bilanciamento
 
 Se vuoi, domani possiamo iniziare a implementare il primo comportamento AI o fare un test visivo con 2 giocatori che si muovono verso la palla. Oppure vuoi partire dal sistema di possesso? Dimmi tu, coach. 😄
+
+
+
+### Problema riscontrato
+
+* La **linea di metà campo** veniva disegnata  **solo da sinistra fino a metà** , non centrata correttamente.
+* Il problema **non era nel **`drawLine()`, ma causato indirettamente da un `sizeRatio` ** assegnato ai giocatori** .
+
+### ✅ Soluzione temporanea
+
+* Impostando `sizeRatio = 0` per i giocatori, la linea torna corretta.
+* Questo suggerisce che il `sizeRatio` stava influenzando il layout o il rendering in modo non previsto.
+
+### 🔍 Da indagare la prossima volta
+
+* Come il `sizeRatio` dei giocatori impatta il rendering della linea.
+* Verificare se il `sizeRatio` modifica:
+  * Le dimensioni effettive dei componenti
+  * Il sistema di coordinate o l’anchor
+  * Il comportamento del `camera` o del `viewport`
+
+### 🧭 Punto di ripartenza consigliato
+
+Quando torni:
+
+1. Rivediamo come viene usato `sizeRatio` nei giocatori
+2. Controlliamo se c’è qualche trasformazione che impatta il canvas
+3. Testiamo con `debugMode = true` per visualizzare bounding boxes e layout
+
+Ti basta scrivermi “riprendiamo dal problema del sizeRatio” e ci siamo. Ti tengo il posto caldo 😄
+Buona giornata e a presto!

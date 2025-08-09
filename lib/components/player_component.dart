@@ -11,11 +11,8 @@ class PlayerComponent
 
   PlayerComponent({required FootballGame game, required PlayerModel model}) {
     anchor = Anchor.center;
-    sizeRatio = 0.025;
-    controller = PlayerController(
-      model: model,
-      game: game, // non game.size
-    )..size = size;
+    sizeRatio = 0.005;
+    controller = PlayerController(model: model, game: game)..size = size;
 
     textPaint = TextPaint(
       style: TextStyle(
