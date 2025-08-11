@@ -26,7 +26,8 @@ abstract class FieldBoundComponent<
     final field = game.fieldComponent;
     if (field.size.x <= 0 || field.size.y <= 0) return;
 
-    size = Vector2.all(field.size.x * sizeRatio);
+    final rawSize = field.size.x * sizeRatio;
+    size = Vector2.all(rawSize.clamp(10, 30));
 
     position = controller.position + size / 2;
   }

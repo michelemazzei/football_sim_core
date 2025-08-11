@@ -61,22 +61,22 @@ class FootballGame extends FlameGame {
       final component = PlayerComponent(model: player, game: this);
       add(component);
     }
-    await add(MidlineDebug(this));
+    // await add(MidlineDebug(this));
   }
 }
 
-class MidlineDebug extends PositionComponent {
-  final FootballGame game;
-  MidlineDebug(this.game) {
-    anchor = Anchor.center;
-    position = Vector2(game.size.x / 2, game.size.y / 2);
-    size = Vector2(game.size.x, 1); // larghezza del campo, altezza minima
-  }
-  @override
-  void render(Canvas canvas) {
-    final paint = Paint()
-      ..color = Colors.green
-      ..strokeWidth = 5;
-    canvas.drawLine(Offset(0, 0), Offset(game.size.x, 0), paint);
-  }
-}
+// class MidlineDebug extends PositionComponent {
+//   final FootballGame game;
+//   MidlineDebug(this.game) {
+//     anchor = Anchor.center;
+//     position = Vector2(game.size.x / 2, game.size.y / 2);
+//     size = Vector2(game.size.x, 1); // larghezza del campo, altezza minima
+//   }
+//   @override
+//   void render(Canvas canvas) {
+//     final paint = Paint()
+//       ..color = Colors.green
+//       ..strokeWidth = 5;
+//     canvas.drawLine(Offset(0, 0), Offset(game.size.x, 0), paint);
+//   }
+// }

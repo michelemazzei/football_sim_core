@@ -11,7 +11,7 @@ class PlayerComponent
 
   PlayerComponent({required FootballGame game, required PlayerModel model}) {
     anchor = Anchor.center;
-    sizeRatio = 0.005;
+    sizeRatio = 0.012;
     controller = PlayerController(model: model, game: game)..size = size;
 
     textPaint = TextPaint(
@@ -28,7 +28,7 @@ class PlayerComponent
     Color color,
     String name,
   ) {
-    final double radius = fieldSize.width * 0.012; // proporzionale al campo
+    final double radius = fieldSize.width * sizeRatio; // proporzionale al campo
 
     final Paint shadowPaint = Paint()..color = Colors.black.withAlpha(80);
     final Paint fillPaint = Paint()..color = color.withAlpha(180);
