@@ -1,18 +1,22 @@
 import 'package:flame/components.dart';
+import 'package:flutter/material.dart';
 
 enum StadiumType { small, medium, big, biggest }
 
-class SpaltiComponent extends Component {
-  final Vector2 campoSize;
+class SpaltiComponent extends PositionComponent {
   final StadiumType tipo;
   final List<String> spettatoriPng;
-  final spettatoreSize = Vector2(12, 12);
+  final Vector2 spettatoreSize = Vector2(12, 12);
+  final List<SpriteComponent> spettatori = [];
+  final List<RectangleComponent> gradoni = [];
 
   SpaltiComponent({
-    required this.campoSize,
+    required Vector2 campoSize,
     required this.tipo,
     required this.spettatoriPng,
-  });
+  }) {
+    size = campoSize;
+  }
 
   factory SpaltiComponent.make({required Vector2 size, StadiumType? type}) =>
       SpaltiComponent(
@@ -34,14 +38,31 @@ class SpaltiComponent extends Component {
 
   @override
   Future<void> onLoad() async {
-    await _generaSpalti('top');
-    await _generaSpalti('bottom');
-    await _generaSpalti('left');
-    await _generaSpalti('right');
+    await _generaSpalti();
   }
 
-  Future<void> _generaSpalti(String lato) async {
-    // Quante file in base al tipo di stadio
+  @override
+  void onGameResize(Vector2 newSize) {
+    super.onGameResize(newSize);
+    size.setFrom(newSize);
+
+    removeAll(spettatori);
+    spettatori.clear();
+
+    removeAll(gradoni);
+    gradoni.clear();
+
+    _generaSpalti();
+  }
+
+  Future<void> _generaSpalti() async {
+    await _generaLato('top');
+    await _generaLato('bottom');
+    await _generaLato('left');
+    await _generaLato('right');
+  }
+
+  Future<void> _generaLato(String lato) async {
     int fileCount;
     switch (tipo) {
       case StadiumType.small:
@@ -60,51 +81,85 @@ class SpaltiComponent extends Component {
 
     final isOrizzontale = lato == 'top' || lato == 'bottom';
     final colonne = isOrizzontale
-        ? ((campoSize.x - 70) / spettatoreSize.x).floor()
-        : ((campoSize.y - 70) / spettatoreSize.y).floor();
+        ? ((size.x - 70) / spettatoreSize.x).floor()
+        : ((size.y - 70) / spettatoreSize.y).floor();
 
     for (int fila = 0; fila < fileCount; fila++) {
+      // Gradone sotto la fila
+      final gradone = RectangleComponent(
+        size: isOrizzontale
+            ? Vector2(colonne * spettatoreSize.x, spettatoreSize.y)
+            : Vector2(spettatoreSize.x, colonne * spettatoreSize.y),
+        paint: Paint()..color = Colors.grey.shade700,
+        priority: -2,
+      );
+
+      switch (lato) {
+        case 'top':
+          gradone.position = Vector2(0, -((fila + 1) * spettatoreSize.y) - 10);
+          break;
+        case 'bottom':
+          gradone.position = Vector2(
+            0,
+            size.y + (fila * spettatoreSize.y) - 70,
+          );
+          break;
+        case 'left':
+          gradone.position = Vector2(-((fila + 1) * spettatoreSize.x) - 10, 0);
+          break;
+        case 'right':
+          gradone.position = Vector2(
+            size.x + (fila * spettatoreSize.x) - 60,
+            0,
+          );
+          break;
+      }
+
+      gradoni.add(gradone);
+      add(gradone);
+
       for (int col = 0; col < colonne; col++) {
         final spriteName = spettatoriPng[(fila + col) % spettatoriPng.length];
         final sprite = await Sprite.load(spriteName);
 
-        final component = SpriteComponent()
+        final spettatore = SpriteComponent()
           ..sprite = sprite
-          ..size = spettatoreSize;
+          ..size = spettatoreSize
+          ..priority = -1;
 
-        // Posizionamento
         switch (lato) {
           case 'top':
-            component.position = Vector2(
+            spettatore.position = Vector2(
               col * spettatoreSize.x,
               -((fila + 1) * spettatoreSize.y) - 10,
             );
-            component.angle = 3.14 / 2; // guarda in basso
+            spettatore.angle = 3.14 / 2;
             break;
           case 'bottom':
-            component.position = Vector2(
+            spettatore.position = Vector2(
               col * spettatoreSize.x,
-              campoSize.y + (fila * spettatoreSize.y) - 70,
+              size.y + (fila * spettatoreSize.y) - 70,
             );
-            component.angle = -3.14 / 2; // guarda in alto
+            spettatore.angle = -3.14 / 2;
             break;
           case 'left':
-            component.position = Vector2(
+            spettatore.position = Vector2(
               -((fila + 1) * spettatoreSize.x) - 10,
               col * spettatoreSize.y,
             );
-            component.angle = 0; // guarda a destra
+            spettatore.angle = 0;
             break;
           case 'right':
-            component.position = Vector2(
-              campoSize.x + (fila * spettatoreSize.x) - 60,
+            spettatore.position = Vector2(
+              size.x + (fila * spettatoreSize.x) - 60,
               col * spettatoreSize.y,
             );
-            component.angle = 3.14; // guarda a sinistra
+            spettatore.angle = 3.14;
             break;
         }
 
-        add(component);
+        spettatori.add(spettatore);
+        add(spettatore);
       }
     }
   }

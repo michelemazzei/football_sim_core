@@ -17,24 +17,21 @@ class FootballGame extends FlameGame {
   late EntityManager entityManager;
   late FieldComponent fieldComponent;
   late BallComponent ballComponent;
-  PositionComponent? wrapper;
-  final wrapping = Vector2(40, 40);
+  SpaltiComponent? spaltiComponent;
+
+  final Vector2 padding = Vector2(40, 40);
 
   @override
-  Color backgroundColor() => Colors.grey.shade900;
+  Color backgroundColor() => Colors.lightGreen.shade800;
 
   @override
   void onGameResize(Vector2 size) {
     super.onGameResize(size);
-    if (wrapper != null) {
-      remove(wrapper!);
-      wrapper = null;
+    if (spaltiComponent != null) {
+      spaltiComponent!
+        ..position = padding
+        ..size = size;
     }
-
-    wrapper = PositionComponent()..position = wrapping;
-    wrapper!.add(SpaltiComponent.make(size: size, type: StadiumType.medium));
-    wrapper!.priority = -1;
-    add(wrapper!);
   }
 
   @override
@@ -47,9 +44,9 @@ class FootballGame extends FlameGame {
     await add(fieldComponent);
 
     // 🏟️ Spalti
-    wrapper = PositionComponent()..position = wrapping;
-    wrapper!.add(SpaltiComponent.make(size: size, type: StadiumType.medium));
-    await add(wrapper!);
+    spaltiComponent = SpaltiComponent.make(size: size, type: StadiumType.medium)
+      ..position = padding;
+    await add(spaltiComponent!);
 
     // ⚽ Palla
     final ballEntity = entityManager.createBall(
@@ -96,8 +93,7 @@ class FootballGame extends FlameGame {
       game: this,
       team: team,
     );
-    gameState.teams[id] = team; // 👈 aggiunto
-
+    gameState.teams[id] = team;
     return team;
   }
 
@@ -120,30 +116,14 @@ class FootballGame extends FlameGame {
         team: team.id,
         position: position,
       );
+
       final playerComponent = PlayerComponent(
         color: color,
         entity: playerEntity,
         game: game,
       );
+
       add(playerComponent);
-      add(CenterLineComponent(this));
     }
-  }
-}
-
-class CenterLineComponent extends Component {
-  final FootballGame gameRef;
-
-  CenterLineComponent(this.gameRef);
-  @override
-  void render(Canvas canvas) {
-    final paint = Paint()
-      ..color = Colors.red
-      ..strokeWidth = 2;
-
-    final screenSize = gameRef.size;
-    final y = screenSize.y / 2;
-
-    canvas.drawLine(Offset(0, y), Offset(screenSize.x, y), paint);
   }
 }

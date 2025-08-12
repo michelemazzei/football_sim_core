@@ -24,14 +24,38 @@ abstract class EntityController implements IEntityController {
   @override
   Vector2 getRenderPosition() => position;
 
-  /// Posizione assoluta, calcolata dalla posizione relativa ECS
   @override
   Vector2 get position {
     final relative =
         game.gameState.positionMap[entity]?.position ?? Vector2.zero();
-    final fieldPos = game.fieldComponent.position;
-    final offset = relative.clone()..multiply(gameSize);
-    return fieldPos + offset;
+    return getAbsolutePosition(
+      relative: relative,
+      fieldPosition: game.fieldComponent.position,
+      fieldSize: game.fieldComponent.size,
+      anchor: Anchor.center,
+    );
+  }
+
+  Vector2 getAbsolutePosition({
+    required Vector2 relative,
+    required Vector2 fieldPosition,
+    required Vector2 fieldSize,
+    required Anchor anchor,
+  }) {
+    final offset = relative.clone()..multiply(fieldSize);
+    final anchorOffset = switch (anchor) {
+      Anchor.center => Vector2.zero(),
+      Anchor.topLeft => Vector2.zero(),
+      Anchor.topRight => Vector2(fieldSize.x, 0),
+      Anchor.bottomLeft => Vector2(0, fieldSize.y),
+      Anchor.bottomRight => fieldSize,
+      Anchor.topCenter => Vector2(fieldSize.x / 2, 0),
+      Anchor.bottomCenter => Vector2(fieldSize.x / 2, fieldSize.y),
+      Anchor.centerLeft => Vector2(0, fieldSize.y / 2),
+      Anchor.centerRight => Vector2(fieldSize.x, fieldSize.y / 2),
+      Anchor() => Vector2.zero(),
+    };
+    return fieldPosition + offset - anchorOffset;
   }
 
   /// Velocità assoluta
