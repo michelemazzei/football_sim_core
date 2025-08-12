@@ -1,7 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:football_sim_core/ai/config/soccer_parameters.dart';
-import 'package:football_sim_core/ai/msg/message_receiver.dart';
+import 'package:football_sim_core/ai/fsm/messaging/message_receiver.dart';
 
 /// Tipo di decelerazione usata nel comportamento `arrive`.
 enum Deceleration { fast, normal, slow, none }

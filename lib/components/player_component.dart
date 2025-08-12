@@ -1,34 +1,50 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
-import 'package:football_sim_core/components/field_bound_component.dart';
+import 'package:football_sim_core/components/entity_component.dart';
 import 'package:football_sim_core/controllers/player_controller.dart';
+import 'package:football_sim_core/ecs/components/ecs_components.dart';
+import 'package:football_sim_core/ecs/components/player_number_component.dart';
+import 'package:football_sim_core/ecs/entities/entity.dart';
 import 'package:football_sim_core/game/football_game.dart';
-import 'package:football_sim_core/model/player_model.dart';
 
-class PlayerComponent
-    extends FieldBoundComponent<PlayerController, PlayerModel> {
+class PlayerComponent extends EntityComponent<PlayerController> {
+  final Entity entity;
   late TextPaint textPaint;
 
-  PlayerComponent({required FootballGame game, required PlayerModel model}) {
+  PlayerComponent({
+    required this.entity,
+    required FootballGame game,
+    required Color color,
+    required int number,
+  }) {
+    this.game = game;
     anchor = Anchor.center;
     sizeRatio = 0.012;
-    controller = PlayerController(model: model, game: game)..size = size;
+
+    controller = PlayerController(entity: entity, game: game);
 
     textPaint = TextPaint(
-      style: TextStyle(
-        fontSize: 12,
-        color: model.color,
-        fontWeight: FontWeight.bold,
-      ),
+      style: TextStyle(fontSize: 12, color: color, fontWeight: FontWeight.bold),
     );
+
+    // Registra la size nel GameState
+    final sizeComponent = entity.getComponent<SizeComponent>();
+    if (sizeComponent != null) {
+      sizeComponent.size = size;
+    } else {
+      entity.addComponent(SizeComponent(size));
+    }
+
+    game.gameState.sizeMap[entity] = entity.getComponent<SizeComponent>()!;
   }
+
   void drawPlayerCircle(
     Canvas canvas,
     Size fieldSize,
     Color color,
     String name,
   ) {
-    final double radius = fieldSize.width * sizeRatio; // proporzionale al campo
+    final double radius = fieldSize.width * sizeRatio;
 
     final Paint shadowPaint = Paint()..color = Colors.black.withAlpha(80);
     final Paint fillPaint = Paint()..color = color.withAlpha(180);
@@ -39,14 +55,10 @@ class PlayerComponent
 
     final Offset center = Offset(0, 0);
 
-    // Ombra
     canvas.drawCircle(center.translate(2, 2), radius, shadowPaint);
-
-    // Cerchio giocatore
     canvas.drawCircle(center, radius, fillPaint);
     canvas.drawCircle(center, radius, borderPaint);
 
-    // Colore adattivo per il testo
     final Color textColor = color.computeLuminance() > 0.6
         ? Colors.black
         : Colors.white;
@@ -79,11 +91,10 @@ class PlayerComponent
   @override
   void render(Canvas canvas) {
     super.render(canvas);
-    drawPlayerCircle(
-      canvas,
-      game.size.toSize(),
-      model.color,
-      model.number.toString(),
-    );
+
+    final color = textPaint.style.color ?? Colors.white;
+    final number = entity.getComponent<PlayerNumberComponent>()?.number ?? 0;
+
+    drawPlayerCircle(canvas, game.size.toSize(), color, number.toString());
   }
 }

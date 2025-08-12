@@ -1,6 +1,16 @@
-import 'package:football_sim_core/controllers/sprite_controller.dart';
-import 'package:football_sim_core/model/player_model.dart';
+import 'package:football_sim_core/controllers/entity_controller.dart';
 
-class PlayerController extends SpriteController<PlayerModel> {
-  PlayerController({required super.model, required super.game});
+class PlayerController extends EntityController {
+  PlayerController({
+    required super.entity,
+    required super.game,
+    super.friction,
+    super.maxSpeed,
+  });
+
+  @override
+  void handleCollision() {
+    // Per ora nessuna logica speciale
+    // In futuro: gestione bordo campo, tackle, ecc.
+  }
 }

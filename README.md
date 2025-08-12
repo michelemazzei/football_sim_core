@@ -79,8 +79,6 @@ Ti propongo 3 direzioni creative per continuare:
 
 Se vuoi, domani possiamo iniziare a implementare il primo comportamento AI o fare un test visivo con 2 giocatori che si muovono verso la palla. Oppure vuoi partire dal sistema di possesso? Dimmi tu, coach. 😄
 
-
-
 ### Problema riscontrato
 
 * La **linea di metà campo** veniva disegnata  **solo da sinistra fino a metà** , non centrata correttamente.
@@ -109,3 +107,53 @@ Quando torni:
 
 Ti basta scrivermi “riprendiamo dal problema del sizeRatio” e ci siamo. Ti tengo il posto caldo 😄
 Buona giornata e a presto!
+
+
+
+Certo Michele! Ecco un recap chiaro e ordinato di tutto quello che abbiamo fatto oggi, così domani puoi ripartire senza perdere il filo. ⚽🧠
+
+## 🧱 Refactoring ECS: Cosa abbiamo fatto
+
+### ✅ 1. **PlayerComponent**
+
+* Rifattorizzato per usare `Entity` e `PlayerController` ECS-based
+* Elimina `PlayerModel`, usa componenti come `PlayerNumberComponent`, `PlayerColorComponent`
+* Mantiene il rendering del cerchio giocatore con numero e colore
+
+### ✅ 2. **PlayerEntity**
+
+* Nuova classe `PlayerEntity` che crea un'entità con:
+  * Posizione iniziale
+  * Numero e colore
+  * Direzione, velocità, stato
+  * Riferimento al `FootballGame`
+* Pronto per essere usato nel campo e nei sistemi
+
+### ✅ 3. **Team ECS**
+
+* Rifattorizzato `Team` per usare `PlayerEntity` invece di `PlayerModel`
+* Aggiunge componenti `RoleComponent` e `TeamComponent` a ogni giocatore
+* Tiene una lista di `PlayerEntity` per ogni squadra
+
+## 🧩 Componenti ECS creati o suggeriti
+
+| Componente                 | Descrizione                               |
+| -------------------------- | ----------------------------------------- |
+| `PlayerNumberComponent`  | Numero maglia del giocatore               |
+| `PlayerColorComponent`   | Colore del giocatore                      |
+| `PositionComponent`      | Posizione sul campo                       |
+| `VelocityComponent`      | Velocità attuale                         |
+| `DirectionComponent`     | Direzione di movimento                    |
+| `StateComponent`         | Stato (idle, running, passing, ecc.)      |
+| `RoleComponent`          | Ruolo tattico (es. difensore, attaccante) |
+| `TeamComponent`          | ID della squadra                          |
+| `GameReferenceComponent` | Riferimento al `FootballGame`           |
+
+## 🔜 Prossimi passi (quando torni)
+
+* ✳️ Scrivere un `PlayerSystem` per aggiornare posizione e stato
+* ✳️ Eventualmente creare una classe `Match` con due `Team`
+* ✳️ Integrazione con `GameState` per gestire entità e componenti
+* ✳️ Animazioni o logica di movimento (passaggi, tiri, ecc.)
+
+Ti aspetto domani per continuare a costruire il tuo simulatore calcistico ECS-style. Buona serata e forza con il progetto! 💪⚽

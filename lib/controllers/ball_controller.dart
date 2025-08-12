@@ -1,6 +1,31 @@
-import 'package:football_sim_core/controllers/sprite_controller.dart';
-import 'package:football_sim_core/model/ball_model.dart';
+import 'dart:ui';
 
-class BallController extends SpriteController<BallModel> {
-  BallController({required super.model, required super.game});
+import 'package:football_sim_core/controllers/entity_controller.dart';
+
+class BallController extends EntityController {
+  final VoidCallback? onBallOutOfBounds;
+
+  BallController({
+    required super.entity,
+    required super.game,
+    super.friction,
+    super.maxSpeed,
+    this.onBallOutOfBounds,
+  });
+
+  @override
+  void handleCollision() {
+    final halfW = size.x / 2;
+    final halfH = size.y / 2;
+    final pos = position;
+
+    final outLeft = pos.x - halfW < 0;
+    final outRight = pos.x + halfW > gameSize.x;
+    final outTop = pos.y - halfH < 0;
+    final outBottom = pos.y + halfH > gameSize.y;
+
+    if (outLeft || outRight || outTop || outBottom) {
+      onBallOutOfBounds?.call();
+    }
+  }
 }

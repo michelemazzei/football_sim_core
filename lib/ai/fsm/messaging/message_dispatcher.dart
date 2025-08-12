@@ -1,8 +1,8 @@
 import 'dart:developer';
 
-import 'package:football_sim_core/ai/msg/message_receiver.dart';
-import 'package:football_sim_core/ai/msg/messages.dart';
-import 'package:football_sim_core/ai/msg/telegram.dart';
+import 'package:football_sim_core/ai/fsm/messaging/message_receiver.dart';
+import 'package:football_sim_core/ai/fsm/messaging/messages.dart';
+import 'package:football_sim_core/ai/fsm/messaging/telegram.dart';
 
 /// Gestisce l'invio dei messaggi tra agenti.
 /// Supporta messaggi immediati e ritardati.

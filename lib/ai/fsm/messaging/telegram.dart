@@ -1,5 +1,5 @@
-import 'package:football_sim_core/ai/msg/message_receiver.dart';
-import 'package:football_sim_core/ai/msg/messages.dart';
+import 'package:football_sim_core/ai/fsm/messaging/message_receiver.dart';
+import 'package:football_sim_core/ai/fsm/messaging/messages.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'telegram.freezed.dart';
