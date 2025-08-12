@@ -54,7 +54,6 @@ class FootballGame extends FlameGame {
     // ⚽ Palla
     final ballEntity = entityManager.createBall(
       position: Vector2(0.5, 0.5),
-      size: Vector2.all(0.05),
       onOutOfBounds: () {
         print('⚽ Palla fuori!');
       },
@@ -127,6 +126,24 @@ class FootballGame extends FlameGame {
         game: game,
       );
       add(playerComponent);
+      add(CenterLineComponent(this));
     }
+  }
+}
+
+class CenterLineComponent extends Component {
+  final FootballGame gameRef;
+
+  CenterLineComponent(this.gameRef);
+  @override
+  void render(Canvas canvas) {
+    final paint = Paint()
+      ..color = Colors.red
+      ..strokeWidth = 2;
+
+    final screenSize = gameRef.size;
+    final y = screenSize.y / 2;
+
+    canvas.drawLine(Offset(0, y), Offset(screenSize.x, y), paint);
   }
 }

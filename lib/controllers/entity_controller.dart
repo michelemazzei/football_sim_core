@@ -31,7 +31,7 @@ abstract class EntityController implements IEntityController {
         game.gameState.positionMap[entity]?.position ?? Vector2.zero();
     final fieldPos = game.fieldComponent.position;
     final offset = relative.clone()..multiply(gameSize);
-    return fieldPos + offset - size / 2;
+    return fieldPos + offset;
   }
 
   /// Velocità assoluta

@@ -74,7 +74,7 @@ class EntityManager {
   // Esempio: crea palla
   BallEntity createBall({
     required Vector2 position,
-    required Vector2 size,
+
     required VoidCallback onOutOfBounds,
   }) {
     final ballEntity = BallEntity(generateEntityId(), position);
