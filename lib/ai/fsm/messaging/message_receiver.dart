@@ -2,7 +2,7 @@ import 'package:football_sim_core/ai/fsm/messaging/telegram.dart';
 
 /// Classe base per entità che possono ricevere messaggi.
 mixin MessageReceiver {
-  String get uuid;
+  int get id;
 
   // MessageReceiver(this.uuid);
 

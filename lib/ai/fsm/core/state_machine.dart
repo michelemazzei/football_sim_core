@@ -1,11 +1,11 @@
-import 'package:football_sim_core/ai/fsm/core/state.dart';
+import 'package:football_sim_core/ai/fsm/core/game_state.dart';
 import 'package:football_sim_core/ai/fsm/messaging/telegram.dart';
 
 class StateMachine<EntityType> {
   final EntityType owner;
-  State<EntityType>? currentState;
-  State<EntityType>? previousState;
-  State<EntityType>? globalState;
+  GameState<EntityType>? currentState;
+  GameState<EntityType>? previousState;
+  GameState<EntityType>? globalState;
 
   StateMachine(this.owner, {this.currentState, this.globalState});
 
@@ -18,7 +18,7 @@ class StateMachine<EntityType> {
       (currentState?.onMessage(owner, telegram) ?? false) ||
       (globalState?.onMessage(owner, telegram) ?? false);
 
-  void changeState(State<EntityType>? newState) {
+  void changeState(GameState<EntityType>? newState) {
     previousState = currentState;
     currentState?.exit(owner);
     currentState = newState;
@@ -29,6 +29,6 @@ class StateMachine<EntityType> {
     changeState(previousState);
   }
 
-  bool isInState(State<EntityType> state) =>
+  bool isInState(GameState<EntityType> state) =>
       currentState?.toString() == state.toString();
 }

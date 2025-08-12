@@ -28,6 +28,6 @@ abstract class Telegram with _$Telegram {
 
   @override
   String toString() {
-    return 'Telegram(sender: ${sender.uuid}, receiver: ${receiver.uuid}, message: $message, messageTime: $messageTime)';
+    return 'Telegram(sender: ${sender.id}, receiver: ${receiver.id}, message: $message, messageTime: $messageTime)';
   }
 }

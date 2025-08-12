@@ -1,4 +1,4 @@
-import 'package:football_sim_core/ai/fsm/core/state.dart';
+import 'package:football_sim_core/ai/fsm/core/game_state.dart';
 import 'package:football_sim_core/ai/fsm/core/state_machine.dart';
 import 'package:football_sim_core/ai/fsm/messaging/telegram.dart';
 
@@ -15,9 +15,9 @@ abstract class Fsm<T> {
     return _fsm.handleMessage(telegram);
   }
 
-  void changeState(State<T> newState) {
+  void changeState(GameState<T> newState) {
     _fsm.changeState(newState);
   }
 
-  State<T>? get currentState => _fsm.currentState;
+  GameState<T>? get currentState => _fsm.currentState;
 }

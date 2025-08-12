@@ -1,9 +1,9 @@
 import 'package:football_sim_core/ai/fsm/messaging/message_dispatcher.dart';
 import 'package:football_sim_core/ai/fsm/messaging/telegram.dart';
 
-abstract class State<EntityType> {
+abstract class GameState<EntityType> {
   final MessageDispatcher dispatcher;
-  State() : dispatcher = MessageDispatcher();
+  GameState() : dispatcher = MessageDispatcher();
   void enter(EntityType entity);
   void execute(EntityType entity);
   void exit(EntityType entity);
