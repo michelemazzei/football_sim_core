@@ -6,8 +6,13 @@ import 'package:football_sim_core/ecs/components/game_reference_component.dart';
 import 'package:football_sim_core/ecs/components/player_color_component.dart';
 import 'package:football_sim_core/ecs/components/player_number_component.dart';
 import 'package:football_sim_core/ecs/components/player_state_component.dart';
+import 'package:football_sim_core/ecs/components/role_component.dart';
+import 'package:football_sim_core/ecs/components/team_component.dart';
 import 'package:football_sim_core/ecs/entities/entity.dart';
+import 'package:football_sim_core/ecs/entities/team_id.dart';
 import 'package:football_sim_core/game/football_game.dart';
+import 'package:football_sim_core/model/player_role.dart';
+import 'package:football_sim_core/model/team.dart';
 
 class PlayerEntity extends Entity {
   final int number;
@@ -18,25 +23,18 @@ class PlayerEntity extends Entity {
     required this.number,
     required this.color,
     required FootballGame game,
+    required PlayerRole role,
+    required TeamId team,
     Vector2? initialPosition,
   }) {
-    // Posizione iniziale
     addComponent(EntityPositionComponent(initialPosition ?? Vector2.zero()));
-
-    // Colore del giocatore
     addComponent(PlayerColorComponent(color));
-
-    // Numero del giocatore
     addComponent(PlayerNumberComponent(number));
-
-    // Velocità e direzione iniziali
     addComponent(VelocityComponent(Vector2.zero()));
     addComponent(DirectionComponent(Vector2.zero()));
-
-    // Stato del giocatore (es. idle, running, passing)
     addComponent(PlayerStateComponent(PlayerState.idle));
-
-    // Riferimento al gioco
     addComponent(GameReferenceComponent(game));
+    addComponent(RoleComponent(role));
+    addComponent(TeamComponent(Team(id: team, color: color)));
   }
 }

@@ -92,6 +92,8 @@ class BallComponent extends EntityComponent<BallController> {
   void update(double dt) {
     super.update(dt);
     controller.update(dt);
+    // 🔁 sincronizza posizione visiva
+    position = controller.getRenderPosition();
   }
 
   @override

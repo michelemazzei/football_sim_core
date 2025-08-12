@@ -15,7 +15,6 @@ class PlayerComponent extends EntityComponent<PlayerController> {
     required this.entity,
     required FootballGame game,
     required Color color,
-    required int number,
   }) {
     this.game = game;
     anchor = Anchor.center;

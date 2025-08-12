@@ -8,6 +8,8 @@ class Entity {
     _components[T] = component;
   }
 
+  Iterable get components => _components.values;
+
   T? getComponent<T>() {
     return _components[T] as T?;
   }
