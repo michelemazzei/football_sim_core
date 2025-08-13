@@ -1,4 +1,4 @@
-export 'ball_component_data.dart';
+export 'ecs_ball_component.dart';
 export 'movement_config_component.dart';
 export 'entity_position_component.dart';
 export 'size_component.dart';

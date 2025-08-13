@@ -1,30 +1,59 @@
-import 'package:flame/game.dart';
-import 'package:football_sim_core/ecs/entities/entity.dart';
-import 'package:football_sim_core/game/football_game.dart';
-import 'package:football_sim_core/ecs/systems/position_system.dart';
-import 'package:football_sim_core/model/game_state.dart';
+// lib/systems/ball_boundary_system.dart
 
-class BallBoundarySystem {
-  GameState get world => game.gameState;
+import 'package:flame/components.dart';
+import 'package:football_sim_core/ecs/components/ball_logic_component.dart';
+import 'package:football_sim_core/ecs/components/ecs_components.dart';
+import 'package:football_sim_core/ecs/components/ecs_position_component.dart';
+
+import 'package:football_sim_core/ecs/ecs_system.dart';
+import 'package:football_sim_core/ecs/ecs_world.dart';
+
+import 'package:football_sim_core/game/football_game.dart';
+
+/// Controlla se la palla esce dal campo e, in tal caso, chiama
+/// il callback onOutOfBounds sul suo BallLogicComponent.
+class BallBoundarySystem extends EcsSystem {
+  final EcsWorld world;
   final FootballGame game;
 
-  BallBoundarySystem(this.game);
+  BallBoundarySystem(this.world, this.game);
 
-  void checkBounds(Entity id) {
-    final posSystem = PositionSystem(game);
-    final pos = posSystem.getAbsolutePosition(id);
-    final size = world.sizeMap[id]?.size ?? Vector2.all(32);
-    final halfW = size.x / 2;
-    final halfH = size.y / 2;
+  @override
+  void update(double dt) {
+    final fieldPos = game.fieldComponent.position;
     final fieldSize = game.fieldComponent.size;
+    final leftBound = fieldPos.x;
+    final rightBound = fieldPos.x + fieldSize.x;
+    final topBound = fieldPos.y;
+    final bottomBound = fieldPos.y + fieldSize.y;
 
-    final outLeft = pos.x - halfW < 0;
-    final outRight = pos.x + halfW > fieldSize.x;
-    final outTop = pos.y - halfH < 0;
-    final outBottom = pos.y + halfH > fieldSize.y;
+    // Filtra solo le entità che hanno un BallLogicComponent
+    for (final e in world.entitiesWith<BallLogicComponent>()) {
+      final posComp = e.getComponent<EcsPositionComponent>();
+      final sizeComp = e.getComponent<SizeComponent>();
+      final logicComp = e.getComponent<BallLogicComponent>()!;
 
-    if (outLeft || outRight || outTop || outBottom) {
-      world.ballLogicMap[id]?.onOutOfBounds?.call();
+      if (posComp == null) continue;
+
+      // Calcola posizione assoluta (campo + percentuale)
+      final absX = fieldPos.x + posComp.x * fieldSize.x;
+      final absY = fieldPos.y + posComp.y * fieldSize.y;
+      final absolute = Vector2(absX, absY);
+
+      // Determina la mezza dimensione (per l’anchor center)
+
+      final Vector2 size = sizeComp?.size ?? Vector2.all(32);
+      final halfSize = size / 2;
+
+      // Verifica fuori campo
+      final outLeft = absolute.x - halfSize.x < leftBound;
+      final outRight = absolute.x + halfSize.x > rightBound;
+      final outTop = absolute.y - halfSize.y < topBound;
+      final outBottom = absolute.y + halfSize.y > bottomBound;
+
+      if (outLeft || outRight || outTop || outBottom) {
+        logicComp.onOutOfBounds();
+      }
     }
   }
 }

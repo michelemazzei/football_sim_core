@@ -225,3 +225,26 @@ Visto che hai già una base ECS e FSM ben strutturata, ecco qualche idea per evo
 Oppure possiamo partire dal sistema di possesso palla, che è il cuore di ogni simulazione calcistica. Tu decidi il prossimo passo, io sono pronto a scendere in campo con te. 😄
 
 Vuoi che iniziamo a scrivere uno di questi sistemi insieme?
+
+
+ La prossima volta, procediamo  **tassello per tassello** , verificando che ogni file compili e ogni test passi prima di andare avanti.
+
+Prima di salutarci, ecco come possiamo ripartire, passo dopo passo:
+
+1. Backup del progetto attuale (copia la cartella).
+2. Rimuovi `GameState` e `GameStateRegistrable`.
+3. Introduci `EcsComponent`, `EcsEntity`, `EcsWorld`, `EcsSystem`.
+4. Rifattorizza un componente per volta:
+   * `PositionComponent` → estende `EcsComponent`.
+   * Verifica che compili.
+5. Aggiungi `MovementSystem` e registra in `FootballGame`.
+   * Verifica che mova un’entità di test.
+6. Rifattorizza `VelocityComponent`, poi `SizeComponent`.
+7. Aggiungi `PositionSystem` e registra, verifica rendering.
+8. Crea `BallComponent` + `FsmComponent`, registra `FsmSystem`.
+9. Implementa un semplice stato FSM, testa le transizioni.
+10. Aggiungi `CommandSystem`, `BallSystem`, `BallBoundarySystem`.
+
+Così ogni singolo step è **autonomo** e testato prima di passare al successivo. La prossima volta lavoriamo in questa modalità “pausa e verifica” per evitare di accumulare troppi errori.
+
+Buon lavoro sul refactoring, e alla prossima riprendiamo da dove ti sei fermato, un file alla volta!

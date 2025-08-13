@@ -1,33 +1,46 @@
-import 'package:flame/game.dart';
-import 'package:football_sim_core/ecs/entities/entity.dart';
+// lib/systems/position_system.dart
+
+import 'package:flame/components.dart';
+import 'package:football_sim_core/ecs/components/ecs_components.dart';
+import 'package:football_sim_core/ecs/components/ecs_position_component.dart';
+import 'package:football_sim_core/ecs/components/render_component.dart';
+import 'package:football_sim_core/ecs/ecs_system.dart';
+import 'package:football_sim_core/ecs/ecs_world.dart';
+
 import 'package:football_sim_core/game/football_game.dart';
-import 'package:football_sim_core/model/game_state.dart';
 
-class PositionSystem {
-  GameState get world => game.gameState;
-
+class PositionSystem extends EcsSystem {
+  final EcsWorld world;
   final FootballGame game;
 
-  PositionSystem(this.game);
+  PositionSystem(this.world, this.game);
 
-  Vector2 getAbsolutePosition(Entity id) {
-    final relPos = world.positionMap[id]?.position ?? Vector2.zero();
-    final size = world.sizeMap[id]?.size ?? Vector2.all(32);
-    final fieldSize = game.fieldComponent.size;
+  @override
+  void update(double dt) {
+    // Pre-lettura di campo e dimensioni
     final fieldPos = game.fieldComponent.position;
-
-    final offset = relPos.clone()..multiply(fieldSize);
-    return fieldPos + offset - size / 2;
-  }
-
-  Vector2 getRelativeVelocity(Entity id) {
-    final vel = world.velocityMap[id]?.velocity ?? Vector2.zero();
     final fieldSize = game.fieldComponent.size;
-    return vel.clone()..divide(fieldSize);
-  }
 
-  void setRelativeVelocity(Entity id, Vector2 v) {
-    final fieldSize = game.fieldComponent.size;
-    world.velocityMap[id]?.velocity = v.clone()..multiply(fieldSize);
+    // Per ogni entità che ha sia PositionComponent che RenderComponent
+    for (final e in world.entitiesWith<EcsPositionComponent>()) {
+      final posComp = e.getComponent<EcsPositionComponent>()!;
+      final renderComp = e.getComponent<RenderComponent>();
+      if (renderComp == null) continue;
+
+      // Coordinate assolute sul campo
+      final absX = fieldPos.x + posComp.x * fieldSize.x;
+      final absY = fieldPos.y + posComp.y * fieldSize.y;
+      final absolute = Vector2(absX, absY);
+
+      // Se c’è un SizeComponent, centriamo l’anchor
+      final sizeComp = e.getComponent<SizeComponent>();
+      if (sizeComp != null) {
+        absolute.x -= sizeComp.width / 2;
+        absolute.y -= sizeComp.height / 2;
+      }
+
+      // Applica al Positionable di Flame
+      renderComp.component.position = absolute;
+    }
   }
 }

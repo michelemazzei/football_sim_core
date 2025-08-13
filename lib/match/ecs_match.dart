@@ -9,20 +9,22 @@ class EcsMatch {
   double deltaTime = 0.0;
 
   /// Riferimento alla FSM (opzionale, utile per transizioni)
-  late MatchFSM fsm;
+  late final MatchFSM _fsm;
 
   /// Squadre (puoi definire una classe `Team`)
-  Team? teamA;
-  Team? teamB;
-
-  /// Stato del punteggio
-  int scoreA = 0;
-  int scoreB = 0;
+  final Team teamA;
+  final Team teamB;
 
   /// Eventi di gioco (es. goal, fallo, ecc.)
   final List<String> events = [];
 
-  EcsMatch({this.teamA, this.teamB});
+  EcsMatch({required this.teamA, required this.teamB, MatchFSM? fsm}) {
+    // Inizializza la FSM se non è stata passata
+    fsm ??= MatchFSM(this);
+    _fsm = fsm;
+  }
+
+  MatchFSM get fsm => _fsm;
 
   /// Metodo da chiamare ogni frame per aggiornare il tempo
   void update(double dt) {

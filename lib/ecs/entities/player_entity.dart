@@ -8,13 +8,13 @@ import 'package:football_sim_core/ecs/components/player_number_component.dart';
 import 'package:football_sim_core/ecs/components/player_state_component.dart';
 import 'package:football_sim_core/ecs/components/role_component.dart';
 import 'package:football_sim_core/ecs/components/team_component.dart';
-import 'package:football_sim_core/ecs/entities/entity.dart';
+import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 import 'package:football_sim_core/ecs/entities/team_id.dart';
 import 'package:football_sim_core/game/football_game.dart';
 import 'package:football_sim_core/model/player_role.dart';
 import 'package:football_sim_core/model/team.dart';
 
-class PlayerEntity extends Entity {
+class PlayerEntity extends EcsEntity {
   final int number;
   final Color color;
 

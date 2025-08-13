@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:football_sim_core/components/ball_trail.dart';
@@ -31,10 +32,8 @@ class BallComponent extends EntityComponent<BallController> {
     if (sizeComponent != null) {
       sizeComponent.size = size;
     } else {
-      entity.addComponent(SizeComponent(size));
+      entity.addComponent(SizeComponent(height: size.y, width: size.x));
     }
-
-    game.gameState.sizeMap[entity] = entity.getComponent<SizeComponent>()!;
   }
 
   @override

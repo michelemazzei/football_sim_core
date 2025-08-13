@@ -33,8 +33,6 @@ class PlayerComponent extends EntityComponent<PlayerController> {
     } else {
       entity.addComponent(SizeComponent(size));
     }
-
-    game.gameState.sizeMap[entity] = entity.getComponent<SizeComponent>()!;
   }
 
   void drawPlayerCircle(

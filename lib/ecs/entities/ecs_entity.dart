@@ -1,6 +1,8 @@
 import 'package:football_sim_core/ecs/components/ecs_component.dart';
 
 class EcsEntity {
+  final int id;
+  EcsEntity(this.id);
   final Map<Type, EcsComponent> _components = {};
 
   void addComponent(EcsComponent component) {

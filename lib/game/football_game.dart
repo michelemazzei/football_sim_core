@@ -1,28 +1,27 @@
-import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:football_sim_core/ai/fsm/components/fsm_component.dart';
-import 'package:football_sim_core/components/player_component.dart';
 import 'package:football_sim_core/components/spalti_component.dart';
-import 'package:football_sim_core/ecs/ecs_entity.dart';
-import 'package:football_sim_core/ecs/ecs_world.dart';
-import 'package:football_sim_core/ecs/entities/entity_manager.dart';
-import 'package:football_sim_core/ecs/entities/team_id.dart';
-import 'package:football_sim_core/ecs/systems/fsm_system.dart';
-import 'package:football_sim_core/match/ecs_match.dart';
+import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/components/match_component.dart';
-import 'package:football_sim_core/match/match_fsm.dart';
-import 'package:football_sim_core/model/formation.dart';
-import 'package:football_sim_core/model/game_state.dart';
+import 'package:football_sim_core/ecs/components/render_component.dart';
+import 'package:football_sim_core/ecs/ecs_world.dart';
+import 'package:football_sim_core/ecs/entities/ball_entity.dart';
+import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
+import 'package:football_sim_core/ecs/entities/team_id.dart';
+import 'package:football_sim_core/ecs/systems/command_system.dart';
+import 'package:football_sim_core/ecs/systems/fsm_system.dart';
+import 'package:football_sim_core/ecs/systems/movement_system.dart';
+import 'package:football_sim_core/ecs/systems/position_system.dart';
+import 'package:football_sim_core/match/ecs_match.dart';
 import 'package:football_sim_core/model/team.dart';
 
 import '../components/ball_component.dart';
 import '../components/field_component.dart';
 
 class FootballGame extends FlameGame {
-  late GameState gameState;
   late final EcsWorld ecsWorld;
-  late EntityManager entityManager;
+  late final PositionSystem positionSystem;
   late FieldComponent fieldComponent;
   late BallComponent ballComponent;
   SpaltiComponent? spaltiComponent;
@@ -44,9 +43,6 @@ class FootballGame extends FlameGame {
 
   @override
   Future<void> onLoad() async {
-    gameState = GameState();
-    entityManager = EntityManager(gameState);
-
     // 🟩 Campo
     fieldComponent = FieldComponent();
     await add(fieldComponent);
@@ -56,106 +52,66 @@ class FootballGame extends FlameGame {
       ..position = padding;
     await add(spaltiComponent!);
 
+    // ECS Sybsystem
+    ecsWorld = EcsWorld();
+    // 1) costruisci e registra PositionSystem
+    positionSystem = PositionSystem(ecsWorld, this);
+    ballSystem = BallSystem(world, this, positionSystem);
+    // 1) Registra sistemi
+    ecsWorld.addSystem(FsmSystem(ecsWorld));
+    ecsWorld.addSystem(CommandSystem(ecsWorld));
+    ecsWorld.addSystem(MovementSystem(ecsWorld));
+    ecsWorld.addSystem(positionSystem);
     // ⚽ Palla
-    final ballEntity = entityManager.createBall(
-      position: Vector2(0.5, 0.5),
-      onOutOfBounds: () {
-        print('⚽ Palla fuori!');
-      },
-    );
+    // 2) Crea la palla
+    final ballEntity = BallEntity(ecsWorld.genId(), Vector2.zero());
+
+    ecsWorld.addEntity(ballEntity);
 
     ballComponent = BallComponent(
       entity: ballEntity,
       game: this,
       maxSpeed: 800,
     );
+    ballEntity.addComponent(RenderComponent(ballComponent));
+
     await add(ballComponent);
 
     // 🔵 Squadre
-    final teamRed = _createTeam(
-      id: TeamId.red,
-      color: TeamId.red.color,
-      formation: formation442,
-      isLeftSide: true,
-    );
+    final teamRed = _createTeam(id: TeamId.red, color: TeamId.red.color);
 
-    final teamBlue = _createTeam(
-      id: TeamId.blue,
-      color: TeamId.blue.color,
-      formation: formation442,
-      isLeftSide: false,
-    );
+    final teamBlue = _createTeam(id: TeamId.blue, color: TeamId.blue.color);
 
     ecsWorld = EcsWorld();
 
     // 1. Crea la partita
-    final match = EcsMatch();
-    match.fsm = MatchFSM(match);
+    final match = EcsMatch(teamA: teamRed, teamB: teamBlue);
 
     // 2. Crea l'entità
-    final matchEntity = EcsEntity()
+    final matchEntity = EcsEntity(ecsWorld.genId())
       ..addComponent(MatchComponent(match))
       ..addComponent(FsmComponent<EcsMatch>(match.fsm));
 
     // 3. Registra nel mondo
     ecsWorld.addEntity(matchEntity);
     ecsWorld.addSystem(FsmSystem(ecsWorld));
-
-    print('Match inizializzato!');
   }
 
-  Team _createTeam({
-    required TeamId id,
-    required Color color,
-    required Formation formation,
-    required bool isLeftSide,
-  }) {
+  Team _createTeam({required TeamId id, required Color color}) {
     final team = Team(id: id, color: color);
-    _createPlayers(
-      formation: formation,
-      color: color,
-      isLeftSide: isLeftSide,
-      game: this,
-      team: team,
-    );
-    gameState.teams[id] = team;
+
     return team;
-  }
-
-  void _createPlayers({
-    required Formation formation,
-    required bool isLeftSide,
-    required Color color,
-    required FootballGame game,
-    required Team team,
-  }) {
-    for (int i = 0; i < 11; i++) {
-      final position = formation.getPosition(i, isLeftSide);
-      final role = formation.getRole(i);
-
-      final playerEntity = entityManager.createPlayer(
-        number: i + 1,
-        color: color,
-        game: game,
-        role: role,
-        team: team.id,
-        position: position,
-      );
-
-      final playerComponent = PlayerComponent(
-        color: color,
-        entity: playerEntity,
-        game: game,
-      );
-
-      add(playerComponent);
-    }
   }
 
   @override
   void update(double dt) {
     super.update(dt);
     ecsWorld.update(dt);
+
+    final ballEnt = ecsWorld.entitiesWith<EcsBallComponent>().firstOrNull;
+    if (ballEnt != null) {
+      ballEnt.getComponent<EcsBallComponent>()!.onPostUpdate(ballEnt, this, dt);
+    }
 
     final matchEntity = ecsWorld
         .entitiesWith<FsmComponent<Match>>()
@@ -164,7 +120,8 @@ class FootballGame extends FlameGame {
         ?.getComponent<FsmComponent<Match>>()
         ?.currentState
         ?.runtimeType;
-
-    print('Stato corrente: $currentState');
+    if (currentState != null) {
+      print('Stato corrente: $currentState');
+    }
   }
 }

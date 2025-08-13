@@ -1,47 +1,39 @@
 import 'package:flame/game.dart';
-import 'package:football_sim_core/game/football_game.dart';
-import 'package:football_sim_core/model/game_state.dart';
+import 'package:football_sim_core/ecs/components/ecs_components.dart';
+import 'package:football_sim_core/ecs/components/ecs_position_component.dart';
+import 'package:football_sim_core/ecs/ecs_system.dart';
+import 'package:football_sim_core/ecs/ecs_world.dart';
 
-class MovementSystem {
-  GameState get world => game.gameState;
-  final FootballGame game;
+class MovementSystem extends EcsSystem {
+  final EcsWorld world;
+  MovementSystem(this.world);
 
-  MovementSystem(this.game);
-
+  @override
   void update(double dt) {
-    for (final entity in world.velocityMap.keys) {
-      final velComp = world.velocityMap[entity]!;
-      final posComp = world.positionMap[entity];
-      final config = world.movementConfigMap[entity];
+    // Cicla su tutte le entità che hanno VelocityComponent
+    for (final e in world.entitiesWith<VelocityComponent>()) {
+      final velComp = e.getComponent<VelocityComponent>()!;
+      final posComp = e.getComponent<EcsPositionComponent>();
+      final cfgComp = e.getComponent<MovementConfigComponent>();
 
-      if (config != null) {
-        velComp.velocity = _applyFriction(
-          velComp.velocity,
-          config.frictionFactor,
-        );
-        velComp.velocity = _clampSpeed(
-          velComp.velocity,
-          config.minVelocity,
-          config.maxVelocity,
-        );
+      // Applica attrito e clamp
+      if (cfgComp != null) {
+        velComp.velocity *= cfgComp.frictionFactor;
+
+        final speed = velComp.velocity.length;
+        if (speed > cfgComp.maxVelocity) {
+          velComp.velocity =
+              velComp.velocity.normalized() * cfgComp.maxVelocity;
+        } else if (speed < cfgComp.minVelocity) {
+          velComp.velocity = Vector2.zero();
+        }
       }
+
+      // Muovi la posizione
       if (posComp != null) {
-        posComp.position += velComp.velocity * dt;
+        posComp.x += velComp.velocity.x * dt;
+        posComp.y += velComp.velocity.y * dt;
       }
     }
-  }
-
-  // Non usiamo più update qui, lo spostiamo nel controller
-  Vector2 _applyFriction(Vector2 velocity, double factor) => velocity *= factor;
-
-  Vector2 _clampSpeed(Vector2 velocity, double minSpeed, double maxSpeed) {
-    Vector2 result = velocity.clone();
-    if (velocity.length > maxSpeed) {
-      result = velocity.normalized() * maxSpeed;
-    }
-    if (velocity.length2 < minSpeed) {
-      result = Vector2.zero(); //
-    }
-    return result;
   }
 }
