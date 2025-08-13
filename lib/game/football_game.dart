@@ -1,10 +1,17 @@
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:football_sim_core/ai/fsm/components/fsm_component.dart';
 import 'package:football_sim_core/components/player_component.dart';
 import 'package:football_sim_core/components/spalti_component.dart';
+import 'package:football_sim_core/ecs/ecs_entity.dart';
+import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/entity_manager.dart';
 import 'package:football_sim_core/ecs/entities/team_id.dart';
+import 'package:football_sim_core/ecs/systems/fsm_system.dart';
+import 'package:football_sim_core/match/ecs_match.dart';
+import 'package:football_sim_core/ecs/components/match_component.dart';
+import 'package:football_sim_core/match/match_fsm.dart';
 import 'package:football_sim_core/model/formation.dart';
 import 'package:football_sim_core/model/game_state.dart';
 import 'package:football_sim_core/model/team.dart';
@@ -14,6 +21,7 @@ import '../components/field_component.dart';
 
 class FootballGame extends FlameGame {
   late GameState gameState;
+  late final EcsWorld ecsWorld;
   late EntityManager entityManager;
   late FieldComponent fieldComponent;
   late BallComponent ballComponent;
@@ -77,6 +85,23 @@ class FootballGame extends FlameGame {
       formation: formation442,
       isLeftSide: false,
     );
+
+    ecsWorld = EcsWorld();
+
+    // 1. Crea la partita
+    final match = EcsMatch();
+    match.fsm = MatchFSM(match);
+
+    // 2. Crea l'entità
+    final matchEntity = EcsEntity()
+      ..addComponent(MatchComponent(match))
+      ..addComponent(FsmComponent<EcsMatch>(match.fsm));
+
+    // 3. Registra nel mondo
+    ecsWorld.addEntity(matchEntity);
+    ecsWorld.addSystem(FsmSystem(ecsWorld));
+
+    print('Match inizializzato!');
   }
 
   Team _createTeam({
@@ -125,5 +150,21 @@ class FootballGame extends FlameGame {
 
       add(playerComponent);
     }
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+    ecsWorld.update(dt);
+
+    final matchEntity = ecsWorld
+        .entitiesWith<FsmComponent<Match>>()
+        .firstOrNull;
+    final currentState = matchEntity
+        ?.getComponent<FsmComponent<Match>>()
+        ?.currentState
+        ?.runtimeType;
+
+    print('Stato corrente: $currentState');
   }
 }

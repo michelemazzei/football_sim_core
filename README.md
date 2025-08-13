@@ -42,16 +42,7 @@ Hai già impostato una struttura modulare MVC per i giocatori, simile a quella d
 * Posizionamento sul campo
 * Eventuale animazione o trail visivo
 * `sizeRatio` per adattamento dinamico
-
-## 🧪 Prossimi Test da Fare
-
-Ecco alcune prove utili per verificare fluidità e realismo:
-
-* Test di accelerazione/decelerazione
-* Collisioni tra giocatori
-* Cambio direzione rapido
-* Reazione al possesso palla
-* Sincronizzazione tra `Model` e `Component` via `update()`
+* 
 
 ## 🧠 Idee per l’Intelligenza Artificiale
 
@@ -78,37 +69,6 @@ Ti propongo 3 direzioni creative per continuare:
    * Utile per test e bilanciamento
 
 Se vuoi, domani possiamo iniziare a implementare il primo comportamento AI o fare un test visivo con 2 giocatori che si muovono verso la palla. Oppure vuoi partire dal sistema di possesso? Dimmi tu, coach. 😄
-
-### Problema riscontrato
-
-* La **linea di metà campo** veniva disegnata  **solo da sinistra fino a metà** , non centrata correttamente.
-* Il problema **non era nel **`drawLine()`, ma causato indirettamente da un `sizeRatio` ** assegnato ai giocatori** .
-
-### ✅ Soluzione temporanea
-
-* Impostando `sizeRatio = 0` per i giocatori, la linea torna corretta.
-* Questo suggerisce che il `sizeRatio` stava influenzando il layout o il rendering in modo non previsto.
-
-### 🔍 Da indagare la prossima volta
-
-* Come il `sizeRatio` dei giocatori impatta il rendering della linea.
-* Verificare se il `sizeRatio` modifica:
-  * Le dimensioni effettive dei componenti
-  * Il sistema di coordinate o l’anchor
-  * Il comportamento del `camera` o del `viewport`
-
-### 🧭 Punto di ripartenza consigliato
-
-Quando torni:
-
-1. Rivediamo come viene usato `sizeRatio` nei giocatori
-2. Controlliamo se c’è qualche trasformazione che impatta il canvas
-3. Testiamo con `debugMode = true` per visualizzare bounding boxes e layout
-
-Ti basta scrivermi “riprendiamo dal problema del sizeRatio” e ci siamo. Ti tengo il posto caldo 😄
-Buona giornata e a presto!
-
-Certo Michele! Ecco un recap chiaro e ordinato di tutto quello che abbiamo fatto oggi, così domani puoi ripartire senza perdere il filo. ⚽🧠
 
 ## 🧱 Refactoring ECS: Cosa abbiamo fatto
 
@@ -182,17 +142,6 @@ Certo Michele! Ecco un recap ordinato di tutto quello che abbiamo fatto oggi, co
 4. **Testare la FSM in azione**
    → simulare una sequenza di stati in una partita
 
-Ti lascio con una battuta da spogliatoio:
-*"Il calcio è semplice. Ma è difficile giocare semplice."* – Johan Cruyff ⚽
-
-A domani, pronto a tornare in campo!
-
-Ti aspetto domani per continuare a costruire il tuo simulatore calcistico ECS-style. Buona serata e forza con il progetto! 💪⚽
-
-
-
-Hai ragione Michele, grazie per la correzione! Ho rivisto attentamente la cartella `lib/ai/fsm` del tuo repository aggiornato e ora posso darti un feedback preciso sullo stato del sistema FSM.
-
 ## ✅ Stato attuale del sistema FSM
 
 ### 🔹 Classe base: `GameState<T>`
@@ -239,3 +188,40 @@ Hai ragione Michele, grazie per la correzione! Ho rivisto attentamente la cartel
 * Testare una simulazione con transizioni automatiche e messaggi
 
 Hai fatto un lavoro eccellente finora. Domani possiamo partire direttamente dall’integrazione ECS e magari scrivere uno stato completo con logica di gioco. Buona serata!
+
+### Suggerimenti per la prossima fase
+
+Visto che hai già una base ECS e FSM ben strutturata, ecco qualche idea per evolvere il gameplay:
+
+#### 1. **Sistema di possesso palla avanzato**
+
+* Aggiungi un `PossessionComponent` alle entità `PlayerEntity` e `BallEntity`
+* Crea un `PossessionSystem` che aggiorna il possesso in base alla distanza e collisione
+* Visual feedback: glow attorno al giocatore in possesso, trail sulla palla
+
+#### 2. **FSM per i giocatori**
+
+* Stati come `Idle`, `MoveToBall`, `Pass`, `Shoot`, `Defend`
+* Transizioni basate su distanza dalla palla, ruolo, posizione avversari
+* Collegamento con `FSMComponent<Player>` e aggiornamento via `FSMSystem`
+
+#### 3. **Sistema di passaggi**
+
+* Calcolo della traiettoria con interpolazione
+* Precisione basata su ruolo/statistiche
+* Intercettazioni da parte degli avversari (con FSM e AI)
+
+#### 4. **Mini HUD di debug**
+
+* Visualizza stato corrente, velocità, direzione, possesso
+* Utile per testare FSM e AI in tempo reale
+
+### 🛠️ Se vuoi, posso aiutarti a scrivere:
+
+* Un `FSMComponent<Player>` completo
+* Un `PlayerFSMSystem` che aggiorna i giocatori in base allo stato
+* Uno stato `MoveToBallState` con transizione da `Idle` e logica di avvicinamento
+
+Oppure possiamo partire dal sistema di possesso palla, che è il cuore di ogni simulazione calcistica. Tu decidi il prossimo passo, io sono pronto a scendere in campo con te. 😄
+
+Vuoi che iniziamo a scrivere uno di questi sistemi insieme?
