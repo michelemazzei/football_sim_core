@@ -4,7 +4,7 @@ import 'package:football_sim_core/ecs/states/ecs_states.dart';
 
 class BallFSM extends Fsm<Ball> {
   BallFSM(super.owner) {
-    changeState(IdleState());
-    fsm.globalState = GlobalBallState();
+    // changeState(IdleState());
+    // fsm.globalState = GlobalBallState();
   }
 }

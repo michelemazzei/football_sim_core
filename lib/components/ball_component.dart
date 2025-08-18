@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
-import 'package:football_sim_core/components/ball_trail.dart';
 import 'package:football_sim_core/components/entity_component.dart';
 import 'package:football_sim_core/controllers/ball_controller.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
@@ -93,20 +92,5 @@ class BallComponent extends EntityComponent<BallController> {
     controller.update(dt);
     // 🔁 sincronizza posizione visiva
     position = controller.getRenderPosition();
-  }
-
-  @override
-  void onPostUpdate(double dt) {
-    if (controller.velocity.length2 > 1) {
-      angle += controller.velocity.length * dt * angleSpin;
-    }
-    if (controller.relativeVelocity.length2 > 0.2) {
-      game.add(BallTrail(position.clone()));
-    }
-  }
-
-  void kick(Vector2 direction, double strength) {
-    double clampedStrength = strength.clamp(0, maxSpeed);
-    controller.relativeVelocity = direction.normalized() * clampedStrength;
   }
 }

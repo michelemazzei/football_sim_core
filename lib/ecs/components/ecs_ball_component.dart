@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flame/components.dart';
 import 'package:football_sim_core/components/ball_trail.dart';
 import 'package:football_sim_core/ecs/components/ecs_component.dart';
@@ -25,18 +23,6 @@ class EcsBallComponent extends EcsComponent {
       // Calcolo posizione assoluta con PositionSystem
       final absPos = game.positionSystem.getAbsolutePosition(entity);
       game.add(BallTrail(absPos.clone()));
-    }
-  }
-
-  /// Inietta la forza di calcio modificando direttamente il VelocityComponent
-  void kick(EcsEntity entity, Vector2 direction, double strength) {
-    final velComp = entity.getComponent<VelocityComponent>();
-    final cfgComp = entity.getComponent<MovementConfigComponent>();
-
-    if (velComp != null) {
-      final maxSp = cfgComp?.maxVelocity ?? strength;
-      final double clamped = strength.clamp(0, maxSp);
-      velComp.velocity = direction.normalized() * clamped;
     }
   }
 }

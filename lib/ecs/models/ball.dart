@@ -1,4 +1,4 @@
-import 'package:football_sim_core/ecs/systems/command_system.dart';
+import 'package:football_sim_core/ecs/commands/command.dart';
 
 class Ball {
   bool isInPossession = false;

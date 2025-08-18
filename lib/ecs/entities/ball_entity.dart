@@ -19,9 +19,7 @@ class BallEntity extends EcsEntity {
       MovementConfigComponent(maxVelocity: 800, frictionFactor: 0.98),
     );
     addComponent(BallLogicComponent(ballModel));
-    addComponent(
-      BallComponentData(color: Colors.white, type: 'standard', scoreValue: 1),
-    );
+    addComponent(EcsBallComponent());
     addComponent(FsmComponent<Ball>(ballFsm));
   }
 }

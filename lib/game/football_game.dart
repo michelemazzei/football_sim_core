@@ -9,7 +9,8 @@ import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 import 'package:football_sim_core/ecs/entities/team_id.dart';
-import 'package:football_sim_core/ecs/systems/command_system.dart';
+import 'package:football_sim_core/ecs/commands/command_system.dart';
+import 'package:football_sim_core/ecs/systems/ball_system.dart';
 import 'package:football_sim_core/ecs/systems/fsm_system.dart';
 import 'package:football_sim_core/ecs/systems/movement_system.dart';
 import 'package:football_sim_core/ecs/systems/position_system.dart';
@@ -55,8 +56,8 @@ class FootballGame extends FlameGame {
     // ECS Sybsystem
     ecsWorld = EcsWorld();
     // 1) costruisci e registra PositionSystem
-    positionSystem = PositionSystem(ecsWorld, this);
-    ballSystem = BallSystem(world, this, positionSystem);
+    positionSystem = PositionSystem(this);
+    final ballSystem = BallSystem(this, positionSystem);
     // 1) Registra sistemi
     ecsWorld.addSystem(FsmSystem(ecsWorld));
     ecsWorld.addSystem(CommandSystem(ecsWorld));
@@ -81,8 +82,6 @@ class FootballGame extends FlameGame {
     final teamRed = _createTeam(id: TeamId.red, color: TeamId.red.color);
 
     final teamBlue = _createTeam(id: TeamId.blue, color: TeamId.blue.color);
-
-    ecsWorld = EcsWorld();
 
     // 1. Crea la partita
     final match = EcsMatch(teamA: teamRed, teamB: teamBlue);

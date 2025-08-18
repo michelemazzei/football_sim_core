@@ -4,11 +4,11 @@ import 'package:football_sim_core/components/entity_component.dart';
 import 'package:football_sim_core/controllers/player_controller.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/components/player_number_component.dart';
-import 'package:football_sim_core/ecs/entities/entity.dart';
+import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 import 'package:football_sim_core/game/football_game.dart';
 
 class PlayerComponent extends EntityComponent<PlayerController> {
-  final Entity entity;
+  final EcsEntity entity;
   late TextPaint textPaint;
 
   PlayerComponent({
@@ -31,7 +31,7 @@ class PlayerComponent extends EntityComponent<PlayerController> {
     if (sizeComponent != null) {
       sizeComponent.size = size;
     } else {
-      entity.addComponent(SizeComponent(size));
+      entity.addComponent(SizeComponent.fromSize(size));
     }
   }
 
