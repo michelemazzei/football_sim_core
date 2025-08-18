@@ -2,15 +2,13 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:football_sim_core/ai/fsm/components/fsm_component.dart';
 import 'package:football_sim_core/components/spalti_component.dart';
-import 'package:football_sim_core/ecs/components/ecs_components.dart';
+import 'package:football_sim_core/ecs/commands/command_system.dart';
 import 'package:football_sim_core/ecs/components/match_component.dart';
 import 'package:football_sim_core/ecs/components/render_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 import 'package:football_sim_core/ecs/entities/team_id.dart';
-import 'package:football_sim_core/ecs/commands/command_system.dart';
-import 'package:football_sim_core/ecs/systems/ball_system.dart';
 import 'package:football_sim_core/ecs/systems/fsm_system.dart';
 import 'package:football_sim_core/ecs/systems/movement_system.dart';
 import 'package:football_sim_core/ecs/systems/position_system.dart';
@@ -22,7 +20,6 @@ import '../components/field_component.dart';
 
 class FootballGame extends FlameGame {
   late final EcsWorld ecsWorld;
-  late final PositionSystem positionSystem;
   late FieldComponent fieldComponent;
   late BallComponent ballComponent;
   SpaltiComponent? spaltiComponent;
@@ -44,6 +41,7 @@ class FootballGame extends FlameGame {
 
   @override
   Future<void> onLoad() async {
+    // Componenti grafici di gioco
     // 🟩 Campo
     fieldComponent = FieldComponent();
     await add(fieldComponent);
@@ -53,33 +51,27 @@ class FootballGame extends FlameGame {
       ..position = padding;
     await add(spaltiComponent!);
 
-    // ECS Sybsystem
+    // Registra  ECS Sybsystem
+    //1 -   Crea il mondo ECS
     ecsWorld = EcsWorld();
-    // 1) costruisci e registra PositionSystem
-    positionSystem = PositionSystem(this);
-    final ballSystem = BallSystem(this, positionSystem);
-    // 1) Registra sistemi
+    //2 - Registra sistemi
     ecsWorld.addSystem(FsmSystem(ecsWorld));
-    ecsWorld.addSystem(ballSystem);
+    ecsWorld.addSystem(PositionSystem(this));
     ecsWorld.addSystem(CommandSystem(ecsWorld));
     ecsWorld.addSystem(MovementSystem(ecsWorld));
-    ecsWorld.addSystem(positionSystem);
-    // ⚽ Palla
-    // 2) Crea la palla
-    final ballEntity = BallEntity(
+
+    //3 - Crea i Componenti ECS
+    //.1 - ⚽ Crea la palla
+    //.2 - ⚽ Crea e registra il componente ECS della palla
+    final ballEntity = BallEntity.createBall(
       ecsWorld.genId(),
-      Vector2(fieldComponent.size.x / 2, fieldComponent.size.y / 2),
+      position: Vector2(fieldComponent.size.x / 2, fieldComponent.size.y / 2),
     );
-
     ecsWorld.addEntity(ballEntity);
-
-    ballComponent = BallComponent(
-      entity: ballEntity,
-      footballGame: this,
-      // maxSpeed: 800,
-    );
+    //.3 - ⚽ Crea e registra il componente grafico della palla
+    ballComponent = BallComponent();
     ballEntity.addComponent(RenderComponent(ballComponent));
-
+    //.4 - ⚽ aggiungi il componente grafico della palla a Flame
     await add(ballComponent);
 
     // 🔵 Squadre
@@ -111,10 +103,10 @@ class FootballGame extends FlameGame {
     super.update(dt);
     ecsWorld.update(dt);
 
-    final ballEnt = ecsWorld.entitiesWith<EcsBallComponent>().firstOrNull;
-    if (ballEnt != null) {
-      ballEnt.getComponent<EcsBallComponent>()!.onPostUpdate(ballEnt, this, dt);
-    }
+    // final ballEnt = ecsWorld.entitiesWith<EcsBallComponent>().firstOrNull;
+    // if (ballEnt != null) {
+    //   ballEnt.getComponent<EcsBallComponent>()!.onPostUpdate(ballEnt, this, dt);
+    // }
 
     final matchEntity = ecsWorld
         .entitiesWith<FsmComponent<Match>>()

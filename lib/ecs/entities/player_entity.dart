@@ -2,6 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:football_sim_core/ecs/components/direction_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
+import 'package:football_sim_core/ecs/components/ecs_position_component.dart';
 import 'package:football_sim_core/ecs/components/game_reference_component.dart';
 import 'package:football_sim_core/ecs/components/player_color_component.dart';
 import 'package:football_sim_core/ecs/components/player_number_component.dart';
@@ -14,27 +15,29 @@ import 'package:football_sim_core/game/football_game.dart';
 import 'package:football_sim_core/model/player_role.dart';
 import 'package:football_sim_core/model/team.dart';
 
-class PlayerEntity extends EcsEntity {
-  final int number;
-  final Color color;
-
-  PlayerEntity(
-    super.id, {
-    required this.number,
-    required this.color,
+extension PlayerEntity on EcsEntity {
+  /// Returns the [BallEntity] associated with this [EcsEntity].
+  static EcsEntity createPlayer(
+    int id, {
+    required int number,
+    required Color color,
     required FootballGame game,
     required PlayerRole role,
     required TeamId team,
     Vector2? initialPosition,
-  }) {
-    addComponent(EntityPositionComponent(initialPosition ?? Vector2.zero()));
-    addComponent(PlayerColorComponent(color));
-    addComponent(PlayerNumberComponent(number));
-    addComponent(VelocityComponent(Vector2.zero()));
-    addComponent(DirectionComponent(Vector2.zero()));
-    addComponent(PlayerStateComponent(PlayerState.idle));
-    addComponent(GameReferenceComponent(game));
-    addComponent(RoleComponent(role));
-    addComponent(TeamComponent(Team(id: team, color: color)));
-  }
+  }) => EcsEntity(id)
+    ..addComponent(
+      EcsPositionComponent(
+        x: (initialPosition ?? Vector2.zero()).x,
+        y: (initialPosition ?? Vector2.zero()).y,
+      ),
+    )
+    ..addComponent(PlayerColorComponent(color))
+    ..addComponent(PlayerNumberComponent(number))
+    ..addComponent(VelocityComponent(Vector2.zero()))
+    ..addComponent(DirectionComponent(Vector2.zero()))
+    ..addComponent(PlayerStateComponent(PlayerState.idle))
+    ..addComponent(GameReferenceComponent(game))
+    ..addComponent(RoleComponent(role))
+    ..addComponent(TeamComponent(Team(id: team, color: color)));
 }

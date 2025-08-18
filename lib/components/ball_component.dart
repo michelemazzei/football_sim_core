@@ -2,27 +2,14 @@ import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
-import 'package:football_sim_core/ecs/components/size_ratio_component.dart';
-import 'package:football_sim_core/ecs/components/render_component.dart';
-import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 import 'package:football_sim_core/game/football_game.dart';
 
 class BallComponent extends PositionComponent
     with HasGameReference<FootballGame> {
   final double angleSpin = 0.02;
 
-  BallComponent({
-    required EcsEntity entity,
-    required FootballGame footballGame,
-  }) {
-    anchor = Anchor.center;
-
-    // Associa il componente visivo all'entità ECS
-    entity.addComponent(RenderComponent(this));
-
-    // Imposta il rapporto dimensionale (es. 5% della larghezza del campo)
-    entity.addComponent(const SizeRatioComponent(0.05));
-  }
+  BallComponent([Anchor anchor = Anchor.center])
+    : super(anchor: anchor, size: Vector2.all(20.0));
 
   @override
   void render(Canvas canvas) {

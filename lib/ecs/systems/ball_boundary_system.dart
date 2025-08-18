@@ -1,7 +1,8 @@
 // lib/systems/ball_boundary_system.dart
 
 import 'package:flame/components.dart';
-import 'package:football_sim_core/ecs/components/ball_logic_component.dart';
+import 'package:flutter/material.dart';
+import 'package:football_sim_core/ecs/components/ball_out_of_bounds_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/components/ecs_position_component.dart';
 
@@ -28,10 +29,9 @@ class BallBoundarySystem extends EcsSystem {
     final bottomBound = fieldPos.y + fieldSize.y;
 
     // Filtra solo le entità che hanno un BallLogicComponent
-    for (final e in world.entitiesWith<BallLogicComponent>()) {
+    for (final e in world.entitiesWith<BallOutOfBoundsComponent>()) {
       final posComp = e.getComponent<EcsPositionComponent>();
       final sizeComp = e.getComponent<SizeComponent>();
-      final logicComp = e.getComponent<BallLogicComponent>()!;
 
       if (posComp == null) continue;
 
@@ -52,7 +52,7 @@ class BallBoundarySystem extends EcsSystem {
       final outBottom = absolute.y + halfSize.y > bottomBound;
 
       if (outLeft || outRight || outTop || outBottom) {
-        logicComp.onOutOfBounds();
+        debugPrint('out of bounds: $absolute');
       }
     }
   }
