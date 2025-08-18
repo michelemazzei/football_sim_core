@@ -12,6 +12,7 @@ import 'package:football_sim_core/ecs/entities/team_id.dart';
 import 'package:football_sim_core/ecs/systems/fsm_system.dart';
 import 'package:football_sim_core/ecs/systems/movement_system.dart';
 import 'package:football_sim_core/ecs/systems/position_system.dart';
+import 'package:football_sim_core/ecs/systems/resize_system.dart';
 import 'package:football_sim_core/match/ecs_match.dart';
 import 'package:football_sim_core/model/team.dart';
 
@@ -59,14 +60,12 @@ class FootballGame extends FlameGame {
     ecsWorld.addSystem(PositionSystem(this));
     ecsWorld.addSystem(CommandSystem(ecsWorld));
     ecsWorld.addSystem(MovementSystem(ecsWorld));
+    ecsWorld.addSystem(ResizeSystem(this));
 
     //3 - Crea i Componenti ECS
     //.1 - ⚽ Crea la palla
     //.2 - ⚽ Crea e registra il componente ECS della palla
-    final ballEntity = BallEntity.createBall(
-      ecsWorld.genId(),
-      position: Vector2(fieldComponent.size.x / 2, fieldComponent.size.y / 2),
-    );
+    final ballEntity = BallEntity.createBall(ecsWorld.genId());
     ecsWorld.addEntity(ballEntity);
     //.3 - ⚽ Crea e registra il componente grafico della palla
     ballComponent = BallComponent();

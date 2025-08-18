@@ -86,7 +86,7 @@ class PositionSystem extends EcsSystem {
       case Anchor.bottomRight:
         return Vector2(size.x, size.y);
       default:
-        return Vector2(size.x / 2, size.y / 2);
+        return Vector2(0, 0);
     }
   }
 }
