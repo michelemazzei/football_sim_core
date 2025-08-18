@@ -1,5 +1,6 @@
 import 'package:flame/components.dart';
 
+@Deprecated('Use ECS system')
 abstract class IEntityController {
   Vector2 get position;
   void update(double dt);

@@ -1,1 +1,3 @@
-abstract class EcsComponent {}
+abstract class EcsComponent {
+  const EcsComponent();
+}

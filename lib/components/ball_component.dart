@@ -2,37 +2,26 @@ import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
-import 'package:football_sim_core/components/entity_component.dart';
-import 'package:football_sim_core/controllers/ball_controller.dart';
-import 'package:football_sim_core/ecs/components/ecs_components.dart';
-import 'package:football_sim_core/ecs/entities/ball_entity.dart';
+import 'package:football_sim_core/ecs/components/size_ratio_component.dart';
+import 'package:football_sim_core/ecs/components/render_component.dart';
+import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 import 'package:football_sim_core/game/football_game.dart';
 
-class BallComponent extends EntityComponent<BallController> {
+class BallComponent extends PositionComponent
+    with HasGameReference<FootballGame> {
   final double angleSpin = 0.02;
-  final double maxSpeed;
-  final BallEntity entity;
 
   BallComponent({
-    required this.entity,
-    required FootballGame game,
-    this.maxSpeed = 1.0,
+    required EcsEntity entity,
+    required FootballGame footballGame,
   }) {
-    this.game = game;
     anchor = Anchor.center;
-    sizeRatio = 0.02;
 
-    // Imposta il controller
-    controller = BallController(entity: entity, game: game, maxSpeed: maxSpeed)
-      ..size = size;
+    // Associa il componente visivo all'entità ECS
+    entity.addComponent(RenderComponent(this));
 
-    // Registra la dimensione nel GameState
-    final sizeComponent = entity.getComponent<SizeComponent>();
-    if (sizeComponent != null) {
-      sizeComponent.size = size;
-    } else {
-      entity.addComponent(SizeComponent(height: size.y, width: size.x));
-    }
+    // Imposta il rapporto dimensionale (es. 5% della larghezza del campo)
+    entity.addComponent(const SizeRatioComponent(0.05));
   }
 
   @override
@@ -84,13 +73,5 @@ class BallComponent extends EntityComponent<BallController> {
     }
     path.close();
     canvas.drawPath(path, paint);
-  }
-
-  @override
-  void update(double dt) {
-    super.update(dt);
-    controller.update(dt);
-    // 🔁 sincronizza posizione visiva
-    position = controller.getRenderPosition();
   }
 }

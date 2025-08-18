@@ -1,41 +1,35 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:football_sim_core/components/entity_component.dart';
-import 'package:football_sim_core/controllers/player_controller.dart';
-import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/components/player_number_component.dart';
-import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
-import 'package:football_sim_core/game/football_game.dart';
 
-class PlayerComponent extends EntityComponent<PlayerController> {
-  final EcsEntity entity;
+class PlayerComponent extends EntityComponent {
   late TextPaint textPaint;
 
   PlayerComponent({
-    required this.entity,
-    required FootballGame game,
+    required super.entity,
+    required super.footballGame,
     required Color color,
   }) {
-    this.game = game;
     anchor = Anchor.center;
     sizeRatio = 0.012;
-
-    controller = PlayerController(entity: entity, game: game);
 
     textPaint = TextPaint(
       style: TextStyle(fontSize: 12, color: color, fontWeight: FontWeight.bold),
     );
-
-    // Registra la size nel GameState
-    final sizeComponent = entity.getComponent<SizeComponent>();
-    if (sizeComponent != null) {
-      sizeComponent.size = size;
-    } else {
-      entity.addComponent(SizeComponent.fromSize(size));
-    }
   }
 
-  void drawPlayerCircle(
+  @override
+  void render(Canvas canvas) {
+    super.render(canvas);
+
+    final color = textPaint.style.color ?? Colors.white;
+    final number = entity.getComponent<PlayerNumberComponent>()?.number ?? 0;
+
+    _drawPlayerCircle(canvas, game.size.toSize(), color, number.toString());
+  }
+
+  void _drawPlayerCircle(
     Canvas canvas,
     Size fieldSize,
     Color color,
@@ -68,7 +62,7 @@ class PlayerComponent extends EntityComponent<PlayerController> {
       ),
     );
 
-    final textSize = measureText(name, namePaint.style);
+    final textSize = _measureText(name, namePaint.style);
     final textOffset = Offset(
       center.dx - textSize.width / 2,
       center.dy - textSize.height / 2,
@@ -77,21 +71,11 @@ class PlayerComponent extends EntityComponent<PlayerController> {
     namePaint.render(canvas, name, Vector2(textOffset.dx, textOffset.dy));
   }
 
-  Size measureText(String text, TextStyle style) {
+  Size _measureText(String text, TextStyle style) {
     final textPainter = TextPainter(
       text: TextSpan(text: text, style: style),
       textDirection: TextDirection.ltr,
     )..layout();
     return textPainter.size;
-  }
-
-  @override
-  void render(Canvas canvas) {
-    super.render(canvas);
-
-    final color = textPaint.style.color ?? Colors.white;
-    final number = entity.getComponent<PlayerNumberComponent>()?.number ?? 0;
-
-    drawPlayerCircle(canvas, game.size.toSize(), color, number.toString());
   }
 }

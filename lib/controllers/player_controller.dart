@@ -1,5 +1,6 @@
 import 'package:football_sim_core/controllers/entity_controller.dart';
 
+@Deprecated('use ECS system')
 class PlayerController extends EntityController {
   PlayerController({
     required super.entity,

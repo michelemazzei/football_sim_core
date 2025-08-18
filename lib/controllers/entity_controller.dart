@@ -5,6 +5,7 @@ import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 import 'package:football_sim_core/game/football_game.dart';
 import 'package:football_sim_core/controllers/ientity_controller.dart';
 
+@Deprecated('Use ECS system')
 abstract class EntityController implements IEntityController {
   final EcsEntity entity;
   final FootballGame game;

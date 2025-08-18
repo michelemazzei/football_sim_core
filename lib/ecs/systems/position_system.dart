@@ -1,78 +1,92 @@
-// lib/systems/position_system.dart
-
 import 'package:flame/components.dart';
-import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/components/ecs_position_component.dart';
 import 'package:football_sim_core/ecs/components/render_component.dart';
+import 'package:football_sim_core/ecs/components/size_component.dart';
 import 'package:football_sim_core/ecs/ecs_system.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
-
 import 'package:football_sim_core/game/football_game.dart';
 
 class PositionSystem extends EcsSystem {
-  final EcsWorld world;
   final FootballGame game;
+  final EcsWorld world;
 
   PositionSystem(this.game) : world = game.ecsWorld;
 
   @override
   void update(double dt) {
-    // Pre-lettura di campo e dimensioni
     final fieldPos = game.fieldComponent.position;
     final fieldSize = game.fieldComponent.size;
 
-    // Per ogni entità che ha sia PositionComponent che RenderComponent
-    for (final e in world.entitiesWith<EcsPositionComponent>()) {
-      final posComp = e.getComponent<EcsPositionComponent>()!;
-      final renderComp = e.getComponent<RenderComponent>();
-      if (renderComp == null) continue;
+    for (final entity
+        in world.entitiesWithAll<EcsPositionComponent, RenderComponent>()) {
+      final posComp = entity.getComponent<EcsPositionComponent>()!;
+      final renderComp = entity.getComponent<RenderComponent>()!;
+      final sizeComp = entity.getComponent<SizeComponent>();
 
-      // Coordinate assolute sul campo
-      final absX = fieldPos.x + posComp.x * fieldSize.x;
-      final absY = fieldPos.y + posComp.y * fieldSize.y;
-      final absolute = Vector2(absX, absY);
+      final absolute = _getAbsolutePosition(
+        relative: Vector2(posComp.x, posComp.y),
+        fieldPosition: fieldPos,
+        fieldSize: fieldSize,
+        anchor: Anchor.center,
+        size: sizeComp != null
+            ? Vector2(sizeComp.width, sizeComp.height)
+            : null,
+      );
 
-      // Se c’è un SizeComponent, centriamo l’anchor
-      final sizeComp = e.getComponent<SizeComponent>();
-      if (sizeComp != null) {
-        absolute.x -= sizeComp.width / 2;
-        absolute.y -= sizeComp.height / 2;
-      }
-
-      // Applica al Positionable di Flame
       renderComp.component.position = absolute;
     }
   }
 
-  Vector2 getAbsolutePosition(EcsEntity ecsEntity) {
-    final posComp = ecsEntity.getComponent<EcsPositionComponent>();
-    if (posComp == null) {
-      return Vector2.zero();
-    }
-    final fieldPos = game.fieldComponent.position;
-    final fieldSize = game.fieldComponent.size;
+  /// Metodo pubblico per ottenere la posizione assoluta di un'entità
+  Vector2 getAbsolutePosition(EcsEntity entity) {
+    final posComp = entity.getComponent<EcsPositionComponent>();
+    if (posComp == null) return Vector2.zero();
 
-    Vector2 relative = Vector2(posComp.x, posComp.y);
+    final sizeComp = entity.getComponent<SizeComponent>();
     return _getAbsolutePosition(
-      relative: relative,
-      fieldPosition: fieldPos,
-      fieldSize: fieldSize,
+      relative: Vector2(posComp.x, posComp.y),
+      fieldPosition: game.fieldComponent.position,
+      fieldSize: game.fieldComponent.size,
       anchor: Anchor.center,
+      size: sizeComp != null ? Vector2(sizeComp.width, sizeComp.height) : null,
     );
   }
 
-  // Calcolo dell’offset di rendering (resta identico)
+  /// Calcolo della posizione assoluta sul campo
   Vector2 _getAbsolutePosition({
     required Vector2 relative,
     required Vector2 fieldPosition,
     required Vector2 fieldSize,
     Anchor anchor = Anchor.center,
+    Vector2? size,
   }) {
     final offset = relative.clone()..multiply(fieldSize);
-    // ... stessa logica di prima per gli anchor
-    // ritorna fieldPosition + offset - anchorOffset
-    // (puoi ricopiare il tuo switch su Anchor)
-    return fieldPosition + offset;
+    final anchorOffset = _getAnchorOffset(anchor, size ?? Vector2.zero());
+    return fieldPosition + offset - anchorOffset;
+  }
+
+  /// Calcolo dell’offset in base all’anchor
+  Vector2 _getAnchorOffset(Anchor anchor, Vector2 size) {
+    switch (anchor) {
+      case Anchor.topLeft:
+        return Vector2.zero();
+      case Anchor.topCenter:
+        return Vector2(size.x / 2, 0);
+      case Anchor.topRight:
+        return Vector2(size.x, 0);
+      case Anchor.centerLeft:
+        return Vector2(0, size.y / 2);
+      case Anchor.centerRight:
+        return Vector2(size.x, size.y / 2);
+      case Anchor.bottomLeft:
+        return Vector2(0, size.y);
+      case Anchor.bottomCenter:
+        return Vector2(size.x / 2, size.y);
+      case Anchor.bottomRight:
+        return Vector2(size.x, size.y);
+      default:
+        return Vector2(size.x / 2, size.y / 2);
+    }
   }
 }

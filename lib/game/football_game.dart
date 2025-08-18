@@ -60,19 +60,23 @@ class FootballGame extends FlameGame {
     final ballSystem = BallSystem(this, positionSystem);
     // 1) Registra sistemi
     ecsWorld.addSystem(FsmSystem(ecsWorld));
+    ecsWorld.addSystem(ballSystem);
     ecsWorld.addSystem(CommandSystem(ecsWorld));
     ecsWorld.addSystem(MovementSystem(ecsWorld));
     ecsWorld.addSystem(positionSystem);
     // ⚽ Palla
     // 2) Crea la palla
-    final ballEntity = BallEntity(ecsWorld.genId(), Vector2.zero());
+    final ballEntity = BallEntity(
+      ecsWorld.genId(),
+      Vector2(fieldComponent.size.x / 2, fieldComponent.size.y / 2),
+    );
 
     ecsWorld.addEntity(ballEntity);
 
     ballComponent = BallComponent(
       entity: ballEntity,
-      game: this,
-      maxSpeed: 800,
+      footballGame: this,
+      // maxSpeed: 800,
     );
     ballEntity.addComponent(RenderComponent(ballComponent));
 

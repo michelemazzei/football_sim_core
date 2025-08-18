@@ -2,14 +2,14 @@ import 'dart:ui';
 
 import 'package:football_sim_core/controllers/entity_controller.dart';
 
+@Deprecated('use ECS System')
 class BallController extends EntityController {
   final VoidCallback? onBallOutOfBounds;
 
   BallController({
     required super.entity,
     required super.game,
-    super.friction,
-    super.maxSpeed,
+
     this.onBallOutOfBounds,
   });
 
