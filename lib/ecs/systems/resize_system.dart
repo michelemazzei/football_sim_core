@@ -21,7 +21,7 @@ class ResizeSystem extends EcsSystem {
       final ratioComp = entity.getComponent<SizeRatioComponent>();
       if (ratioComp == null) continue;
       final rawSize = fieldSize.x * ratioComp.ratio;
-      final double clampedSize = rawSize.clamp(10, 30);
+      final double clampedSize = rawSize.clamp(5, 40);
       renderComp.component.size = Vector2.all(clampedSize);
     }
   }

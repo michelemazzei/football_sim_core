@@ -14,7 +14,9 @@ import 'package:football_sim_core/ecs/systems/movement_system.dart';
 import 'package:football_sim_core/ecs/systems/position_system.dart';
 import 'package:football_sim_core/ecs/systems/resize_system.dart';
 import 'package:football_sim_core/match/ecs_match.dart';
+import 'package:football_sim_core/model/formation.dart';
 import 'package:football_sim_core/model/team.dart';
+import 'package:football_sim_core/utils/player_utils.dart';
 
 import '../components/ball_component.dart';
 import '../components/field_component.dart';
@@ -74,9 +76,8 @@ class FootballGame extends FlameGame {
     await add(ballComponent);
 
     // 🔵 Squadre
-    final teamRed = _createTeam(id: TeamId.red, color: TeamId.red.color);
-
-    final teamBlue = _createTeam(id: TeamId.blue, color: TeamId.blue.color);
+    final teamRed = Team(id: TeamId.red, color: TeamId.red.color);
+    final teamBlue = Team(id: TeamId.blue, color: TeamId.blue.color);
 
     // 1. Crea la partita
     final match = EcsMatch(teamA: teamRed, teamB: teamBlue);
@@ -89,23 +90,27 @@ class FootballGame extends FlameGame {
     // 3. Registra nel mondo
     ecsWorld.addEntity(matchEntity);
     ecsWorld.addSystem(FsmSystem(ecsWorld));
-  }
 
-  Team _createTeam({required TeamId id, required Color color}) {
-    final team = Team(id: id, color: color);
-
-    return team;
+    createTeamFromFormation(
+      formation: formation442,
+      isLeftSide: true,
+      team: teamRed,
+      game: this,
+      ecsWorld: ecsWorld,
+    );
+    createTeamFromFormation(
+      formation: formation442,
+      isLeftSide: false,
+      team: teamBlue,
+      game: this,
+      ecsWorld: ecsWorld,
+    );
   }
 
   @override
   void update(double dt) {
     super.update(dt);
     ecsWorld.update(dt);
-
-    // final ballEnt = ecsWorld.entitiesWith<EcsBallComponent>().firstOrNull;
-    // if (ballEnt != null) {
-    //   ballEnt.getComponent<EcsBallComponent>()!.onPostUpdate(ballEnt, this, dt);
-    // }
 
     final matchEntity = ecsWorld
         .entitiesWith<FsmComponent<Match>>()

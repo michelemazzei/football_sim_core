@@ -1,30 +1,33 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
-import 'package:football_sim_core/components/entity_component.dart';
-import 'package:football_sim_core/ecs/components/player_number_component.dart';
+import 'package:football_sim_core/game/football_game.dart';
 
-class PlayerComponent extends EntityComponent {
-  late TextPaint textPaint;
+class PlayerComponent extends PositionComponent
+    with HasGameReference<FootballGame> {
+  final Color color;
+  final String name;
+  final int number;
+  final TextPaint textPaint;
 
-  PlayerComponent({
-    required super.entity,
-    required super.footballGame,
-    required Color color,
-  }) {
-    anchor = Anchor.center;
-    sizeRatio = 0.012;
-
-    textPaint = TextPaint(
-      style: TextStyle(fontSize: 12, color: color, fontWeight: FontWeight.bold),
-    );
-  }
+  PlayerComponent(
+    this.name,
+    this.number,
+    this.color, [
+    Anchor anchor = Anchor.center,
+  ]) : textPaint = TextPaint(
+         style: TextStyle(
+           fontSize: 12,
+           color: color,
+           fontWeight: FontWeight.bold,
+         ),
+       ),
+       super(anchor: anchor, size: Vector2.all(20.0));
 
   @override
   void render(Canvas canvas) {
     super.render(canvas);
 
     final color = textPaint.style.color ?? Colors.white;
-    final number = entity.getComponent<PlayerNumberComponent>()?.number ?? 0;
 
     _drawPlayerCircle(canvas, game.size.toSize(), color, number.toString());
   }
@@ -35,7 +38,8 @@ class PlayerComponent extends EntityComponent {
     Color color,
     String name,
   ) {
-    final double radius = fieldSize.width * sizeRatio;
+    final center = Offset(size.x / 2, size.y / 2);
+    final radius = size.x / 2;
 
     final Paint shadowPaint = Paint()..color = Colors.black.withAlpha(80);
     final Paint fillPaint = Paint()..color = color.withAlpha(180);
@@ -43,8 +47,6 @@ class PlayerComponent extends EntityComponent {
       ..color = color
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;
-
-    final Offset center = Offset(0, 0);
 
     canvas.drawCircle(center.translate(2, 2), radius, shadowPaint);
     canvas.drawCircle(center, radius, fillPaint);

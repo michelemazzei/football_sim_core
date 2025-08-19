@@ -2,12 +2,11 @@ import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:football_sim_core/ecs/components/direction_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
+import 'package:football_sim_core/ecs/components/ecs_player_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_position_component.dart';
 import 'package:football_sim_core/ecs/components/game_reference_component.dart';
-import 'package:football_sim_core/ecs/components/player_color_component.dart';
-import 'package:football_sim_core/ecs/components/player_number_component.dart';
-import 'package:football_sim_core/ecs/components/player_state_component.dart';
 import 'package:football_sim_core/ecs/components/role_component.dart';
+import 'package:football_sim_core/ecs/components/size_ratio_component.dart';
 import 'package:football_sim_core/ecs/components/team_component.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 import 'package:football_sim_core/ecs/entities/team_id.dart';
@@ -24,15 +23,16 @@ extension PlayerEntity on EcsEntity {
     required FootballGame game,
     required PlayerRole role,
     required TeamId team,
-    Vector2? initialPosition,
+    required Vector2 initialPosition,
   }) => EcsEntity(id)
     ..addComponent(
-      EcsPositionComponent(
-        x: (initialPosition ?? Vector2.zero()).x,
-        y: (initialPosition ?? Vector2.zero()).y,
-      ),
+      EcsPositionComponent(x: initialPosition.x, y: initialPosition.y),
     )
+    ..addComponent(EcsPlayerComponent())
+    // Imposta il rapporto dimensionale (es. 5% della larghezza del campo)
+    ..addComponent(const SizeRatioComponent(0.03))
     ..addComponent(PlayerColorComponent(color))
+    ..addComponent(SizeComponent(height: 10.0, width: 10.0))
     ..addComponent(PlayerNumberComponent(number))
     ..addComponent(VelocityComponent(Vector2.zero()))
     ..addComponent(DirectionComponent(Vector2.zero()))
