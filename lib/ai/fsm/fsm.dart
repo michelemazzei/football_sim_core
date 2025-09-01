@@ -4,13 +4,14 @@ import 'package:football_sim_core/ai/fsm/messaging/telegram.dart';
 
 abstract class Fsm<T> {
   final StateMachine<T> _fsm;
+  Fsm(T owner) : _fsm = StateMachine<T>(owner);
 
   StateMachine<T> get fsm => _fsm;
 
-  Fsm(T owner) : _fsm = StateMachine<T>(owner);
+  T get owner => _fsm.owner;
 
-  void update() {
-    _fsm.update();
+  void update(double dt) {
+    _fsm.update(dt);
   }
 
   bool handleMessage(Telegram telegram) {

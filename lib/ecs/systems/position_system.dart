@@ -9,12 +9,11 @@ import 'package:football_sim_core/game/football_game.dart';
 
 class PositionSystem extends EcsSystem {
   final FootballGame game;
-  final EcsWorld world;
 
-  PositionSystem(this.game) : world = game.ecsWorld;
+  PositionSystem(this.game);
 
   @override
-  void update(double dt) {
+  void update(EcsWorld world, double dt) {
     final fieldPos = game.fieldComponent.position;
     final fieldSize = game.fieldComponent.size;
 

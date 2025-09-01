@@ -1,6 +1,6 @@
 import 'package:football_sim_core/ai/fsm/fsm.dart';
-import 'package:football_sim_core/controllers/player_controller.dart';
+import 'package:football_sim_core/components/player_component.dart';
 
-class PlayerFsm extends Fsm<PlayerController> {
-  PlayerFsm(super.controller);
+class PlayerFsm extends Fsm<PlayerComponent> {
+  PlayerFsm(super.player);
 }

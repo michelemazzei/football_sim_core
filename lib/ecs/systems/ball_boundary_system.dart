@@ -14,13 +14,12 @@ import 'package:football_sim_core/game/football_game.dart';
 /// Controlla se la palla esce dal campo e, in tal caso, chiama
 /// il callback onOutOfBounds sul suo BallLogicComponent.
 class BallBoundarySystem extends EcsSystem {
-  final EcsWorld world;
   final FootballGame game;
 
-  BallBoundarySystem(this.world, this.game);
+  BallBoundarySystem(this.game);
 
   @override
-  void update(double dt) {
+  void update(EcsWorld world, double dt) {
     final fieldPos = game.fieldComponent.position;
     final fieldSize = game.fieldComponent.size;
     final leftBound = fieldPos.x;

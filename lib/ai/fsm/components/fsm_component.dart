@@ -9,8 +9,8 @@ class FsmComponent<T> extends EcsComponent {
 
   FsmComponent(this.fsm);
 
-  void updateFSM() {
-    fsm.update();
+  void updateFSM(double dt) {
+    fsm.update(dt);
   }
 
   bool handleMessage(Telegram telegram) {

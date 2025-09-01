@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:football_sim_core/game/game_widget.dart';
+import 'package:logging/logging.dart';
+
+void setupLogging() {
+  Logger.root.level = Level.ALL;
+  Logger.root.onRecord.listen((record) {
+    debugPrint(
+      '[${record.level.name}: ${record.loggerName}]  ${record.message}',
+    );
+  });
+}
 
 void main() {
+  setupLogging();
   runApp(const GameApp());
 }
 

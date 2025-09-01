@@ -7,12 +7,11 @@ import 'package:football_sim_core/game/football_game.dart';
 
 class ResizeSystem extends EcsSystem {
   final FootballGame game;
-  final EcsWorld world;
 
-  ResizeSystem(this.game) : world = game.ecsWorld;
+  ResizeSystem(this.game);
 
   @override
-  void update(double dt) {
+  void update(EcsWorld world, double dt) {
     final fieldSize = game.fieldComponent.size;
     if (fieldSize.x <= 0 || fieldSize.y <= 0) return;
 

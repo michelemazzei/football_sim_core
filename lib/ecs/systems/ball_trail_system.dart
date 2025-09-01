@@ -11,14 +11,13 @@ import 'package:football_sim_core/game/football_game.dart';
 import 'package:football_sim_core/utils/position_utils.dart';
 
 class BallTrailSystem extends EcsSystem {
-  final EcsWorld world;
   final FootballGame game;
   final PositionSystem posSys;
 
-  BallTrailSystem(this.game, this.posSys) : world = game.ecsWorld;
+  BallTrailSystem(this.game, this.posSys);
 
   @override
-  void update(double dt) {
+  void update(EcsWorld world, double dt) {
     for (final e in world.entitiesWith<EcsBallComponent>()) {
       final ballComp = e.getComponent<EcsBallComponent>()!;
       final sizeComp = e.getComponent<SizeComponent>();

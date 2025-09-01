@@ -6,7 +6,7 @@ class GlobalMatchState extends GameState<EcsMatch> {
   void enter(EcsMatch match) {}
 
   @override
-  void execute(EcsMatch match) {
+  void execute(EcsMatch match, double dt) {
     match.elapsedTime += match.deltaTime;
   }
 

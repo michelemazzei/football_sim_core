@@ -5,7 +5,7 @@ abstract class GameState<EntityType> {
   final MessageDispatcher dispatcher;
   GameState() : dispatcher = MessageDispatcher();
   void enter(EntityType entity);
-  void execute(EntityType entity);
+  void execute(EntityType entity, double dt);
   void exit(EntityType entity);
   bool onMessage(EntityType entity, Telegram telegram) => false;
   @override

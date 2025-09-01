@@ -5,11 +5,8 @@ import 'package:football_sim_core/ecs/ecs_system.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 
 class MovementSystem extends EcsSystem {
-  final EcsWorld world;
-  MovementSystem(this.world);
-
   @override
-  void update(double dt) {
+  void update(EcsWorld world, double dt) {
     // Cicla su tutte le entità che hanno VelocityComponent
     for (final e in world.entitiesWith<VelocityComponent>()) {
       final velComp = e.getComponent<VelocityComponent>()!;

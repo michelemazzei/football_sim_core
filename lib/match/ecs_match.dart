@@ -1,7 +1,10 @@
 import 'package:football_sim_core/match/match_fsm.dart';
 import 'package:football_sim_core/model/team.dart';
+import 'package:logging/logging.dart';
 
 class EcsMatch {
+  final logger = Logger('EcsMatch');
+
   /// Tempo trascorso in secondi
   double elapsedTime = 0.0;
 
@@ -35,6 +38,6 @@ class EcsMatch {
   /// Utility per registrare eventi
   void logEvent(String event) {
     events.add(event);
-    print('[EVENTO] $event');
+    logger.info('[EVENTO] $event');
   }
 }

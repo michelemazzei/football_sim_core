@@ -9,9 +9,9 @@ class StateMachine<EntityType> {
 
   StateMachine(this.owner, {this.currentState, this.globalState});
 
-  void update() {
-    globalState?.execute(owner);
-    currentState?.execute(owner);
+  void update(double dt) {
+    globalState?.execute(owner, dt);
+    currentState?.execute(owner, dt);
   }
 
   bool handleMessage(Telegram telegram) =>

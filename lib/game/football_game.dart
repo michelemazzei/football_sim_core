@@ -11,17 +11,20 @@ import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 import 'package:football_sim_core/ecs/entities/team_id.dart';
 import 'package:football_sim_core/ecs/systems/fsm_system.dart';
 import 'package:football_sim_core/ecs/systems/movement_system.dart';
+import 'package:football_sim_core/ecs/systems/player_fsm_system.dart';
 import 'package:football_sim_core/ecs/systems/position_system.dart';
 import 'package:football_sim_core/ecs/systems/resize_system.dart';
 import 'package:football_sim_core/match/ecs_match.dart';
 import 'package:football_sim_core/model/formation.dart';
 import 'package:football_sim_core/model/team.dart';
 import 'package:football_sim_core/utils/player_utils.dart';
+import 'package:logging/logging.dart';
 
 import '../components/ball_component.dart';
 import '../components/field_component.dart';
 
 class FootballGame extends FlameGame {
+  final logger = Logger('FootballGame');
   late final EcsWorld ecsWorld;
   late FieldComponent fieldComponent;
   late BallComponent ballComponent;
@@ -58,10 +61,11 @@ class FootballGame extends FlameGame {
     //1 -   Crea il mondo ECS
     ecsWorld = EcsWorld();
     //2 - Registra sistemi
-    ecsWorld.addSystem(FsmSystem(ecsWorld));
+    ecsWorld.addSystem(FsmSystem());
     ecsWorld.addSystem(PositionSystem(this));
-    ecsWorld.addSystem(CommandSystem(ecsWorld));
-    ecsWorld.addSystem(MovementSystem(ecsWorld));
+    ecsWorld.addSystem(PlayerFsmSystem());
+    ecsWorld.addSystem(CommandSystem());
+    ecsWorld.addSystem(MovementSystem());
     ecsWorld.addSystem(ResizeSystem(this));
 
     //3 - Crea i Componenti ECS
@@ -89,7 +93,7 @@ class FootballGame extends FlameGame {
 
     // 3. Registra nel mondo
     ecsWorld.addEntity(matchEntity);
-    ecsWorld.addSystem(FsmSystem(ecsWorld));
+    ecsWorld.addSystem(FsmSystem());
 
     createTeamFromFormation(
       formation: formation442,
@@ -120,7 +124,7 @@ class FootballGame extends FlameGame {
         ?.currentState
         ?.runtimeType;
     if (currentState != null) {
-      print('Stato corrente: $currentState');
+      logger.info('Stato corrente: $currentState');
     }
   }
 }

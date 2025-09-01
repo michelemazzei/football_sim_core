@@ -1,4 +1,6 @@
+import 'package:football_sim_core/ai/fsm/player_fsm.dart';
 import 'package:football_sim_core/components/player_component.dart';
+import 'package:football_sim_core/ecs/components/player_fsm_component.dart';
 import 'package:football_sim_core/ecs/components/render_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
@@ -37,6 +39,8 @@ Future<void> createTeamFromFormation({
     final playerComponent = PlayerComponent('P${i + 1}', i + 1, team.color);
     // 3. Collega ECS → Flame
     playerEntity.addComponent(RenderComponent(playerComponent));
+
+    playerEntity.addComponent(PlayerFsmComponent(PlayerFsm(playerComponent)));
     await game.add(playerComponent);
   }
 }

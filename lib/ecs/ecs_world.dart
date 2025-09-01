@@ -23,7 +23,7 @@ class EcsWorld {
 
   void update(double dt) {
     for (final system in _systems) {
-      system.update(dt);
+      system.update(this, dt);
     }
   }
 
