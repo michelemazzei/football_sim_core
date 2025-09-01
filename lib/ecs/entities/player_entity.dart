@@ -14,30 +14,32 @@ import 'package:football_sim_core/game/football_game.dart';
 import 'package:football_sim_core/model/player_role.dart';
 import 'package:football_sim_core/model/team.dart';
 
-extension PlayerEntity on EcsEntity {
+class PlayerEntity extends EcsEntity {
   /// Returns the [BallEntity] associated with this [EcsEntity].
-  static EcsEntity createPlayer(
-    int id, {
+  PlayerEntity(
+    super.id, {
     required int number,
     required Color color,
     required FootballGame game,
     required PlayerRole role,
     required TeamId team,
     required Vector2 initialPosition,
-  }) => EcsEntity(id)
-    ..addComponent(
+  }) {
+    addComponent(
       EcsPositionComponent(x: initialPosition.x, y: initialPosition.y),
-    )
-    ..addComponent(EcsPlayerComponent())
+    );
+    addComponent(EcsPlayerComponent())
     // Imposta il rapporto dimensionale (es. 5% della larghezza del campo)
-    ..addComponent(const SizeRatioComponent(0.03))
-    ..addComponent(PlayerColorComponent(color))
-    ..addComponent(SizeComponent(height: 10.0, width: 10.0))
-    ..addComponent(PlayerNumberComponent(number))
-    ..addComponent(VelocityComponent(Vector2.zero()))
-    ..addComponent(DirectionComponent(Vector2.zero()))
-    ..addComponent(PlayerStateComponent(PlayerState.idle))
-    ..addComponent(GameReferenceComponent(game))
-    ..addComponent(RoleComponent(role))
-    ..addComponent(TeamComponent(Team(id: team, color: color)));
+    ;
+    addComponent(const SizeRatioComponent(0.03));
+    addComponent(PlayerColorComponent(color));
+    addComponent(SizeComponent(height: 10.0, width: 10.0));
+    addComponent(PlayerNumberComponent(number));
+    addComponent(VelocityComponent(Vector2.zero()));
+    addComponent(DirectionComponent(Vector2.zero()));
+    addComponent(PlayerStateComponent(PlayerState.idle));
+    addComponent(GameReferenceComponent(game));
+    addComponent(RoleComponent(role));
+    addComponent(TeamComponent(Team(id: team, color: color)));
+  }
 }

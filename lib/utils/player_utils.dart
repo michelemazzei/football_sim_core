@@ -23,7 +23,7 @@ Future<void> createTeamFromFormation({
     final role = formation.getRole(i);
 
     // 1. Crea entità ECS
-    final playerEntity = PlayerEntity.createPlayer(
+    final playerEntity = PlayerEntity(
       id,
       initialPosition: position,
       team: team.id,

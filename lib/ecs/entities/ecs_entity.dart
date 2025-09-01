@@ -16,4 +16,8 @@ class EcsEntity {
   bool hasComponent<T extends EcsComponent>() {
     return _components.containsKey(T);
   }
+
+  void removeComponent<T extends EcsComponent>() {
+    _components.remove(T);
+  }
 }

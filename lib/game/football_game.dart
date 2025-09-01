@@ -8,6 +8,7 @@ import 'package:football_sim_core/ecs/components/render_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
+import 'package:football_sim_core/ecs/entities/match_entity.dart';
 import 'package:football_sim_core/ecs/entities/team_id.dart';
 import 'package:football_sim_core/ecs/systems/fsm_system.dart';
 import 'package:football_sim_core/ecs/systems/movement_system.dart';
@@ -87,9 +88,7 @@ class FootballGame extends FlameGame {
     final match = EcsMatch(teamA: teamRed, teamB: teamBlue);
 
     // 2. Crea l'entità
-    final matchEntity = EcsEntity(ecsWorld.genId())
-      ..addComponent(MatchComponent(match))
-      ..addComponent(FsmComponent<EcsMatch>(match.fsm));
+    final matchEntity = MatchEntity(ecsWorld.genId(), this, match);
 
     // 3. Registra nel mondo
     ecsWorld.addEntity(matchEntity);
