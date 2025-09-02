@@ -4,7 +4,7 @@ import 'package:flame/components.dart';
 import 'package:football_sim_core/components/ball_trail.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/components/ecs_position_component.dart';
-import 'package:football_sim_core/ecs/ecs_system.dart';
+import 'package:football_sim_core/ecs/systems/ecs_system.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/systems/position_system.dart';
 import 'package:football_sim_core/game/football_game.dart';

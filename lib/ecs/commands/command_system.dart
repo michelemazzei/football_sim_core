@@ -1,6 +1,6 @@
 // lib/commands/command.dart
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
-import 'package:football_sim_core/ecs/ecs_system.dart';
+import 'package:football_sim_core/ecs/systems/ecs_system.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 
 class CommandSystem extends EcsSystem {

@@ -4,6 +4,7 @@ import 'package:football_sim_core/ai/fsm/messaging/message_receiver.dart';
 import 'package:football_sim_core/ai/fsm/messaging/message_sender.dart';
 import 'package:football_sim_core/ai/fsm/messaging/messages.dart';
 import 'package:football_sim_core/ai/fsm/messaging/telegram.dart';
+import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 
 /// Gestisce l'invio dei messaggi tra agenti.
 /// Supporta messaggi immediati e ritardati.
@@ -21,10 +22,19 @@ class MessageDispatcher {
   MessageDispatcher._();
   factory MessageDispatcher() => instance;
 
-  /// Inoltra il telegramma al destinatario.
   void discharge(MessageReceiver receiver, Telegram telegram) {
-    if (!receiver.handleMessage(telegram)) {
-      log('🗑️ Message not handled by $receiver', name: '📲');
+    if (receiver is EcsEntity) {
+      final fsm = receiver.getFsmComponent();
+      final handled = fsm?.handleMessage(telegram) ?? false;
+
+      if (!handled) {
+        log('🗑️ Message not handled by $receiver', name: '📲');
+      }
+    } else {
+      final handled = receiver.handleMessage(telegram);
+      if (!handled) {
+        log('🗑️ Message not handled by $receiver', name: '📲');
+      }
     }
   }
 

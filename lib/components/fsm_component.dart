@@ -1,10 +1,11 @@
+import 'package:football_sim_core/components/is_fsm_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_component.dart';
 import 'package:football_sim_core/ai/fsm/core/game_state.dart';
 import 'package:football_sim_core/ai/fsm/messaging/telegram.dart';
 
-import '../fsm.dart';
+import '../ai/fsm/fsm.dart';
 
-class FsmComponent<T> extends EcsComponent {
+class FsmComponent<T> extends IsFsmComponent {
   final Fsm<T> fsm;
 
   FsmComponent(this.fsm);
@@ -13,6 +14,7 @@ class FsmComponent<T> extends EcsComponent {
     fsm.update(dt);
   }
 
+  @override
   bool handleMessage(Telegram telegram) {
     return fsm.handleMessage(telegram);
   }

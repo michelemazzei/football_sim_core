@@ -1,6 +1,6 @@
 import 'package:football_sim_core/ecs/components/ecs_component.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
-import 'package:football_sim_core/ecs/ecs_system.dart';
+import 'package:football_sim_core/ecs/systems/ecs_system.dart';
 
 class EcsWorld {
   final List<EcsEntity> _entities = [];

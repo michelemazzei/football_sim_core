@@ -1,14 +1,14 @@
-import 'package:football_sim_core/ai/fsm/components/fsm_component.dart';
-import 'package:football_sim_core/ai/fsm/core/game_state.dart';
+import 'package:football_sim_core/components/fsm_component.dart';
 import 'package:football_sim_core/ai/fsm/messaging/messages.dart';
 import 'package:football_sim_core/ai/fsm/messaging/messaging.dart';
 import 'package:football_sim_core/ecs/components/message_sender_component.dart';
 import 'package:football_sim_core/ecs/components/referee_component.dart';
 import 'package:football_sim_core/ecs/entities/referee_entity.dart';
-import 'package:football_sim_core/match/play_state.dart';
+import 'package:football_sim_core/ai/fsm/states/referee/play_state.dart';
+import 'package:football_sim_core/ai/fsm/states/referee/referee_base_state.dart';
 import 'package:logging/logging.dart';
 
-class KickoffState extends GameState<RefereeEntity> {
+class KickoffState extends RefereeBaseState {
   static const double kickoffDelay = 3.0; // secondi simulati
   final logger = Logger('KickoffState');
   @override

@@ -1,7 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:football_sim_core/ecs/components/render_component.dart';
 import 'package:football_sim_core/ecs/components/size_ratio_component.dart';
-import 'package:football_sim_core/ecs/ecs_system.dart';
+import 'package:football_sim_core/ecs/systems/ecs_system.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/game/football_game.dart';
 

@@ -1,7 +1,7 @@
-import 'package:football_sim_core/ai/fsm/core/game_state.dart';
 import 'package:football_sim_core/ecs/entities/referee_entity.dart';
+import 'package:football_sim_core/ai/fsm/states/referee/referee_base_state.dart';
 
-class GlobalMatchState extends GameState<RefereeEntity> {
+class GlobalRefereeState extends RefereeBaseState {
   @override
   void enter(RefereeEntity match) {}
 

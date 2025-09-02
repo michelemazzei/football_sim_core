@@ -6,7 +6,7 @@ import 'package:football_sim_core/ecs/components/ball_out_of_bounds_component.da
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/components/ecs_position_component.dart';
 
-import 'package:football_sim_core/ecs/ecs_system.dart';
+import 'package:football_sim_core/ecs/systems/ecs_system.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 
 import 'package:football_sim_core/game/football_game.dart';

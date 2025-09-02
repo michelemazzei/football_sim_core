@@ -1,5 +1,5 @@
-import 'package:football_sim_core/ai/fsm/components/fsm_component.dart';
-import 'package:football_sim_core/ecs/ecs_system.dart';
+import 'package:football_sim_core/components/fsm_component.dart';
+import 'package:football_sim_core/ecs/systems/ecs_system.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/referee_entity.dart';
 import 'package:logging/logging.dart';

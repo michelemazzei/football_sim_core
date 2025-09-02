@@ -1,5 +1,6 @@
-import 'package:football_sim_core/ai/fsm/components/fsm_component.dart';
-import 'package:football_sim_core/ai/fsm/match_fsm.dart';
+import 'package:football_sim_core/components/fsm_component.dart';
+
+import 'package:football_sim_core/ai/fsm/referee_fsm.dart';
 import 'package:football_sim_core/ecs/components/game_reference_component.dart';
 import 'package:football_sim_core/ecs/components/match_component.dart';
 import 'package:football_sim_core/ecs/components/message_sender_component.dart';
@@ -24,6 +25,6 @@ class RefereeEntity extends EcsEntity {
     addComponent(MessageSenderComponent(sender: this, world: game.ecsWorld));
 
     // FSM del match (ora gestita dal "arbitro")
-    addComponent(FsmComponent<RefereeEntity>(MatchFSM(this)));
+    addComponent(FsmComponent<RefereeEntity>(RefereeFsm(this)));
   }
 }

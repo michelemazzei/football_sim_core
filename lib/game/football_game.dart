@@ -1,6 +1,6 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import 'package:football_sim_core/ai/fsm/components/fsm_component.dart';
+import 'package:football_sim_core/components/fsm_component.dart';
 import 'package:football_sim_core/components/spalti_component.dart';
 import 'package:football_sim_core/ecs/commands/command_system.dart';
 import 'package:football_sim_core/ecs/components/render_component.dart';
