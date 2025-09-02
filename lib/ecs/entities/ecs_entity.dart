@@ -3,7 +3,7 @@ import 'package:football_sim_core/ai/fsm/messaging/message_sender.dart';
 import 'package:football_sim_core/ai/fsm/messaging/messaging.dart';
 import 'package:football_sim_core/ecs/components/ecs_component.dart';
 
-class EcsEntity implements MessageReceiver, MessageSender {
+abstract class EcsEntity implements MessageReceiver, MessageSender {
   @override
   final int id;
   EcsEntity(this.id);

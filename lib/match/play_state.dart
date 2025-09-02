@@ -1,17 +1,29 @@
+import 'package:football_sim_core/ai/fsm/components/fsm_component.dart';
 import 'package:football_sim_core/ai/fsm/core/game_state.dart';
+import 'package:football_sim_core/ecs/components/referee_component.dart';
 import 'package:football_sim_core/ecs/entities/referee_entity.dart';
+import 'package:football_sim_core/match/end_match_state.dart';
 import 'package:logging/logging.dart';
 
 class PlayState extends GameState<RefereeEntity> {
   final logger = Logger('PlayState');
   @override
-  void enter(RefereeEntity entity) {
+  void enter(RefereeEntity referee) {
     logger.info("Entering PlayState");
+    referee.getComponent<GameClockComponent>()?.reset();
   }
 
   @override
-  void execute(RefereeEntity entity, double dt) {
-    // Logica di gioco attiva
+  void execute(RefereeEntity referee, double dt) {
+    final clock = referee.getComponent<GameClockComponent>();
+    logger.info("Time: ${clock!.elapsedTime}");
+    clock.update(dt);
+    if (clock.isTimeUp) {
+      logger.info("Time is up! Ending the match.");
+      referee.getComponent<FsmComponent<RefereeEntity>>()?.fsm.changeState(
+        EndMatchState(),
+      );
+    }
   }
 
   @override

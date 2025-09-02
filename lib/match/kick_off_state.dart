@@ -21,6 +21,7 @@ class KickoffState extends GameState<RefereeEntity> {
   @override
   void execute(RefereeEntity referee, double dt) {
     final clock = referee.getComponent<GameClockComponent>();
+    clock?.update(dt);
     if (clock != null && clock.elapsedTime >= kickoffDelay) {
       logger.info('[KickoffState] Tempo scaduto. Inizio partita!');
       referee.getComponent<MessageSenderComponent>()?.broadcast(

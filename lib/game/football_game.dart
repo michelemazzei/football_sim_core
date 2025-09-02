@@ -69,7 +69,7 @@ class FootballGame extends FlameGame {
     //3 - Crea i Componenti ECS
     //.1 - ⚽ Crea la palla
     //.2 - ⚽ Crea e registra il componente ECS della palla
-    final ballEntity = BallEntity.createBall(ecsWorld.genId());
+    final ballEntity = BallEntity(ecsWorld.genId());
     ecsWorld.addEntity(ballEntity);
     //.3 - ⚽ Crea e registra il componente grafico della palla
     ballComponent = BallComponent();

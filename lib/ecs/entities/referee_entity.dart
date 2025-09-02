@@ -17,7 +17,8 @@ class RefereeEntity extends EcsEntity {
     addComponent(TeamPossessionComponent(null)); // Nessun possesso iniziale
 
     // Componenti arbitrali aggiuntivi
-    addComponent(GameClockComponent()); // Gestione tempo simulato
+    addComponent(GameClockComponent());
+    // Gestione tempo simulato
     addComponent(ScoreComponent()); // Punteggio
 
     addComponent(MessageSenderComponent(sender: this, world: game.ecsWorld));

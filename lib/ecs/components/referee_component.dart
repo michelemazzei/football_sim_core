@@ -2,15 +2,24 @@ import 'package:football_sim_core/ecs/components/ecs_component.dart';
 import 'package:football_sim_core/ecs/entities/team_id.dart';
 
 class GameClockComponent extends EcsComponent {
-  double elapsedTime = 0.0;
+  double _elapsed = 0.0;
+  final double duration;
+  final double timeScale;
+
+  GameClockComponent({this.duration = 90.0, this.timeScale = 10.0});
+  void reset() {
+    _elapsed = 0.0;
+  }
 
   void update(double dt) {
-    elapsedTime += dt;
+    _elapsed += dt * timeScale;
+    if (_elapsed > duration) _elapsed = duration;
   }
 
-  void reset() {
-    elapsedTime = 0.0;
-  }
+  bool get isTimeUp => _elapsed >= duration;
+
+  double get minutes => _elapsed / 60.0;
+  double get elapsedTime => _elapsed;
 }
 
 class ScoreComponent extends EcsComponent {

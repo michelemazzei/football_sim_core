@@ -5,17 +5,19 @@ import 'package:football_sim_core/ecs/components/ecs_position_component.dart';
 import 'package:football_sim_core/ecs/components/size_ratio_component.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 
-extension BallEntity on EcsEntity {
+class BallEntity extends EcsEntity {
   /// Returns the [BallEntity] associated with this [EcsEntity].
-  static EcsEntity createBall(int id) => EcsEntity(id)
-    ..addComponent(EcsBallComponent())
-    ..addComponent(EcsPositionComponent(x: 0.5, y: 0.5))
-    ..addComponent(VelocityComponent(Vector2.zero()))
-    ..addComponent(SizeComponent(height: 20.0, width: 20.0))
-    ..addComponent(
+  BallEntity(super.id) {
+    addComponent(EcsBallComponent());
+    addComponent(EcsPositionComponent(x: 0.5, y: 0.5));
+    addComponent(VelocityComponent(Vector2.zero()));
+    addComponent(SizeComponent(height: 20.0, width: 20.0));
+    addComponent(
       MovementConfigComponent(maxVelocity: 800, frictionFactor: 0.98),
-    )
-    ..addComponent(BallOutOfBoundsComponent())
+    );
+    addComponent(BallOutOfBoundsComponent())
     // Imposta il rapporto dimensionale (es. 5% della larghezza del campo)
-    ..addComponent(const SizeRatioComponent(0.02));
+    ;
+    addComponent(const SizeRatioComponent(0.02));
+  }
 }
