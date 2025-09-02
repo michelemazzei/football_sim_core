@@ -1,17 +1,20 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import 'package:football_sim_core/components/fsm_component.dart';
 import 'package:football_sim_core/components/spalti_component.dart';
 import 'package:football_sim_core/ecs/commands/command_system.dart';
+import 'package:football_sim_core/ecs/components/fsm_component.dart';
 import 'package:football_sim_core/ecs/components/render_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/referee_entity.dart';
+import 'package:football_sim_core/ecs/entities/stats_entity.dart';
 import 'package:football_sim_core/ecs/entities/team_id.dart';
 import 'package:football_sim_core/ecs/systems/fsm_system.dart';
 import 'package:football_sim_core/ecs/systems/movement_system.dart';
 import 'package:football_sim_core/ecs/systems/player_fsm_system.dart';
 import 'package:football_sim_core/ecs/systems/position_system.dart';
+import 'package:football_sim_core/ecs/systems/possession_event_system.dart';
+import 'package:football_sim_core/ecs/systems/possession_system.dart';
 import 'package:football_sim_core/ecs/systems/resize_system.dart';
 import 'package:football_sim_core/match/ecs_match.dart';
 import 'package:football_sim_core/model/formation.dart';
@@ -64,8 +67,11 @@ class FootballGame extends FlameGame {
     ecsWorld.addSystem(PositionSystem(this));
     ecsWorld.addSystem(PlayerFsmSystem());
     ecsWorld.addSystem(CommandSystem());
+    ecsWorld.addSystem(PossessionSystem());
     ecsWorld.addSystem(MovementSystem());
     ecsWorld.addSystem(ResizeSystem(this));
+    ecsWorld.addSystem(FsmSystem());
+    ecsWorld.addSystem(PossessionEventSystem());
     //3 - Crea i Componenti ECS
     //.1 - ⚽ Crea la palla
     //.2 - ⚽ Crea e registra il componente ECS della palla
@@ -89,7 +95,7 @@ class FootballGame extends FlameGame {
 
     // 3. Registra nel mondo
     ecsWorld.addEntity(matchEntity);
-    ecsWorld.addSystem(FsmSystem());
+    ecsWorld.addEntity(StatsEntity(ecsWorld.genId(), this, match));
 
     createTeamFromFormation(
       formation: formation442,

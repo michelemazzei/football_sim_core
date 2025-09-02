@@ -1,9 +1,9 @@
-import 'package:football_sim_core/components/is_fsm_component.dart';
+import 'package:football_sim_core/ecs/components/is_fsm_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_component.dart';
 import 'package:football_sim_core/ai/fsm/core/game_state.dart';
 import 'package:football_sim_core/ai/fsm/messaging/telegram.dart';
 
-import '../ai/fsm/fsm.dart';
+import '../../ai/fsm/fsm.dart';
 
 class FsmComponent<T> extends IsFsmComponent {
   final Fsm<T> fsm;

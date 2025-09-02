@@ -1,4 +1,4 @@
-import 'package:football_sim_core/components/fsm_component.dart';
+import 'package:football_sim_core/ecs/components/fsm_component.dart';
 
 import 'package:football_sim_core/ai/fsm/referee_fsm.dart';
 import 'package:football_sim_core/ecs/components/game_reference_component.dart';

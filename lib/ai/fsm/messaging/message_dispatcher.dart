@@ -25,7 +25,8 @@ class MessageDispatcher {
   void discharge(MessageReceiver receiver, Telegram telegram) {
     if (receiver is EcsEntity) {
       final fsm = receiver.getFsmComponent();
-      final handled = fsm?.handleMessage(telegram) ?? false;
+      final handled =
+          fsm?.handleMessage(telegram) ?? receiver.handleMessage(telegram);
 
       if (!handled) {
         log('🗑️ Message not handled by $receiver', name: '📲');

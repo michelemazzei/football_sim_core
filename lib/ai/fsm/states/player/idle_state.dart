@@ -1,4 +1,5 @@
 import 'package:football_sim_core/ai/fsm/states/player/player_base_state.dart';
+import 'package:football_sim_core/ecs/components/possession_component.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
 import 'package:logging/logging.dart';
 
@@ -12,7 +13,12 @@ class IdleState extends PlayerBaseState {
 
   @override
   void execute(PlayerEntity entity, double dt) {
-    // do nothing
+    final possession = entity.getComponent<PossessionComponent>();
+    if (possession?.hasBall == true) {
+      logger.info('Player ${entity.id} has the ball and is idle.');
+    } else {
+      // logger.info('Player ${entity.id} is idle without the ball.');
+    }
   }
 
   @override

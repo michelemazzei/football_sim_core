@@ -1,4 +1,4 @@
-import 'package:football_sim_core/components/fsm_component.dart';
+import 'package:football_sim_core/ecs/components/fsm_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_player_component.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
 import 'package:football_sim_core/ecs/systems/ecs_system.dart';

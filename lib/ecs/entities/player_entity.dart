@@ -1,8 +1,9 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:football_sim_core/ai/fsm/player_fsm.dart';
-import 'package:football_sim_core/components/fsm_component.dart';
-import 'package:football_sim_core/components/is_fsm_component.dart';
+import 'package:football_sim_core/ecs/components/fsm_component.dart';
+import 'package:football_sim_core/ecs/components/is_fsm_component.dart';
+import 'package:football_sim_core/ecs/components/possession_component.dart';
 import 'package:football_sim_core/ecs/components/direction_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/components/ecs_player_component.dart';
@@ -44,7 +45,9 @@ class PlayerEntity extends EcsEntity {
     addComponent(GameReferenceComponent(game));
     addComponent(RoleComponent(role));
     addComponent(TeamComponent(Team(id: team, color: color)));
-    // FSM del match
+    addComponent(PossessionComponent());
+
+    /// FSM del match
     addComponent(FsmComponent<PlayerEntity>(PlayerFsm(this)));
   }
 }
