@@ -1,3 +1,4 @@
+import 'package:football_sim_core/ai/fsm/messaging/messaging.dart';
 import 'package:football_sim_core/model/team.dart';
 import 'package:logging/logging.dart';
 

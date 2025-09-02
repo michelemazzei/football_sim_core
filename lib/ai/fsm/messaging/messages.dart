@@ -4,6 +4,23 @@ part 'messages.freezed.dart';
 
 @freezed
 sealed class Messages with _$Messages {
+  const factory Messages.matchStarted() = MatchStarted;
+  const factory Messages.matchFirstHalfEnded() = MatchFirstHalfEnded;
+  const factory Messages.matchFirstHalfStarted() = MatchFirstHalfStarted;
+  const factory Messages.matchSecondHalfStarted() = MatchSecondHalfStarted;
+  const factory Messages.matchSecondHalfEnded() = MatchSecondHalfEnded;
+  const factory Messages.matchFirstExtraTimeStarted() =
+      MatchFirstExtraTimeStarted;
+  const factory Messages.matchFirstExtraTimeEnded() = MatchFirstExtraTimeEnded;
+  const factory Messages.matchSecondExtraTimeStarted() =
+      MatchSecondExtraTimeStarted;
+  const factory Messages.matchSecondExtraTimeEnded() =
+      MatchSecondExtraTimeEnded;
+  const factory Messages.matchShootOutStarted() = MatchShootOutStarted;
+  const factory Messages.matchShootOutEnded() = MatchShootOutEnded;
+  const factory Messages.matchEnded() = MatchEnded;
+  const factory Messages.goalScored({required int teamId}) = GoalScored;
+
   /// Ordina all'agente di tornare alla sua posizione originaria.
   const factory Messages.goHome() = GoHome;
 

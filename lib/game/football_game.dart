@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:football_sim_core/ai/fsm/components/fsm_component.dart';
 import 'package:football_sim_core/components/spalti_component.dart';
 import 'package:football_sim_core/ecs/commands/command_system.dart';
-import 'package:football_sim_core/ecs/components/match_component.dart';
 import 'package:football_sim_core/ecs/components/render_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/ball_entity.dart';
-import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
-import 'package:football_sim_core/ecs/entities/match_entity.dart';
+import 'package:football_sim_core/ecs/entities/referee_entity.dart';
 import 'package:football_sim_core/ecs/entities/team_id.dart';
 import 'package:football_sim_core/ecs/systems/fsm_system.dart';
 import 'package:football_sim_core/ecs/systems/movement_system.dart';
@@ -68,7 +66,6 @@ class FootballGame extends FlameGame {
     ecsWorld.addSystem(CommandSystem());
     ecsWorld.addSystem(MovementSystem());
     ecsWorld.addSystem(ResizeSystem(this));
-
     //3 - Crea i Componenti ECS
     //.1 - ⚽ Crea la palla
     //.2 - ⚽ Crea e registra il componente ECS della palla
@@ -88,7 +85,7 @@ class FootballGame extends FlameGame {
     final match = EcsMatch(teamA: teamRed, teamB: teamBlue);
 
     // 2. Crea l'entità
-    final matchEntity = MatchEntity(ecsWorld.genId(), this, match);
+    final matchEntity = RefereeEntity(ecsWorld.genId(), this, match);
 
     // 3. Registra nel mondo
     ecsWorld.addEntity(matchEntity);

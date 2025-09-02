@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Telegram {
 
- MessageReceiver get sender; MessageReceiver get receiver; Messages get message; String? get additionalInfo; DateTime? get messageTime;
+ MessageSender get sender; MessageReceiver get receiver; Messages get message; String? get additionalInfo; DateTime? get messageTime;
 /// Create a copy of Telegram
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -41,7 +41,7 @@ abstract mixin class $TelegramCopyWith<$Res>  {
   factory $TelegramCopyWith(Telegram value, $Res Function(Telegram) _then) = _$TelegramCopyWithImpl;
 @useResult
 $Res call({
- MessageReceiver sender, MessageReceiver receiver, Messages message, String? additionalInfo, DateTime? messageTime
+ MessageSender sender, MessageReceiver receiver, Messages message, String? additionalInfo, DateTime? messageTime
 });
 
 
@@ -61,7 +61,7 @@ class _$TelegramCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? sender = null,Object? receiver = null,Object? message = null,Object? additionalInfo = freezed,Object? messageTime = freezed,}) {
   return _then(_self.copyWith(
 sender: null == sender ? _self.sender : sender // ignore: cast_nullable_to_non_nullable
-as MessageReceiver,receiver: null == receiver ? _self.receiver : receiver // ignore: cast_nullable_to_non_nullable
+as MessageSender,receiver: null == receiver ? _self.receiver : receiver // ignore: cast_nullable_to_non_nullable
 as MessageReceiver,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as Messages,additionalInfo: freezed == additionalInfo ? _self.additionalInfo : additionalInfo // ignore: cast_nullable_to_non_nullable
 as String?,messageTime: freezed == messageTime ? _self.messageTime : messageTime // ignore: cast_nullable_to_non_nullable
@@ -159,7 +159,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( MessageReceiver sender,  MessageReceiver receiver,  Messages message,  String? additionalInfo,  DateTime? messageTime)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( MessageSender sender,  MessageReceiver receiver,  Messages message,  String? additionalInfo,  DateTime? messageTime)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Telegram() when $default != null:
 return $default(_that.sender,_that.receiver,_that.message,_that.additionalInfo,_that.messageTime);case _:
@@ -180,7 +180,7 @@ return $default(_that.sender,_that.receiver,_that.message,_that.additionalInfo,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( MessageReceiver sender,  MessageReceiver receiver,  Messages message,  String? additionalInfo,  DateTime? messageTime)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( MessageSender sender,  MessageReceiver receiver,  Messages message,  String? additionalInfo,  DateTime? messageTime)  $default,) {final _that = this;
 switch (_that) {
 case _Telegram():
 return $default(_that.sender,_that.receiver,_that.message,_that.additionalInfo,_that.messageTime);case _:
@@ -200,7 +200,7 @@ return $default(_that.sender,_that.receiver,_that.message,_that.additionalInfo,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( MessageReceiver sender,  MessageReceiver receiver,  Messages message,  String? additionalInfo,  DateTime? messageTime)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( MessageSender sender,  MessageReceiver receiver,  Messages message,  String? additionalInfo,  DateTime? messageTime)?  $default,) {final _that = this;
 switch (_that) {
 case _Telegram() when $default != null:
 return $default(_that.sender,_that.receiver,_that.message,_that.additionalInfo,_that.messageTime);case _:
@@ -218,7 +218,7 @@ class _Telegram extends Telegram {
    _Telegram({required this.sender, required this.receiver, required this.message, this.additionalInfo, this.messageTime}): super._();
   
 
-@override final  MessageReceiver sender;
+@override final  MessageSender sender;
 @override final  MessageReceiver receiver;
 @override final  Messages message;
 @override final  String? additionalInfo;
@@ -250,7 +250,7 @@ abstract mixin class _$TelegramCopyWith<$Res> implements $TelegramCopyWith<$Res>
   factory _$TelegramCopyWith(_Telegram value, $Res Function(_Telegram) _then) = __$TelegramCopyWithImpl;
 @override @useResult
 $Res call({
- MessageReceiver sender, MessageReceiver receiver, Messages message, String? additionalInfo, DateTime? messageTime
+ MessageSender sender, MessageReceiver receiver, Messages message, String? additionalInfo, DateTime? messageTime
 });
 
 
@@ -270,7 +270,7 @@ class __$TelegramCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? sender = null,Object? receiver = null,Object? message = null,Object? additionalInfo = freezed,Object? messageTime = freezed,}) {
   return _then(_Telegram(
 sender: null == sender ? _self.sender : sender // ignore: cast_nullable_to_non_nullable
-as MessageReceiver,receiver: null == receiver ? _self.receiver : receiver // ignore: cast_nullable_to_non_nullable
+as MessageSender,receiver: null == receiver ? _self.receiver : receiver // ignore: cast_nullable_to_non_nullable
 as MessageReceiver,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as Messages,additionalInfo: freezed == additionalInfo ? _self.additionalInfo : additionalInfo // ignore: cast_nullable_to_non_nullable
 as String?,messageTime: freezed == messageTime ? _self.messageTime : messageTime // ignore: cast_nullable_to_non_nullable

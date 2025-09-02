@@ -32,6 +32,9 @@ class EcsWorld {
     return _entities.where((e) => e.hasComponent<T>()).toList();
   }
 
+  /// Utility: restituisce tutte le entità
+  List<EcsEntity> entities() => _entities.toList();
+
   Iterable<EcsEntity>
   entitiesWithAll<T1 extends EcsComponent, T2 extends EcsComponent>() {
     return entitiesWith<T1>().where((e) => e.hasComponent<T2>());

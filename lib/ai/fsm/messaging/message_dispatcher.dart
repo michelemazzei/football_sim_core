@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:football_sim_core/ai/fsm/messaging/message_receiver.dart';
+import 'package:football_sim_core/ai/fsm/messaging/message_sender.dart';
 import 'package:football_sim_core/ai/fsm/messaging/messages.dart';
 import 'package:football_sim_core/ai/fsm/messaging/telegram.dart';
 
@@ -16,9 +17,9 @@ class MessageDispatcher {
   final priorityQueue = <Telegram>[];
 
   /// Singleton instance
-  static final _instance = MessageDispatcher._();
+  static final instance = MessageDispatcher._();
   MessageDispatcher._();
-  factory MessageDispatcher() => _instance;
+  factory MessageDispatcher() => instance;
 
   /// Inoltra il telegramma al destinatario.
   void discharge(MessageReceiver receiver, Telegram telegram) {
@@ -45,7 +46,7 @@ class MessageDispatcher {
   /// Invia un messaggio, immediato o ritardato.
   void dispatchMessage({
     int delay = 0,
-    required MessageReceiver sender,
+    required MessageSender sender,
     required MessageReceiver receiver,
     required Messages message,
     dynamic additionalInfo,

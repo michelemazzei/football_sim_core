@@ -1,6 +1,10 @@
+import 'package:football_sim_core/ai/fsm/components/fsm_component.dart';
+import 'package:football_sim_core/ai/fsm/messaging/message_sender.dart';
+import 'package:football_sim_core/ai/fsm/messaging/messaging.dart';
 import 'package:football_sim_core/ecs/components/ecs_component.dart';
 
-class EcsEntity {
+class EcsEntity implements MessageReceiver, MessageSender {
+  @override
   final int id;
   EcsEntity(this.id);
   final Map<Type, EcsComponent> _components = {};
@@ -19,5 +23,11 @@ class EcsEntity {
 
   void removeComponent<T extends EcsComponent>() {
     _components.remove(T);
+  }
+
+  @override
+  bool handleMessage(Telegram telegram) {
+    final fsm = getComponent<FsmComponent>()?.fsm;
+    return fsm?.handleMessage(telegram) ?? false;
   }
 }
