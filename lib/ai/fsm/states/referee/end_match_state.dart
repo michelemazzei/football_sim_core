@@ -17,7 +17,7 @@ class EndMatchState extends RefereeBaseState {
       MessageDispatcher.instance.dispatchMessage(
         sender: referee,
         receiver: player,
-        message: Messages.matchEnded(),
+        message: MatchMessage.ended(),
       );
     }
   }

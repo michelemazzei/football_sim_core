@@ -1,8 +1,8 @@
 import 'dart:developer';
 
+import 'package:football_sim_core/ai/fsm/messaging/message.dart';
 import 'package:football_sim_core/ai/fsm/messaging/message_receiver.dart';
 import 'package:football_sim_core/ai/fsm/messaging/message_sender.dart';
-import 'package:football_sim_core/ai/fsm/messaging/messages.dart';
 import 'package:football_sim_core/ai/fsm/messaging/telegram.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 
@@ -59,7 +59,7 @@ class MessageDispatcher {
     int delay = 0,
     required MessageSender sender,
     required MessageReceiver receiver,
-    required Messages message,
+    required Message message,
     dynamic additionalInfo,
   }) {
     final telegram = Telegram(

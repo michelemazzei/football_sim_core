@@ -1,6 +1,6 @@
+import 'package:football_sim_core/ai/fsm/messaging/message.dart';
 import 'package:football_sim_core/ai/fsm/messaging/message_receiver.dart';
 import 'package:football_sim_core/ai/fsm/messaging/message_sender.dart';
-import 'package:football_sim_core/ai/fsm/messaging/messages.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'telegram.freezed.dart';
@@ -13,7 +13,7 @@ abstract class Telegram with _$Telegram {
   factory Telegram({
     required MessageSender sender,
     required MessageReceiver receiver,
-    required Messages message,
+    required Message message,
     String? additionalInfo,
     DateTime? messageTime,
   }) = _Telegram;

@@ -1,8 +1,7 @@
-import 'package:football_sim_core/ai/fsm/messaging/message_sender.dart';
 import 'package:football_sim_core/ai/fsm/messaging/messaging.dart';
+import 'package:football_sim_core/ecs/components/ecs_component.dart';
 import 'package:football_sim_core/ecs/components/fsm_component.dart';
 import 'package:football_sim_core/ecs/components/is_fsm_component.dart';
-import 'package:football_sim_core/ecs/components/ecs_component.dart';
 
 abstract class EcsEntity implements MessageReceiver, MessageSender {
   @override

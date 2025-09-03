@@ -11,7 +11,7 @@ class MessageSenderComponent extends EcsComponent {
 
   MessageSenderComponent({required this.sender, required this.world});
 
-  void sendMessage(Messages message, EcsEntity receiver) {
+  void sendMessage(Message message, EcsEntity receiver) {
     dispatcher.dispatchMessage(
       sender: sender,
       message: message,
@@ -19,7 +19,7 @@ class MessageSenderComponent extends EcsComponent {
     );
   }
 
-  void broadcast(Messages message) {
+  void broadcast(Message message) {
     for (final entity in world.entities()) {
       dispatcher.dispatchMessage(
         sender: sender,
@@ -29,7 +29,7 @@ class MessageSenderComponent extends EcsComponent {
     }
   }
 
-  void sendToGroup(String groupId, Messages message) {
+  void sendToGroup(String groupId, Message message) {
     for (final entity in world.entities()) {
       final group = entity.getComponent<GroupComponent>();
       if (group != null && group.groupId == groupId) {

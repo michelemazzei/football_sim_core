@@ -55,78 +55,44 @@ Così la prossima volta ripartiamo esattamente da dove hai lasciato.
 * Hai già un **MovementSystem**funzionante.
 * Hai un **BallTrailSystem**che aggiunge effetti visivi in base alla velocità.
 
-## 🔜 Prossimi passi
+🧩 Football Sim Core – Recap Architettura
 
-### 1. 🧍‍♂️ Aggiungere i giocatori
+Simulatore manageriale 2D in Flutter + Flame, con integrazione  **ECS** , **FSM** e  **messaggistica** .
 
-* Creare `<span>PlayerComponent</span>`con `<span>teamId</span>`e `<span>playerId</span>`
-* Creare `<span>PlayerEntity</span>`con:
-  * `<span>EcsPositionComponent</span>`
-  * `<span>VelocityComponent</span>`
-  * `<span>SizeRatioComponent</span>`
-  * `<span>RenderComponent</span>`con `<span>PlayerVisualComponent</span>`
+🔗 Integrazione FSM + ECS
 
-### 2. 🧠 Iniziare la FSM
+* `FSMComponent<t></t>`: incapsula la FSM all’interno dell’entità ECS
+* `FSMSystem`: aggiorna tutti i `FSMComponent` ogni frame
+* `MatchEntity`: collega la FSM (`MatchFSM`) tramite `FSMComponent<match></match>`
+* `MessageDispatcher`: gestisce la comunicazione tra entità ECS e reazioni degli stati
 
-* Aggiungere `<span>FSMComponent<Player></span>`alle entità giocatore
-* Definire stati come:
-  * `<span>IdleState</span>`
-  * `<span>MoveToBallState</span>`
-  * `<span>KickState</span>`
-* Scrivere `<span>PlayerFSMSystem</span>`che aggiorna lo stato corrente
+🧠 Architettura Messaggi
 
-## 🧩 Extra (facoltativi)
+* **Eventi via messaggi** , non più `MatchEventComponent`
+* `EcsEntity` implementa `MessageReceiver` (e potenzialmente `MessageSender`)
+* `Messages` (con `freezed`): centro unico per comandi/eventi (`matchStarted`, `goalScored`, ecc.)
+* I messaggi sono gestiti prima dallo  **stato corrente** , poi da quello **globale**
+* Chi emette un messaggio  **non è obbligato a gestirlo** : può delegare
 
-* `<span>PossessionComponent</span>`per sapere chi ha la palla
-* `<span>CommandComponent</span>`per passaggi e tiri
-* `<span>DebugComponent</span>`per visualizzare stato e velocità
+🏗️ Struttura attuale
 
-## 📌 Prossima volta
-
-Quando torni, possiamo partire da:
-
-* ✨ `<span>createPlayerEntity()</span>`factory
-* 🧱 `<span>PlayerComponent</span>`
-* 🔁 `<span>FSMComponent<Player></span>`e primo stato
-
-Ti basta dirmi “riprendiamo da FSM” e ti preparo tutto. Buona pausa, e complimenti per il lavoro impeccabile! 💪
-
-ok, riprendiamo domani, mi fai un breve recap cosi te lo rispedisco domani ?
-
-Certo Michele, ecco un recap sintetico ma completo così domani puoi ripartire al volo 🚀
-
-### 🧠 Architettura ECS + FSM + Messaggi
-
-* **MatchEntity**inizializza i componenti ECS e la FSM (`<span>MatchFSM</span>`) con stato iniziale `<span>KickoffState</span>`.
-* **KickoffState**emette un evento dopo 3 secondi di tempo simulato.
-* Abbiamo deciso di **non usare più **`<span>MatchEventComponent</span>`, ma di passare agli  **eventi via messaggi** .
-* Il sistema di messaggistica è già presente (`<span>MessageDispatcher</span>`) e può essere usato per inviare comandi e segnali.
-* `<span>EcsEntity</span>`ora implementa `<span>MessageReceiver</span>`, e può ricevere messaggi direttamente.
-* Abbiamo discusso di farlo implementare anche `<span>MessageSender</span>`per unificare tutto.
-* La classe `<span>Messages</span>`(con `<span>freezed</span>`) è il nuovo centro per tutti i comandi e segnali, sia per agenti che per eventi globali.
-* Puoi estenderla con eventi come `<span>matchStarted</span>`, `<span>goalScored</span>`, `<span>matchEnded</span>`, ecc.
-* I messaggi vengono gestiti prima dallo  **stato corrente** , poi dallo **stato globale**— e questo è corretto se fatto con criterio.
-* Abbiamo chiarito che  **chi emette un messaggio non deve per forza gestirlo** : può delegare.
-
-🧠 Architettura attuale
-
-* Struttura **MVC** per ogni entità (`Ball`, `Player`)
-* Separazione netta tra **logica (Controller)** e **rendering (Component)**
-* Passaggio a  **ECS + FSM** : logica centralizzata nei sistemi
+* Architettura **MVC** per entità (`Ball`, `Player`)
+* Separazione tra **Controller** (logica) e **Component** (rendering)
+* Transizione verso  **ECS + FSM** : logica centralizzata nei sistemi
 
 🔄 FSM + ECS
 
 * FSM generica con `GameState<t></t>` e `StateMachine<t></t>`
 * Stati già creati: `KickoffState`, `PlayState`, `GlobalMatchState`
-* Sistema di messaggi (`MessageDispatcher`) con supporto a delay
-* `EcsEntity` ora riceve messaggi (`MessageReceiver`) e può essere esteso come `MessageSender`
-* Classe `Messages` (con `freezed`) per tutti gli eventi e comandi
+* `MessageDispatcher` con supporto a **delay**
+* `EcsEntity` riceve messaggi (`MessageReceiver`) e può essere esteso come `MessageSender`
+* `Messages` (freezed) per tutti gli eventi e comandi
 
 ✅ Stato attuale
 
 * `MatchEntity` inizializza FSM con `KickoffState`
 * `KickoffState` emette evento dopo 3s simulati
-* Messaggi gestiti prima dallo stato corrente, poi da quello globale
+* Messaggi gestiti in ordine: stato corrente → stato globale
 * Palla visibile e dinamica con `PositionSystem`, `ResizeSystem`, `BallTrailSystem`
 * `MovementSystem` funzionante
 
@@ -136,3 +102,6 @@ Certo Michele, ecco un recap sintetico ma completo così domani puoi ripartire a
 2. Aggiungere `FSMComponent<player></player>` con stati tipo `Idle`, `MoveToBall`, `Kick`
 3. Scrivere `PlayerFSMSystem` per aggiornare gli stati
 4. (Facoltativo) Aggiungere `PossessionComponent`, `CommandComponent`, `DebugComponent`
+5. (Facoltativo) Aggiungere `PossessionComponent`, `CommandComponent`, `DebugComponent`
+
+link dei sorgenti [michelemazzei/football_sim_core](https://github.com/michelemazzei/football_sim_core)

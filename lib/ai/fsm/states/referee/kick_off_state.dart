@@ -1,11 +1,10 @@
-import 'package:football_sim_core/ecs/components/fsm_component.dart';
-import 'package:football_sim_core/ai/fsm/messaging/messages.dart';
 import 'package:football_sim_core/ai/fsm/messaging/messaging.dart';
+import 'package:football_sim_core/ai/fsm/states/referee/play_state.dart';
+import 'package:football_sim_core/ai/fsm/states/referee/referee_base_state.dart';
+import 'package:football_sim_core/ecs/components/fsm_component.dart';
 import 'package:football_sim_core/ecs/components/message_sender_component.dart';
 import 'package:football_sim_core/ecs/components/referee_component.dart';
 import 'package:football_sim_core/ecs/entities/referee_entity.dart';
-import 'package:football_sim_core/ai/fsm/states/referee/play_state.dart';
-import 'package:football_sim_core/ai/fsm/states/referee/referee_base_state.dart';
 import 'package:logging/logging.dart';
 
 class KickoffState extends RefereeBaseState {
@@ -25,7 +24,7 @@ class KickoffState extends RefereeBaseState {
     if (clock != null && clock.elapsedTime >= kickoffDelay) {
       logger.info('[KickoffState] Tempo scaduto. Inizio partita!');
       referee.getComponent<MessageSenderComponent>()?.broadcast(
-        Messages.matchStarted(),
+        MatchMessage.started(),
       );
       referee.getComponent<FsmComponent<RefereeEntity>>()?.fsm.changeState(
         PlayState(),
