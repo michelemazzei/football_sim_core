@@ -14,7 +14,7 @@ import 'package:football_sim_core/ecs/systems/movement_system.dart';
 import 'package:football_sim_core/ecs/systems/player_fsm_system.dart';
 import 'package:football_sim_core/ecs/systems/position_system.dart';
 import 'package:football_sim_core/ecs/systems/possession_event_system.dart';
-import 'package:football_sim_core/ecs/systems/possession_system.dart';
+import 'package:football_sim_core/ecs/systems/ball_proximity_system.dart';
 import 'package:football_sim_core/ecs/systems/resize_system.dart';
 import 'package:football_sim_core/match/ecs_match.dart';
 import 'package:football_sim_core/model/formation.dart';
@@ -62,16 +62,7 @@ class FootballGame extends FlameGame {
     // Registra  ECS Sybsystem
     //1 -   Crea il mondo ECS
     ecsWorld = EcsWorld();
-    //2 - Registra sistemi
-    ecsWorld.addSystem(FsmSystem());
-    ecsWorld.addSystem(PositionSystem(this));
-    ecsWorld.addSystem(PlayerFsmSystem());
-    ecsWorld.addSystem(CommandSystem());
-    ecsWorld.addSystem(PossessionSystem());
-    ecsWorld.addSystem(MovementSystem());
-    ecsWorld.addSystem(ResizeSystem(this));
-    ecsWorld.addSystem(FsmSystem());
-    ecsWorld.addSystem(PossessionEventSystem());
+
     //3 - Crea i Componenti ECS
     //.1 - ⚽ Crea la palla
     //.2 - ⚽ Crea e registra il componente ECS della palla
@@ -97,20 +88,31 @@ class FootballGame extends FlameGame {
     ecsWorld.addEntity(matchEntity);
     ecsWorld.addEntity(StatsEntity(ecsWorld.genId(), this, match));
 
-    createTeamFromFormation(
+    await createTeamFromFormation(
       formation: formation442,
       isLeftSide: true,
       team: teamRed,
       game: this,
       ecsWorld: ecsWorld,
     );
-    createTeamFromFormation(
+    await createTeamFromFormation(
       formation: formation442,
       isLeftSide: false,
       team: teamBlue,
       game: this,
       ecsWorld: ecsWorld,
     );
+
+    //2 - Registra sistemi
+    ecsWorld.addSystem(FsmSystem());
+    ecsWorld.addSystem(PositionSystem(this));
+    ecsWorld.addSystem(PlayerFsmSystem());
+    ecsWorld.addSystem(CommandSystem());
+    ecsWorld.addSystem(BallProximitySystem());
+    ecsWorld.addSystem(MovementSystem());
+    ecsWorld.addSystem(ResizeSystem(this));
+    ecsWorld.addSystem(FsmSystem());
+    ecsWorld.addSystem(PossessionEventSystem());
   }
 
   @override

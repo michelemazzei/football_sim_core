@@ -104,4 +104,30 @@ Simulatore manageriale 2D in Flutter + Flame, con integrazione  **ECS** , **FSM*
 4. (Facoltativo) Aggiungere `PossessionComponent`, `CommandComponent`, `DebugComponent`
 5. (Facoltativo) Aggiungere `PossessionComponent`, `CommandComponent`, `DebugComponent`
 
+ **Recap BallInteractSystem & Kickoff Issue**
+
+✅ BallInteractSystem
+
+* Sistema che rileva il contatto tra palla e giocatore.
+* Se la distanza tra palla e giocatore è sotto `touchThreshold`, aggiorna il possesso palla nel componente dell’arbitro (`BallPossessionComponent`).
+* Usa `removeComponent()` seguito da `addComponent()` per aggiornare il possesso.
+* Logga l’evento con `log()` per debug.
+
+⚠️ Problema attuale
+
+* L’evento **kickoff** dovrebbe far muovere il giocatore verso la palla.
+* Al momento  **non succede nulla** : il giocatore resta fermo.
+* Probabile causa: il sistema di steering non riceve l’input corretto, oppure l’evento kickoff non attiva il comportamento previsto.
+
+🔜 Da verificare la prossima volta
+
+* Il sistema che gestisce il kickoff: viene attivato correttamente?
+* Il comportamento del giocatore: riceve un target di movimento verso la palla?
+* Il sistema di steering: interpreta correttamente il target?
+* Eventuali conflitti con altri sistemi (es. blocchi, priorità, condizioni non soddisfatte).
+
+Quando torni, possiamo partire da lì e fare un debug mirato. Ti basta incollare questo recap e siamo subito operativi ⚙️
+
+Buona serata e a presto!
+
 link dei sorgenti [michelemazzei/football_sim_core](https://github.com/michelemazzei/football_sim_core)

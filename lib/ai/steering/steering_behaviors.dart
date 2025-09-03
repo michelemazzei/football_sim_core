@@ -1,18 +1,15 @@
 import 'dart:math';
 import 'package:flame/components.dart';
-import 'package:football_sim_core/ai/common/transformations.dart';
+import 'package:football_sim_core/ai/steering/transformations.dart';
 import 'package:football_sim_core/ai/config/soccer_parameters.dart';
-import 'package:football_sim_core/ai/moving_entity.dart';
 import 'dart:developer' as developer;
+
+import 'package:football_sim_core/ecs/components/ecs_components.dart';
 
 /// Comportamenti di steering per entità mobili.
 class SteeringBehaviors {
-  final MovingEntity entity;
-
-  SteeringBehaviors(this.entity);
-
   /// Spinge l'entità verso la posizione target.
-  Vector2 seek(Vector2 targetPosition) {
+  static Vector2 seek(MovingComponent entity, Vector2 targetPosition) {
     final desiredVelocity =
         (targetPosition - entity.currentPosition).normalized() *
         entity.maxSpeed;
@@ -20,9 +17,9 @@ class SteeringBehaviors {
   }
 
   /// Allontana l'entità da una minaccia vicina.
-  Vector2 flee(Vector2 targetPosition) {
+  static Vector2 flee(MovingComponent entity, Vector2 targetPosition) {
     if (entity.currentPosition.distanceTo(targetPosition) >
-        entity.panicDistance) {
+        SoccerParameters.playerComfortZone) {
       return Vector2.zero();
     }
 
@@ -33,7 +30,8 @@ class SteeringBehaviors {
   }
 
   /// Raggiunge un punto rallentando.
-  Vector2 arrive(
+  static Vector2 arrive(
+    MovingComponent entity,
     Vector2 targetPosition, {
     Deceleration deceleration = Deceleration.normal,
     double distance = 20.0,
@@ -54,14 +52,14 @@ class SteeringBehaviors {
   }
 
   /// Insegue un evader predicendo la sua posizione futura.
-  Vector2 pursuit(MovingEntity evader) {
+  static Vector2 pursuit(MovingComponent entity, MovingComponent evader) {
     if (entity == evader) return Vector2.zero();
 
     final toEvader = evader.currentPosition - entity.currentPosition;
     final relativeHeading = entity.heading.dot(evader.heading);
 
     if (toEvader.dot(entity.heading) > 0 && relativeHeading < -0.95) {
-      return seek(evader.currentPosition);
+      return seek(entity, evader.currentPosition);
     }
 
     final lookAheadTime =
@@ -69,26 +67,36 @@ class SteeringBehaviors {
     final futurePosition =
         evader.currentPosition + evader.velocity * lookAheadTime;
 
-    return seek(futurePosition);
+    return seek(entity, futurePosition);
   }
 
   /// Fugge da un pursuer predicendo la sua posizione futura.
-  Vector2 evade(MovingEntity pursuer) {
+  static Vector2 evade(MovingComponent entity, MovingComponent pursuer) {
     if (entity == pursuer) return Vector2.zero();
 
     final toPursuer = pursuer.currentPosition - entity.currentPosition;
-    final lookAheadTime = toPursuer.length / (entity.maxSpeed + pursuer.speed);
+    final lookAheadTime =
+        toPursuer.length / (entity.maxSpeed + pursuer.velocity.length);
     final futurePosition =
         pursuer.currentPosition + pursuer.velocity * lookAheadTime;
 
-    return flee(futurePosition);
+    return flee(entity, futurePosition);
   }
 
+  static bool neighbor(Vector2 currentPosition, Vector2 other) =>
+      currentPosition.distanceTo(other) < SoccerParameters.neighborsRadius;
+  static Vector2 side(Vector2 heading) =>
+      heading.scaleOrthogonalInto(-1, Vector2.zero());
+
   /// Calcola l’ostacolo più pericoloso tra gli enti vicini.
-  List<Vector2?> _findMostThreatening(List<Vector2> entities) {
+  static List<Vector2?> _findMostThreatening(
+    MovingComponent entity,
+    List<Vector2> entities,
+  ) {
     final taggedObstacles = <Vector2>[
       for (final e in entities)
-        if (e != entity.currentPosition && entity.neighbor(e)) e,
+        if (e != entity.currentPosition && neighbor(entity.currentPosition, e))
+          e,
     ];
 
     Vector2? closest;
@@ -100,7 +108,7 @@ class SteeringBehaviors {
       final localPos = Transformations.pointToLocalSpace(
         obstacle,
         entity.heading,
-        entity.side,
+        side(entity.heading),
         entity.currentPosition,
       );
 
@@ -121,9 +129,12 @@ class SteeringBehaviors {
   }
 
   /// Calcola la forza di sterzata per evitare ostacoli.
-  Vector2 obstacleAvoidance(List<Vector2> entities) {
+  static Vector2 obstacleAvoidance(
+    MovingComponent entity,
+    List<Vector2> entities,
+  ) {
     var force = Vector2.zero();
-    final threat = _findMostThreatening(entities);
+    final threat = _findMostThreatening(entity, entities);
 
     if (threat[0] != null) {
       final local = threat[1]!;
@@ -152,7 +163,7 @@ class SteeringBehaviors {
       force = Transformations.vectorToWorldSpace(
         force,
         entity.heading,
-        entity.side,
+        side(entity.heading),
       );
 
       if (force.length > entity.maxSpeed) {

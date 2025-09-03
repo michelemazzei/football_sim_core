@@ -13,6 +13,13 @@ abstract class EcsEntity implements MessageReceiver, MessageSender {
     _components[component.runtimeType] = component;
   }
 
+  void addOrReplaceComponent<T extends EcsComponent>(T component) {
+    if (hasComponent<T>()) {
+      removeComponent<T>();
+    }
+    addComponent(component);
+  }
+
   T? getComponent<T extends EcsComponent>() => _components[T] as T?;
 
   IsFsmComponent? getFsmComponent() {

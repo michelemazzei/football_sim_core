@@ -3,9 +3,8 @@
 import 'package:flame/components.dart';
 import 'package:football_sim_core/components/ball_trail.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
-import 'package:football_sim_core/ecs/components/ecs_position_component.dart';
-import 'package:football_sim_core/ecs/systems/ecs_system.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
+import 'package:football_sim_core/ecs/systems/ecs_system.dart';
 import 'package:football_sim_core/ecs/systems/position_system.dart';
 import 'package:football_sim_core/game/football_game.dart';
 import 'package:football_sim_core/utils/position_utils.dart';
@@ -21,16 +20,14 @@ class BallTrailSystem extends EcsSystem {
     for (final e in world.entitiesWith<EcsBallComponent>()) {
       final ballComp = e.getComponent<EcsBallComponent>()!;
       final sizeComp = e.getComponent<SizeComponent>();
-      final velComp = e.getComponent<VelocityComponent>();
+      final velComp = e.getComponent<MovingComponent>()!;
       final posComp = e.getComponent<EcsPositionComponent>();
 
-      if (velComp != null && velComp.velocity.length2 > 1) {
+      if (velComp.velocity.length2 > 1) {
         ballComp.angle += velComp.velocity.length * dt * ballComp.angleSpin;
       }
 
-      if (velComp != null &&
-          velComp.velocity.length2 > 0.2 &&
-          posComp != null) {
+      if (velComp.velocity.length2 > 0.2 && posComp != null) {
         // Calcolo posizione assoluta con PositionSystem
         final absPos = PositionUtils.getAbsolutePosition(
           relative: Vector2(posComp.x, posComp.y),

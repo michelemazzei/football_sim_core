@@ -1,35 +1,28 @@
-import 'package:flame/game.dart';
+import 'package:football_sim_core/ai/steering/steering_behaviors.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
-import 'package:football_sim_core/ecs/components/ecs_position_component.dart';
-import 'package:football_sim_core/ecs/systems/ecs_system.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
+import 'package:football_sim_core/ecs/systems/ecs_system.dart';
 
 class MovementSystem extends EcsSystem {
   @override
   void update(EcsWorld world, double dt) {
-    // Cicla su tutte le entità che hanno VelocityComponent
-    for (final e in world.entitiesWith<VelocityComponent>()) {
-      final velComp = e.getComponent<VelocityComponent>()!;
-      final posComp = e.getComponent<EcsPositionComponent>();
-      final cfgComp = e.getComponent<MovementConfigComponent>();
+    for (final e in world.entitiesWith<MovingComponent>()) {
+      final move = e.getComponent<MovingComponent>()!;
+      final pos = move.currentPosition;
+      final target = move.targetPosition;
 
-      // Applica attrito e clamp
-      if (cfgComp != null) {
-        velComp.velocity *= cfgComp.frictionFactor;
-
-        final speed = velComp.velocity.length;
-        if (speed > cfgComp.maxVelocity) {
-          velComp.velocity =
-              velComp.velocity.normalized() * cfgComp.maxVelocity;
-        } else if (speed < cfgComp.minVelocity) {
-          velComp.velocity = Vector2.zero();
+      if (target != null && (target - pos).length2 > 0.01) {
+        move.velocity = SteeringBehaviors.arrive(
+          move,
+          target,
+          deceleration: Deceleration.normal,
+        );
+        // Applica movimento
+        move.currentPosition += move.velocity * dt;
+        // Aggiorna heading
+        if (move.velocity.length2 > 0.001) {
+          move.heading = move.velocity.normalized();
         }
-      }
-
-      // Muovi la posizione
-      if (posComp != null) {
-        posComp.x += velComp.velocity.x * dt;
-        posComp.y += velComp.velocity.y * dt;
       }
     }
   }

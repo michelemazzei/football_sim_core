@@ -1,17 +1,8 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
+import 'package:football_sim_core/ai/config/soccer_parameters.dart';
 import 'package:football_sim_core/ai/fsm/player_fsm.dart';
-import 'package:football_sim_core/ecs/components/fsm_component.dart';
-import 'package:football_sim_core/ecs/components/is_fsm_component.dart';
-import 'package:football_sim_core/ecs/components/possession_component.dart';
-import 'package:football_sim_core/ecs/components/direction_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
-import 'package:football_sim_core/ecs/components/ecs_player_component.dart';
-import 'package:football_sim_core/ecs/components/ecs_position_component.dart';
-import 'package:football_sim_core/ecs/components/game_reference_component.dart';
-import 'package:football_sim_core/ecs/components/role_component.dart';
-import 'package:football_sim_core/ecs/components/size_ratio_component.dart';
-import 'package:football_sim_core/ecs/components/team_component.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 import 'package:football_sim_core/ecs/entities/team_id.dart';
 import 'package:football_sim_core/game/football_game.dart';
@@ -39,13 +30,22 @@ class PlayerEntity extends EcsEntity {
     addComponent(PlayerColorComponent(color));
     addComponent(SizeComponent(height: 10.0, width: 10.0));
     addComponent(PlayerNumberComponent(number));
-    addComponent(VelocityComponent(Vector2.zero()));
     addComponent(DirectionComponent(Vector2.zero()));
     addComponent(PlayerStateComponent(PlayerState.idle));
     addComponent(GameReferenceComponent(game));
     addComponent(RoleComponent(role));
     addComponent(TeamComponent(Team(id: team, color: color)));
     addComponent(PossessionComponent());
+    addComponent(
+      MovingComponent(
+        maxSpeed: SoccerParameters.playerMaxSpeed,
+        heading: Vector2(1, 0),
+        mass: SoccerParameters.playerMass,
+        velocity: Vector2.zero(),
+        targetPosition: Vector2(initialPosition.x, initialPosition.y),
+        currentPosition: Vector2(initialPosition.x, initialPosition.y),
+      ),
+    );
 
     /// FSM del match
     addComponent(FsmComponent<PlayerEntity>(PlayerFsm(this)));

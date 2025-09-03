@@ -1,10 +1,12 @@
 import 'package:football_sim_core/ai/fsm/messaging/messaging.dart';
 import 'package:football_sim_core/ai/fsm/states/referee/play_state.dart';
 import 'package:football_sim_core/ai/fsm/states/referee/referee_base_state.dart';
-import 'package:football_sim_core/ecs/components/fsm_component.dart';
-import 'package:football_sim_core/ecs/components/message_sender_component.dart';
-import 'package:football_sim_core/ecs/components/referee_component.dart';
+import 'package:football_sim_core/ai/steering/player_utils.dart';
+import 'package:football_sim_core/ecs/components/ecs_components.dart';
+import 'package:football_sim_core/ecs/entities/ball_entity.dart';
+import 'package:football_sim_core/ecs/entities/player_entity.dart';
 import 'package:football_sim_core/ecs/entities/referee_entity.dart';
+import 'package:football_sim_core/model/team.dart';
 import 'package:logging/logging.dart';
 
 class KickoffState extends RefereeBaseState {
@@ -12,9 +14,37 @@ class KickoffState extends RefereeBaseState {
   final logger = Logger('KickoffState');
   @override
   void enter(RefereeEntity referee) {
-    // Reset del tempo
-    referee.getComponent<GameClockComponent>()?.reset();
     logger.info('[KickoffState] Entrato. Attesa di $kickoffDelay secondi...');
+    // Reset del tempo
+    final team = _selectKickoffTeam(referee);
+    if (team == null) return;
+    logger.info(
+      '[KickoffState] La squadra che effettua il kickoff è: ${team.id}',
+    );
+    referee.getComponent<GameClockComponent>()?.reset();
+    final game = referee.getComponent<GameReferenceComponent>()!.game;
+    // Recupera la palla
+    final ball = game.ecsWorld.entitiesOf<BallEntity>().firstOrNull;
+    if (ball == null) return;
+    final players = game.ecsWorld
+        .entitiesOf<PlayerEntity>()
+        .where(
+          (player) => player.getComponent<TeamComponent>()?.team.id == team.id,
+        )
+        .toList();
+    if (players.isEmpty) return;
+
+    // Trova il giocatore più vicino alla palla
+    final closestPlayer = PlayerUtils.findClosestPlayerToBall(players, ball);
+    if (closestPlayer == null) return;
+    closestPlayer.getComponent<MovingComponent>()!.currentPosition = ball
+        .getComponent<MovingComponent>()!
+        .currentPosition;
+
+    // Assegna la palla al giocatore
+    logger.info(
+      '[KickoffState] Il giocatore più vicino alla palla è: ${closestPlayer.id}',
+    );
   }
 
   @override
@@ -35,5 +65,14 @@ class KickoffState extends RefereeBaseState {
   @override
   void exit(RefereeEntity referee) {
     logger.info('[KickoffState] Uscita dallo stato di kickoff.');
+  }
+
+  Team? _selectKickoffTeam(RefereeEntity referee) {
+    final teamPossession = referee.getComponent<TeamPossessionComponent>();
+    final match = referee.getComponent<MatchComponent>()?.match;
+
+    // In futuro potresti usare sorteggio, ranking, ecc.
+    teamPossession?.team = match?.teamA;
+    return teamPossession?.team;
   }
 }
