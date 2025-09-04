@@ -1,3 +1,4 @@
+import 'package:flame/components.dart';
 import 'package:football_sim_core/ai/fsm/messaging/messaging.dart';
 import 'package:football_sim_core/ai/fsm/states/referee/play_state.dart';
 import 'package:football_sim_core/ai/fsm/states/referee/referee_base_state.dart';
@@ -32,12 +33,33 @@ class KickoffState extends RefereeBaseState {
           (player) => player.getComponent<TeamComponent>()?.team.id == team.id,
         )
         .toList();
+    logger.info('players nel team: ${players.length}');
     if (players.isEmpty) return;
+    assert(() {
+      final ballPosition = ball.getComponent<EcsPositionComponent>()?.position;
+      logger.info('ballPosition - $ballPosition');
+      for (final p in players) {
+        final position = p.getComponent<EcsPositionComponent>()?.position;
+        logger.info('player id: ${p.id} - $position');
+      }
+      return true;
+    }());
 
     // Trova il giocatore più vicino alla palla
-    final closestPlayer = PlayerUtils.findClosestPlayerToBall(players, ball);
-    if (closestPlayer == null) return;
-    closestPlayer.getComponent<MovingComponent>()!.currentPosition = ball
+    final closestPlayers = PlayerUtils.findClosestPlayersToBall(players, ball);
+    if (closestPlayers.isEmpty) return;
+    assert(() {
+      for (final p in closestPlayers) {
+        final position = p.getComponent<EcsPositionComponent>()?.position;
+        logger.info('closest player id: ${p.id} - $position');
+      }
+      return true;
+    }());
+    final closestPlayer = closestPlayers.first;
+    final number =
+        closestPlayer.getComponent<PlayerNumberComponent>()?.number ?? -1;
+    logger.info('closest player id: ${closestPlayer.id} - #$number');
+    closestPlayer.getComponent<MovingComponent>()!.targetPosition = ball
         .getComponent<MovingComponent>()!
         .currentPosition;
 

@@ -3,27 +3,29 @@ import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
 
 class PlayerUtils {
-  static PlayerEntity? findClosestPlayerToBall(
+  static List<PlayerEntity> findClosestPlayersToBall(
     Iterable<PlayerEntity> players,
     BallEntity ball,
   ) {
-    final ballPos = ball.getComponent<MovingComponent>()?.currentPosition;
-    if (ballPos == null) return null;
+    final ballPos = ball.getComponent<EcsPositionComponent>()?.position;
+    if (ballPos == null) return [];
 
-    PlayerEntity? closest;
-    double minDistance = double.infinity;
+    // Mappa ogni giocatore alla sua distanza dalla palla
+    final playerDistances = <PlayerEntity, double>{};
 
     for (final player in players) {
-      final moving = player.getComponent<MovingComponent>();
-      if (moving == null) continue;
+      final posComp = player.getComponent<EcsPositionComponent>();
+      if (posComp == null) continue;
 
-      final distance = moving.currentPosition.distanceTo(ballPos);
-      if (distance < minDistance) {
-        minDistance = distance;
-        closest = player;
-      }
+      final distance = posComp.position.distanceToSquared(ballPos);
+      playerDistances[player] = distance;
     }
 
-    return closest;
+    // Ordina i giocatori in base alla distanza
+    final sortedPlayers = playerDistances.entries.toList()
+      ..sort((a, b) => a.value.compareTo(b.value));
+
+    // Ritorna solo la lista ordinata di PlayerEntity
+    return sortedPlayers.map((entry) => entry.key).toList();
   }
 }

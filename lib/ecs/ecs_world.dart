@@ -8,6 +8,11 @@ class EcsWorld {
   int _nextId = 0;
 
   int genId() => _nextId++;
+  final List<EcsSystem> _pendingRemovals = [];
+
+  void removeSystemLater(EcsSystem system) {
+    _pendingRemovals.add(system);
+  }
 
   void addEntity(EcsEntity entity) {
     _entities.add(entity);
@@ -25,6 +30,9 @@ class EcsWorld {
     for (final system in _systems) {
       system.update(this, dt);
     }
+    // Rimuovi dopo l’update
+    _systems.removeWhere((s) => _pendingRemovals.contains(s));
+    _pendingRemovals.clear();
   }
 
   /// Utility: restituisce tutte le entità che hanno un dato componente

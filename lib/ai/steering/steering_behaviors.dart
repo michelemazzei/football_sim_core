@@ -34,7 +34,7 @@ class SteeringBehaviors {
     MovingComponent entity,
     Vector2 targetPosition, {
     Deceleration deceleration = Deceleration.normal,
-    double distance = 20.0,
+    double distance = 0.01,
   }) {
     final toTarget = targetPosition - entity.currentPosition;
 

@@ -9,12 +9,13 @@ import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/referee_entity.dart';
 import 'package:football_sim_core/ecs/entities/stats_entity.dart';
 import 'package:football_sim_core/ecs/entities/team_id.dart';
+import 'package:football_sim_core/ecs/systems/ball_proximity_system.dart';
 import 'package:football_sim_core/ecs/systems/fsm_system.dart';
+import 'package:football_sim_core/ecs/systems/match_start_system.dart';
 import 'package:football_sim_core/ecs/systems/movement_system.dart';
 import 'package:football_sim_core/ecs/systems/player_fsm_system.dart';
 import 'package:football_sim_core/ecs/systems/position_system.dart';
 import 'package:football_sim_core/ecs/systems/possession_event_system.dart';
-import 'package:football_sim_core/ecs/systems/ball_proximity_system.dart';
 import 'package:football_sim_core/ecs/systems/resize_system.dart';
 import 'package:football_sim_core/match/ecs_match.dart';
 import 'package:football_sim_core/model/formation.dart';
@@ -77,17 +78,7 @@ class FootballGame extends FlameGame {
     // 🔵 Squadre
     final teamRed = Team(id: TeamId.red, color: TeamId.red.color);
     final teamBlue = Team(id: TeamId.blue, color: TeamId.blue.color);
-
-    // 1. Crea la partita
-    final match = EcsMatch(teamA: teamRed, teamB: teamBlue);
-
-    // 2. Crea l'entità
-    final matchEntity = RefereeEntity(ecsWorld.genId(), this, match);
-
-    // 3. Registra nel mondo
-    ecsWorld.addEntity(matchEntity);
-    ecsWorld.addEntity(StatsEntity(ecsWorld.genId(), this, match));
-
+    // 🔵 Giocatori
     await createTeamFromFormation(
       formation: formation442,
       isLeftSide: true,
@@ -103,6 +94,16 @@ class FootballGame extends FlameGame {
       ecsWorld: ecsWorld,
     );
 
+    // 1. Crea la partita
+    final match = EcsMatch(teamA: teamRed, teamB: teamBlue);
+
+    // 2. Crea l'entità
+    final refereeEntity = RefereeEntity(ecsWorld.genId(), this, match);
+
+    // 3. Registra nel mondo
+    ecsWorld.addEntity(refereeEntity);
+    ecsWorld.addEntity(StatsEntity(ecsWorld.genId(), this, match));
+
     //2 - Registra sistemi
     ecsWorld.addSystem(FsmSystem());
     ecsWorld.addSystem(PositionSystem(this));
@@ -113,6 +114,7 @@ class FootballGame extends FlameGame {
     ecsWorld.addSystem(ResizeSystem(this));
     ecsWorld.addSystem(FsmSystem());
     ecsWorld.addSystem(PossessionEventSystem());
+    ecsWorld.addSystem(MatchStartSystem());
   }
 
   @override

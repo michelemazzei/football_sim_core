@@ -20,7 +20,7 @@ class MovementSystem extends EcsSystem {
         // Applica movimento
         move.currentPosition += move.velocity * dt;
         // Aggiorna heading
-        if (move.velocity.length2 > 0.001) {
+        if (move.velocity.length2 > 0) {
           move.heading = move.velocity.normalized();
         }
       }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:football_sim_core/components/player_component.dart';
 import 'package:football_sim_core/ecs/components/render_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
@@ -19,7 +21,7 @@ Future<void> createTeamFromFormation({
     // Posizione normalizzata dalla formazione
     final position = formation.getPosition(i, isLeftSide);
     final role = formation.getRole(i);
-
+    log('Creating player $i at position $position with role $role');
     // 1. Crea entità ECS
     final playerEntity = PlayerEntity(
       id,
@@ -32,6 +34,7 @@ Future<void> createTeamFromFormation({
     );
 
     ecsWorld.addEntity(playerEntity);
+    log('Player entity created: ${playerEntity.id}');
 
     // 2. Crea componente grafico
     final playerComponent = PlayerComponent('P${i + 1}', i + 1, team.color);

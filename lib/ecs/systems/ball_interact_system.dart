@@ -27,11 +27,12 @@ class BallInteractSystem extends EcsSystem {
         .entitiesWith<EcsPlayerComponent>()
         .whereType<PlayerEntity>();
 
-    final closest = PlayerUtils.findClosestPlayerToBall(players, ball);
-    if (closest == null) {
+    final closestPlayers = PlayerUtils.findClosestPlayersToBall(players, ball);
+    if (closestPlayers.isEmpty) {
       return;
     }
 
+    final closest = closestPlayers.first;
     final distance = closest
         .getComponent<EcsPositionComponent>()!
         .position

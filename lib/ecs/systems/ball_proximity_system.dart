@@ -41,12 +41,12 @@ class BallProximitySystem extends EcsSystem {
       }
       return true;
     }());
-    final closestPlayer = PlayerUtils.findClosestPlayerToBall(
+    final closestPlayers = PlayerUtils.findClosestPlayersToBall(
       players,
       ball as BallEntity,
     );
     assert(() {
-      if (closestPlayer == null) {
+      if (closestPlayers.isEmpty) {
         log(
           name: 'BallProximitySystem',
           "Non e' stato trovato alcun giocatore vicino alla palla.",
@@ -56,11 +56,12 @@ class BallProximitySystem extends EcsSystem {
       return true;
     }());
     // Se il tempo è scaduto, nessun giocatore può avere il possesso
-    if (timeIsUp || closestPlayer == null) {
+    if (timeIsUp || closestPlayers.isEmpty) {
       ball.addOrReplaceComponent<BallProximityComponent>(
         BallProximityComponent(),
       );
     } else {
+      final closestPlayer = closestPlayers.first;
       ball.addOrReplaceComponent<BallProximityComponent>(
         BallProximityComponent(
           playerEntity: closestPlayer,

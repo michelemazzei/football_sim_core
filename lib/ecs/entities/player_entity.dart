@@ -30,7 +30,6 @@ class PlayerEntity extends EcsEntity {
     addComponent(PlayerColorComponent(color));
     addComponent(SizeComponent(height: 10.0, width: 10.0));
     addComponent(PlayerNumberComponent(number));
-    addComponent(DirectionComponent(Vector2.zero()));
     addComponent(PlayerStateComponent(PlayerState.idle));
     addComponent(GameReferenceComponent(game));
     addComponent(RoleComponent(role));
@@ -42,7 +41,6 @@ class PlayerEntity extends EcsEntity {
         heading: Vector2(1, 0),
         mass: SoccerParameters.playerMass,
         velocity: Vector2.zero(),
-        targetPosition: Vector2(initialPosition.x, initialPosition.y),
         currentPosition: Vector2(initialPosition.x, initialPosition.y),
       ),
     );
