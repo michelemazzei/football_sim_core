@@ -1,4 +1,5 @@
 import 'package:flame/components.dart';
+import 'package:football_sim_core/ai/config/soccer_parameters.dart';
 import 'package:football_sim_core/ai/steering/steering_behaviors.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
@@ -25,10 +26,21 @@ class MovementSystem extends EcsSystem {
       Vector2 steeringForce = Vector2.zero();
 
       if (moving.targetPosition != null) {
+        final distance =
+            (moving.targetPosition! - moving.currentPosition).length;
+
+        if (distance < 0.03) {
+          moving.velocity = Vector2.zero();
+          moving.targetPosition = null;
+          return;
+        }
+
         steeringForce = SteeringBehaviors.arrive(
-          moving,
-          moving.targetPosition!,
-          deceleration: Deceleration.normal,
+          velocity: moving.velocity,
+          maxForce: SoccerParameters.playerMaxForce,
+          maxSpeed: SoccerParameters.playerMaxSpeed,
+          position: moving.currentPosition,
+          target: moving.targetPosition!,
         );
       }
 

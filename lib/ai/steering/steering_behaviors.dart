@@ -29,26 +29,37 @@ class SteeringBehaviors {
     return desiredVelocity - entity.velocity;
   }
 
-  /// Raggiunge un punto rallentando.
-  static Vector2 arrive(
-    MovingComponent entity,
-    Vector2 targetPosition, {
-    Deceleration deceleration = Deceleration.normal,
-    double distance = 0.01,
+  static Vector2 arrive({
+    required Vector2 target,
+    required Vector2 position,
+    required Vector2 velocity,
+    required double maxSpeed,
+    required double maxForce,
+    double slowingRadius = 100.0,
   }) {
-    final toTarget = targetPosition - entity.currentPosition;
+    final toTarget = target - position;
+    final distance = toTarget.length;
 
-    if (toTarget.length <= distance) return Vector2.zero();
+    double easeInOutQuad(double t) {
+      return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    }
 
-    const decelerationTweaker = 20;
-    final speed = min(
-      entity.maxSpeed,
-      distance / decelerationTweaker * (deceleration.index + 1),
-    );
+    final t = (distance / slowingRadius).clamp(0.0, 1.0);
+    final easedSpeed = (distance < slowingRadius)
+        ? maxSpeed * easeInOutQuad(t)
+        : maxSpeed;
 
-    final desiredVelocity = (toTarget * speed / distance) - entity.velocity;
-    desiredVelocity.length = min(desiredVelocity.length, entity.maxSpeed);
-    return desiredVelocity;
+    final minSpeed = 0.5;
+    final finalSpeed = max(easedSpeed, minSpeed);
+
+    final desiredVelocity = toTarget.normalized() * finalSpeed;
+    final steering = desiredVelocity - velocity;
+
+    if (steering.length > maxForce) {
+      steering.scaleTo(maxForce);
+    }
+
+    return steering;
   }
 
   /// Insegue un evader predicendo la sua posizione futura.
