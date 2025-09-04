@@ -20,9 +20,6 @@ class PlayerEntity extends EcsEntity {
     required TeamId team,
     required Vector2 initialPosition,
   }) {
-    addComponent(
-      EcsPositionComponent(x: initialPosition.x, y: initialPosition.y),
-    );
     addComponent(EcsPlayerComponent())
     // Imposta il rapporto dimensionale (es. 5% della larghezza del campo)
     ;

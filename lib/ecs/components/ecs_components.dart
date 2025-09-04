@@ -2,7 +2,6 @@ export 'ball_out_of_bounds_component.dart';
 export 'ecs_ball_component.dart';
 export 'ecs_component.dart';
 export 'ecs_player_component.dart';
-export 'ecs_position_component.dart';
 export 'fsm_component.dart';
 export 'game_reference_component.dart';
 export 'group_component.dart';

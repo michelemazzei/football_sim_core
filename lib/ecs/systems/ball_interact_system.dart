@@ -34,8 +34,8 @@ class BallInteractSystem extends EcsSystem {
 
     final closest = closestPlayers.first;
     final distance = closest
-        .getComponent<EcsPositionComponent>()!
-        .position
+        .getComponent<MovingComponent>()!
+        .currentPosition
         .distanceTo(ballPos);
 
     if (distance <= touchThreshold) {

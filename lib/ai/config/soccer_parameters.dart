@@ -6,8 +6,8 @@ class SoccerParameters {
   static const double possessionRadius = 0.1;
   static const playerMass = 3.0;
   static const playerMaxForce = 1.0;
-  static const playerMaxSpeed = 5.0;
-  static const playerMaxSpeedWithBall = 2.0;
+  static const playerMaxSpeed = 50.0;
+  static const playerMaxSpeedWithBall = 20.0;
   static const playerMaxSpeedWithoutBall = 4.0;
   static const playerComfortZone = 50.0;
   static const playerDecrease = -0.01;

@@ -14,7 +14,6 @@ import 'package:football_sim_core/ecs/systems/fsm_system.dart';
 import 'package:football_sim_core/ecs/systems/match_start_system.dart';
 import 'package:football_sim_core/ecs/systems/movement_system.dart';
 import 'package:football_sim_core/ecs/systems/player_fsm_system.dart';
-import 'package:football_sim_core/ecs/systems/position_system.dart';
 import 'package:football_sim_core/ecs/systems/possession_event_system.dart';
 import 'package:football_sim_core/ecs/systems/resize_system.dart';
 import 'package:football_sim_core/match/ecs_match.dart';
@@ -106,15 +105,16 @@ class FootballGame extends FlameGame {
 
     //2 - Registra sistemi
     ecsWorld.addSystem(FsmSystem());
-    ecsWorld.addSystem(PositionSystem(this));
+    // ecsWorld.addSystem(PositionSystem(this));
     ecsWorld.addSystem(PlayerFsmSystem());
     ecsWorld.addSystem(CommandSystem());
     ecsWorld.addSystem(BallProximitySystem());
-    ecsWorld.addSystem(MovementSystem());
+    ecsWorld.addSystem(MovementSystem(this));
     ecsWorld.addSystem(ResizeSystem(this));
     ecsWorld.addSystem(FsmSystem());
     ecsWorld.addSystem(PossessionEventSystem());
     ecsWorld.addSystem(MatchStartSystem());
+    // ecsWorld.addSystem(RenderSyncSystem());
   }
 
   @override

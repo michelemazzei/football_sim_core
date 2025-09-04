@@ -2,13 +2,9 @@
 
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
-import 'package:football_sim_core/ecs/components/ball_out_of_bounds_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
-import 'package:football_sim_core/ecs/components/ecs_position_component.dart';
-
-import 'package:football_sim_core/ecs/systems/ecs_system.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
-
+import 'package:football_sim_core/ecs/systems/ecs_system.dart';
 import 'package:football_sim_core/game/football_game.dart';
 
 /// Controlla se la palla esce dal campo e, in tal caso, chiama
@@ -29,7 +25,7 @@ class BallBoundarySystem extends EcsSystem {
 
     // Filtra solo le entità che hanno un BallLogicComponent
     for (final e in world.entitiesWith<BallOutOfBoundsComponent>()) {
-      final posComp = e.getComponent<EcsPositionComponent>();
+      final posComp = e.getComponent<MovingComponent>()?.currentPosition;
       final sizeComp = e.getComponent<SizeComponent>();
 
       if (posComp == null) continue;

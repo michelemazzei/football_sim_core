@@ -1,5 +1,5 @@
 import 'package:flame/components.dart';
-import 'package:football_sim_core/ecs/components/ecs_position_component.dart';
+import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 import 'package:football_sim_core/game/football_game.dart';
 
@@ -23,14 +23,14 @@ abstract class EntityComponent extends PositionComponent
   }
 
   void resizeAndReposition() {
-    final posComp = entity.getComponent<EcsPositionComponent>();
+    final posComp = entity.getComponent<MovingComponent>()?.currentPosition;
     if (posComp == null) return;
     final field = game.fieldComponent;
     if (field.size.x <= 0 || field.size.y <= 0) return;
 
     final rawSize = field.size.x * sizeRatio;
     size = Vector2.all(rawSize.clamp(10, 30));
-    position = posComp.position + size / 2;
+    position = posComp + size / 2;
   }
 
   void onPostUpdate(double dt) {}
@@ -43,9 +43,9 @@ abstract class EntityComponent extends PositionComponent
       resizeAndReposition();
       _needsResize = false;
     } else {
-      final posComp = entity.getComponent<EcsPositionComponent>();
+      final posComp = entity.getComponent<MovingComponent>()?.currentPosition;
       if (posComp == null) return;
-      position = posComp.position + size / 2;
+      position = posComp + size / 2;
     }
 
     onPostUpdate(dt);

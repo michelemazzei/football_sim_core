@@ -1,4 +1,3 @@
-import 'package:flame/components.dart';
 import 'package:football_sim_core/ai/fsm/messaging/messaging.dart';
 import 'package:football_sim_core/ai/fsm/states/referee/play_state.dart';
 import 'package:football_sim_core/ai/fsm/states/referee/referee_base_state.dart';
@@ -36,10 +35,12 @@ class KickoffState extends RefereeBaseState {
     logger.info('players nel team: ${players.length}');
     if (players.isEmpty) return;
     assert(() {
-      final ballPosition = ball.getComponent<EcsPositionComponent>()?.position;
+      final ballPosition = ball
+          .getComponent<MovingComponent>()
+          ?.currentPosition;
       logger.info('ballPosition - $ballPosition');
       for (final p in players) {
-        final position = p.getComponent<EcsPositionComponent>()?.position;
+        final position = p.getComponent<MovingComponent>()?.currentPosition;
         logger.info('player id: ${p.id} - $position');
       }
       return true;
@@ -50,7 +51,7 @@ class KickoffState extends RefereeBaseState {
     if (closestPlayers.isEmpty) return;
     assert(() {
       for (final p in closestPlayers) {
-        final position = p.getComponent<EcsPositionComponent>()?.position;
+        final position = p.getComponent<MovingComponent>()?.currentPosition;
         logger.info('closest player id: ${p.id} - $position');
       }
       return true;

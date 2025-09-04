@@ -9,7 +9,7 @@ class BallEntity extends EcsEntity {
   BallEntity(super.id) {
     addComponent(EcsBallComponent());
     addComponent(BallProximityComponent());
-    addComponent(EcsPositionComponent(x: 0.5, y: 0.5));
+
     addComponent(
       MovingComponent(
         maxSpeed: SoccerParameters.ballMaxSpeed,

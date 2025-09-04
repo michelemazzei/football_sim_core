@@ -5,15 +5,13 @@ import 'package:football_sim_core/components/ball_trail.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/systems/ecs_system.dart';
-import 'package:football_sim_core/ecs/systems/position_system.dart';
 import 'package:football_sim_core/game/football_game.dart';
 import 'package:football_sim_core/utils/position_utils.dart';
 
 class BallTrailSystem extends EcsSystem {
   final FootballGame game;
-  final PositionSystem posSys;
 
-  BallTrailSystem(this.game, this.posSys);
+  BallTrailSystem(this.game);
 
   @override
   void update(EcsWorld world, double dt) {
@@ -21,7 +19,7 @@ class BallTrailSystem extends EcsSystem {
       final ballComp = e.getComponent<EcsBallComponent>()!;
       final sizeComp = e.getComponent<SizeComponent>();
       final velComp = e.getComponent<MovingComponent>()!;
-      final posComp = e.getComponent<EcsPositionComponent>();
+      final posComp = e.getComponent<MovingComponent>()?.currentPosition;
 
       if (velComp.velocity.length2 > 1) {
         ballComp.angle += velComp.velocity.length * dt * ballComp.angleSpin;

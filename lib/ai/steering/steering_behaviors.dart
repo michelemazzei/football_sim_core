@@ -40,7 +40,7 @@ class SteeringBehaviors {
 
     if (toTarget.length <= distance) return Vector2.zero();
 
-    const decelerationTweaker = 50;
+    const decelerationTweaker = 20;
     final speed = min(
       entity.maxSpeed,
       distance / decelerationTweaker * (deceleration.index + 1),
