@@ -55,10 +55,14 @@ extension MatchMessagePatterns on MatchMessage {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( MatchStarted value)?  started,TResult Function( MatchFirstHalfStarted value)?  firstHalfStarted,TResult Function( MatchFirstHalfEnded value)?  firstHalfEnded,TResult Function( MatchSecondHalfStarted value)?  secondHalfStarted,TResult Function( MatchSecondHalfEnded value)?  secondHalfEnded,TResult Function( MatchFirstExtraTimeStarted value)?  firstExtraTimeStarted,TResult Function( MatchFirstExtraTimeEnded value)?  firstExtraTimeEnded,TResult Function( MatchSecondExtraTimeStarted value)?  secondExtraTimeStarted,TResult Function( MatchSecondExtraTimeEnded value)?  secondExtraTimeEnded,TResult Function( MatchShootOutStarted value)?  shootOutStarted,TResult Function( MatchShootOutEnded value)?  shootOutEnded,TResult Function( MatchEnded value)?  ended,TResult Function( GoalScored value)?  goalScored,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( KickoffStarted value)?  kickoffStarted,TResult Function( BallKicked value)?  ballKicked,TResult Function( PassCompleted value)?  passCompleted,TResult Function( PlayStarted value)?  playStarted,TResult Function( MatchStarted value)?  started,TResult Function( MatchFirstHalfStarted value)?  firstHalfStarted,TResult Function( MatchFirstHalfEnded value)?  firstHalfEnded,TResult Function( MatchSecondHalfStarted value)?  secondHalfStarted,TResult Function( MatchSecondHalfEnded value)?  secondHalfEnded,TResult Function( MatchFirstExtraTimeStarted value)?  firstExtraTimeStarted,TResult Function( MatchFirstExtraTimeEnded value)?  firstExtraTimeEnded,TResult Function( MatchSecondExtraTimeStarted value)?  secondExtraTimeStarted,TResult Function( MatchSecondExtraTimeEnded value)?  secondExtraTimeEnded,TResult Function( MatchShootOutStarted value)?  shootOutStarted,TResult Function( MatchShootOutEnded value)?  shootOutEnded,TResult Function( MatchEnded value)?  ended,TResult Function( GoalScored value)?  goalScored,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case MatchStarted() when started != null:
+case KickoffStarted() when kickoffStarted != null:
+return kickoffStarted(_that);case BallKicked() when ballKicked != null:
+return ballKicked(_that);case PassCompleted() when passCompleted != null:
+return passCompleted(_that);case PlayStarted() when playStarted != null:
+return playStarted(_that);case MatchStarted() when started != null:
 return started(_that);case MatchFirstHalfStarted() when firstHalfStarted != null:
 return firstHalfStarted(_that);case MatchFirstHalfEnded() when firstHalfEnded != null:
 return firstHalfEnded(_that);case MatchSecondHalfStarted() when secondHalfStarted != null:
@@ -89,10 +93,14 @@ return goalScored(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( MatchStarted value)  started,required TResult Function( MatchFirstHalfStarted value)  firstHalfStarted,required TResult Function( MatchFirstHalfEnded value)  firstHalfEnded,required TResult Function( MatchSecondHalfStarted value)  secondHalfStarted,required TResult Function( MatchSecondHalfEnded value)  secondHalfEnded,required TResult Function( MatchFirstExtraTimeStarted value)  firstExtraTimeStarted,required TResult Function( MatchFirstExtraTimeEnded value)  firstExtraTimeEnded,required TResult Function( MatchSecondExtraTimeStarted value)  secondExtraTimeStarted,required TResult Function( MatchSecondExtraTimeEnded value)  secondExtraTimeEnded,required TResult Function( MatchShootOutStarted value)  shootOutStarted,required TResult Function( MatchShootOutEnded value)  shootOutEnded,required TResult Function( MatchEnded value)  ended,required TResult Function( GoalScored value)  goalScored,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( KickoffStarted value)  kickoffStarted,required TResult Function( BallKicked value)  ballKicked,required TResult Function( PassCompleted value)  passCompleted,required TResult Function( PlayStarted value)  playStarted,required TResult Function( MatchStarted value)  started,required TResult Function( MatchFirstHalfStarted value)  firstHalfStarted,required TResult Function( MatchFirstHalfEnded value)  firstHalfEnded,required TResult Function( MatchSecondHalfStarted value)  secondHalfStarted,required TResult Function( MatchSecondHalfEnded value)  secondHalfEnded,required TResult Function( MatchFirstExtraTimeStarted value)  firstExtraTimeStarted,required TResult Function( MatchFirstExtraTimeEnded value)  firstExtraTimeEnded,required TResult Function( MatchSecondExtraTimeStarted value)  secondExtraTimeStarted,required TResult Function( MatchSecondExtraTimeEnded value)  secondExtraTimeEnded,required TResult Function( MatchShootOutStarted value)  shootOutStarted,required TResult Function( MatchShootOutEnded value)  shootOutEnded,required TResult Function( MatchEnded value)  ended,required TResult Function( GoalScored value)  goalScored,}){
 final _that = this;
 switch (_that) {
-case MatchStarted():
+case KickoffStarted():
+return kickoffStarted(_that);case BallKicked():
+return ballKicked(_that);case PassCompleted():
+return passCompleted(_that);case PlayStarted():
+return playStarted(_that);case MatchStarted():
 return started(_that);case MatchFirstHalfStarted():
 return firstHalfStarted(_that);case MatchFirstHalfEnded():
 return firstHalfEnded(_that);case MatchSecondHalfStarted():
@@ -119,10 +127,14 @@ return goalScored(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( MatchStarted value)?  started,TResult? Function( MatchFirstHalfStarted value)?  firstHalfStarted,TResult? Function( MatchFirstHalfEnded value)?  firstHalfEnded,TResult? Function( MatchSecondHalfStarted value)?  secondHalfStarted,TResult? Function( MatchSecondHalfEnded value)?  secondHalfEnded,TResult? Function( MatchFirstExtraTimeStarted value)?  firstExtraTimeStarted,TResult? Function( MatchFirstExtraTimeEnded value)?  firstExtraTimeEnded,TResult? Function( MatchSecondExtraTimeStarted value)?  secondExtraTimeStarted,TResult? Function( MatchSecondExtraTimeEnded value)?  secondExtraTimeEnded,TResult? Function( MatchShootOutStarted value)?  shootOutStarted,TResult? Function( MatchShootOutEnded value)?  shootOutEnded,TResult? Function( MatchEnded value)?  ended,TResult? Function( GoalScored value)?  goalScored,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( KickoffStarted value)?  kickoffStarted,TResult? Function( BallKicked value)?  ballKicked,TResult? Function( PassCompleted value)?  passCompleted,TResult? Function( PlayStarted value)?  playStarted,TResult? Function( MatchStarted value)?  started,TResult? Function( MatchFirstHalfStarted value)?  firstHalfStarted,TResult? Function( MatchFirstHalfEnded value)?  firstHalfEnded,TResult? Function( MatchSecondHalfStarted value)?  secondHalfStarted,TResult? Function( MatchSecondHalfEnded value)?  secondHalfEnded,TResult? Function( MatchFirstExtraTimeStarted value)?  firstExtraTimeStarted,TResult? Function( MatchFirstExtraTimeEnded value)?  firstExtraTimeEnded,TResult? Function( MatchSecondExtraTimeStarted value)?  secondExtraTimeStarted,TResult? Function( MatchSecondExtraTimeEnded value)?  secondExtraTimeEnded,TResult? Function( MatchShootOutStarted value)?  shootOutStarted,TResult? Function( MatchShootOutEnded value)?  shootOutEnded,TResult? Function( MatchEnded value)?  ended,TResult? Function( GoalScored value)?  goalScored,}){
 final _that = this;
 switch (_that) {
-case MatchStarted() when started != null:
+case KickoffStarted() when kickoffStarted != null:
+return kickoffStarted(_that);case BallKicked() when ballKicked != null:
+return ballKicked(_that);case PassCompleted() when passCompleted != null:
+return passCompleted(_that);case PlayStarted() when playStarted != null:
+return playStarted(_that);case MatchStarted() when started != null:
 return started(_that);case MatchFirstHalfStarted() when firstHalfStarted != null:
 return firstHalfStarted(_that);case MatchFirstHalfEnded() when firstHalfEnded != null:
 return firstHalfEnded(_that);case MatchSecondHalfStarted() when secondHalfStarted != null:
@@ -152,9 +164,13 @@ return goalScored(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function()?  firstHalfStarted,TResult Function()?  firstHalfEnded,TResult Function()?  secondHalfStarted,TResult Function()?  secondHalfEnded,TResult Function()?  firstExtraTimeStarted,TResult Function()?  firstExtraTimeEnded,TResult Function()?  secondExtraTimeStarted,TResult Function()?  secondExtraTimeEnded,TResult Function()?  shootOutStarted,TResult Function()?  shootOutEnded,TResult Function()?  ended,TResult Function( int teamId)?  goalScored,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  kickoffStarted,TResult Function( int fromPlayerId,  int toPlayerId)?  ballKicked,TResult Function( int receiverId)?  passCompleted,TResult Function()?  playStarted,TResult Function()?  started,TResult Function()?  firstHalfStarted,TResult Function()?  firstHalfEnded,TResult Function()?  secondHalfStarted,TResult Function()?  secondHalfEnded,TResult Function()?  firstExtraTimeStarted,TResult Function()?  firstExtraTimeEnded,TResult Function()?  secondExtraTimeStarted,TResult Function()?  secondExtraTimeEnded,TResult Function()?  shootOutStarted,TResult Function()?  shootOutEnded,TResult Function()?  ended,TResult Function( int teamId)?  goalScored,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case MatchStarted() when started != null:
+case KickoffStarted() when kickoffStarted != null:
+return kickoffStarted();case BallKicked() when ballKicked != null:
+return ballKicked(_that.fromPlayerId,_that.toPlayerId);case PassCompleted() when passCompleted != null:
+return passCompleted(_that.receiverId);case PlayStarted() when playStarted != null:
+return playStarted();case MatchStarted() when started != null:
 return started();case MatchFirstHalfStarted() when firstHalfStarted != null:
 return firstHalfStarted();case MatchFirstHalfEnded() when firstHalfEnded != null:
 return firstHalfEnded();case MatchSecondHalfStarted() when secondHalfStarted != null:
@@ -185,9 +201,13 @@ return goalScored(_that.teamId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function()  firstHalfStarted,required TResult Function()  firstHalfEnded,required TResult Function()  secondHalfStarted,required TResult Function()  secondHalfEnded,required TResult Function()  firstExtraTimeStarted,required TResult Function()  firstExtraTimeEnded,required TResult Function()  secondExtraTimeStarted,required TResult Function()  secondExtraTimeEnded,required TResult Function()  shootOutStarted,required TResult Function()  shootOutEnded,required TResult Function()  ended,required TResult Function( int teamId)  goalScored,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  kickoffStarted,required TResult Function( int fromPlayerId,  int toPlayerId)  ballKicked,required TResult Function( int receiverId)  passCompleted,required TResult Function()  playStarted,required TResult Function()  started,required TResult Function()  firstHalfStarted,required TResult Function()  firstHalfEnded,required TResult Function()  secondHalfStarted,required TResult Function()  secondHalfEnded,required TResult Function()  firstExtraTimeStarted,required TResult Function()  firstExtraTimeEnded,required TResult Function()  secondExtraTimeStarted,required TResult Function()  secondExtraTimeEnded,required TResult Function()  shootOutStarted,required TResult Function()  shootOutEnded,required TResult Function()  ended,required TResult Function( int teamId)  goalScored,}) {final _that = this;
 switch (_that) {
-case MatchStarted():
+case KickoffStarted():
+return kickoffStarted();case BallKicked():
+return ballKicked(_that.fromPlayerId,_that.toPlayerId);case PassCompleted():
+return passCompleted(_that.receiverId);case PlayStarted():
+return playStarted();case MatchStarted():
 return started();case MatchFirstHalfStarted():
 return firstHalfStarted();case MatchFirstHalfEnded():
 return firstHalfEnded();case MatchSecondHalfStarted():
@@ -214,9 +234,13 @@ return goalScored(_that.teamId);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function()?  firstHalfStarted,TResult? Function()?  firstHalfEnded,TResult? Function()?  secondHalfStarted,TResult? Function()?  secondHalfEnded,TResult? Function()?  firstExtraTimeStarted,TResult? Function()?  firstExtraTimeEnded,TResult? Function()?  secondExtraTimeStarted,TResult? Function()?  secondExtraTimeEnded,TResult? Function()?  shootOutStarted,TResult? Function()?  shootOutEnded,TResult? Function()?  ended,TResult? Function( int teamId)?  goalScored,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  kickoffStarted,TResult? Function( int fromPlayerId,  int toPlayerId)?  ballKicked,TResult? Function( int receiverId)?  passCompleted,TResult? Function()?  playStarted,TResult? Function()?  started,TResult? Function()?  firstHalfStarted,TResult? Function()?  firstHalfEnded,TResult? Function()?  secondHalfStarted,TResult? Function()?  secondHalfEnded,TResult? Function()?  firstExtraTimeStarted,TResult? Function()?  firstExtraTimeEnded,TResult? Function()?  secondExtraTimeStarted,TResult? Function()?  secondExtraTimeEnded,TResult? Function()?  shootOutStarted,TResult? Function()?  shootOutEnded,TResult? Function()?  ended,TResult? Function( int teamId)?  goalScored,}) {final _that = this;
 switch (_that) {
-case MatchStarted() when started != null:
+case KickoffStarted() when kickoffStarted != null:
+return kickoffStarted();case BallKicked() when ballKicked != null:
+return ballKicked(_that.fromPlayerId,_that.toPlayerId);case PassCompleted() when passCompleted != null:
+return passCompleted(_that.receiverId);case PlayStarted() when playStarted != null:
+return playStarted();case MatchStarted() when started != null:
 return started();case MatchFirstHalfStarted() when firstHalfStarted != null:
 return firstHalfStarted();case MatchFirstHalfEnded() when firstHalfEnded != null:
 return firstHalfEnded();case MatchSecondHalfStarted() when secondHalfStarted != null:
@@ -236,6 +260,204 @@ return goalScored(_that.teamId);case _:
 }
 
 }
+
+/// @nodoc
+
+
+class KickoffStarted implements MatchMessage {
+  const KickoffStarted();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is KickoffStarted);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'MatchMessage.kickoffStarted()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class BallKicked implements MatchMessage {
+  const BallKicked({required this.fromPlayerId, required this.toPlayerId});
+  
+
+ final  int fromPlayerId;
+ final  int toPlayerId;
+
+/// Create a copy of MatchMessage
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$BallKickedCopyWith<BallKicked> get copyWith => _$BallKickedCopyWithImpl<BallKicked>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BallKicked&&(identical(other.fromPlayerId, fromPlayerId) || other.fromPlayerId == fromPlayerId)&&(identical(other.toPlayerId, toPlayerId) || other.toPlayerId == toPlayerId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,fromPlayerId,toPlayerId);
+
+@override
+String toString() {
+  return 'MatchMessage.ballKicked(fromPlayerId: $fromPlayerId, toPlayerId: $toPlayerId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $BallKickedCopyWith<$Res> implements $MatchMessageCopyWith<$Res> {
+  factory $BallKickedCopyWith(BallKicked value, $Res Function(BallKicked) _then) = _$BallKickedCopyWithImpl;
+@useResult
+$Res call({
+ int fromPlayerId, int toPlayerId
+});
+
+
+
+
+}
+/// @nodoc
+class _$BallKickedCopyWithImpl<$Res>
+    implements $BallKickedCopyWith<$Res> {
+  _$BallKickedCopyWithImpl(this._self, this._then);
+
+  final BallKicked _self;
+  final $Res Function(BallKicked) _then;
+
+/// Create a copy of MatchMessage
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? fromPlayerId = null,Object? toPlayerId = null,}) {
+  return _then(BallKicked(
+fromPlayerId: null == fromPlayerId ? _self.fromPlayerId : fromPlayerId // ignore: cast_nullable_to_non_nullable
+as int,toPlayerId: null == toPlayerId ? _self.toPlayerId : toPlayerId // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class PassCompleted implements MatchMessage {
+  const PassCompleted({required this.receiverId});
+  
+
+ final  int receiverId;
+
+/// Create a copy of MatchMessage
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PassCompletedCopyWith<PassCompleted> get copyWith => _$PassCompletedCopyWithImpl<PassCompleted>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PassCompleted&&(identical(other.receiverId, receiverId) || other.receiverId == receiverId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,receiverId);
+
+@override
+String toString() {
+  return 'MatchMessage.passCompleted(receiverId: $receiverId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $PassCompletedCopyWith<$Res> implements $MatchMessageCopyWith<$Res> {
+  factory $PassCompletedCopyWith(PassCompleted value, $Res Function(PassCompleted) _then) = _$PassCompletedCopyWithImpl;
+@useResult
+$Res call({
+ int receiverId
+});
+
+
+
+
+}
+/// @nodoc
+class _$PassCompletedCopyWithImpl<$Res>
+    implements $PassCompletedCopyWith<$Res> {
+  _$PassCompletedCopyWithImpl(this._self, this._then);
+
+  final PassCompleted _self;
+  final $Res Function(PassCompleted) _then;
+
+/// Create a copy of MatchMessage
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? receiverId = null,}) {
+  return _then(PassCompleted(
+receiverId: null == receiverId ? _self.receiverId : receiverId // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class PlayStarted implements MatchMessage {
+  const PlayStarted();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlayStarted);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'MatchMessage.playStarted()';
+}
+
+
+}
+
+
+
 
 /// @nodoc
 

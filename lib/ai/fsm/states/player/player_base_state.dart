@@ -8,7 +8,7 @@ abstract class PlayerBaseState extends GameState<PlayerEntity> {
   @override
   bool onMessage(PlayerEntity entity, Telegram telegram) {
     _logMsg.info(
-      'Received message: ${telegram.message}  for Player: ${entity.id}',
+      '${toString()} - Received message: ${telegram.message}  for Player: ${entity.id}',
     );
     return true;
   }

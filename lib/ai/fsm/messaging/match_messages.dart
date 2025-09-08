@@ -6,6 +6,14 @@ part 'match_messages.freezed.dart';
 
 @freezed
 sealed class MatchMessage with _$MatchMessage implements Message {
+  const factory MatchMessage.kickoffStarted() = KickoffStarted;
+  const factory MatchMessage.ballKicked({
+    required int fromPlayerId,
+    required int toPlayerId,
+  }) = BallKicked;
+  const factory MatchMessage.passCompleted({required int receiverId}) =
+      PassCompleted;
+  const factory MatchMessage.playStarted() = PlayStarted;
   const factory MatchMessage.started() = MatchStarted;
   const factory MatchMessage.firstHalfStarted() = MatchFirstHalfStarted;
   const factory MatchMessage.firstHalfEnded() = MatchFirstHalfEnded;

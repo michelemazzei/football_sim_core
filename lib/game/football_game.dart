@@ -9,12 +9,13 @@ import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/referee_entity.dart';
 import 'package:football_sim_core/ecs/entities/stats_entity.dart';
 import 'package:football_sim_core/ecs/entities/team_id.dart';
+import 'package:football_sim_core/ecs/systems/ball_fsm_system.dart';
 import 'package:football_sim_core/ecs/systems/ball_proximity_system.dart';
-import 'package:football_sim_core/ecs/systems/fsm_system.dart';
 import 'package:football_sim_core/ecs/systems/match_start_system.dart';
 import 'package:football_sim_core/ecs/systems/movement_system.dart';
 import 'package:football_sim_core/ecs/systems/player_fsm_system.dart';
 import 'package:football_sim_core/ecs/systems/possession_event_system.dart';
+import 'package:football_sim_core/ecs/systems/referee_fsm_system.dart';
 import 'package:football_sim_core/ecs/systems/resize_system.dart';
 import 'package:football_sim_core/match/ecs_match.dart';
 import 'package:football_sim_core/model/formation.dart';
@@ -104,17 +105,16 @@ class FootballGame extends FlameGame {
     ecsWorld.addEntity(StatsEntity(ecsWorld.genId(), this, match));
 
     //2 - Registra sistemi
-    ecsWorld.addSystem(FsmSystem());
-    // ecsWorld.addSystem(PositionSystem(this));
+    ecsWorld.addSystem(BallFsmSystem());
     ecsWorld.addSystem(PlayerFsmSystem());
+    ecsWorld.addSystem(RefereeFsmSystem());
     ecsWorld.addSystem(CommandSystem());
     ecsWorld.addSystem(BallProximitySystem());
     ecsWorld.addSystem(MovementSystem(this));
     ecsWorld.addSystem(ResizeSystem(this));
-    ecsWorld.addSystem(FsmSystem());
+
     ecsWorld.addSystem(PossessionEventSystem());
     ecsWorld.addSystem(MatchStartSystem());
-    // ecsWorld.addSystem(RenderSyncSystem());
   }
 
   @override

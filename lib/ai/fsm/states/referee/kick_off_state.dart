@@ -2,6 +2,7 @@ import 'package:football_sim_core/ai/fsm/messaging/messaging.dart';
 import 'package:football_sim_core/ai/fsm/states/referee/play_state.dart';
 import 'package:football_sim_core/ai/fsm/states/referee/referee_base_state.dart';
 import 'package:football_sim_core/ai/steering/player_utils.dart';
+import 'package:football_sim_core/ecs/components/action_queue_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
@@ -57,12 +58,13 @@ class KickoffState extends RefereeBaseState {
       return true;
     }());
     final closestPlayer = closestPlayers.first;
-    final number =
-        closestPlayer.getComponent<PlayerNumberComponent>()?.number ?? -1;
-    logger.info('closest player id: ${closestPlayer.id} - #$number');
-    closestPlayer.getComponent<MovingComponent>()!.targetPosition = ball
-        .getComponent<MovingComponent>()!
-        .currentPosition;
+    final queue = ActionQueueComponent();
+    queue.enqueue(
+      PlayerMessage.moveToBall(intent: MovePlayerIntent.prepareKick),
+    );
+    queue.enqueue(PlayerMessage.passToNearestTeammate());
+
+    closestPlayer.addComponent(queue);
 
     // Assegna la palla al giocatore
     logger.info(
@@ -88,6 +90,12 @@ class KickoffState extends RefereeBaseState {
   @override
   void exit(RefereeEntity referee) {
     logger.info('[KickoffState] Uscita dallo stato di kickoff.');
+  }
+
+  @override
+  bool onMessage(RefereeEntity entity, Telegram telegram) {
+    logger.info('[KickoffState] ricevuto un messaggio : ${telegram.message}.');
+    return true;
   }
 
   Team? _selectKickoffTeam(RefereeEntity referee) {

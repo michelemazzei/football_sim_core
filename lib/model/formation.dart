@@ -34,8 +34,8 @@ final formation442 = Formation(
     Vector2(0.3, 0.4),
     Vector2(0.3, 0.6),
     Vector2(0.3, 0.8), // Centrocampisti
-    Vector2(0.4, 0.3),
-    Vector2(0.4, 0.7), // Attaccanti
+    Vector2(0.4, 0.4),
+    Vector2(0.4, 0.6), // Attaccanti
   ],
   [
     Goalkeeper(),

@@ -130,4 +130,33 @@ Quando torni, possiamo partire da lì e fare un debug mirato. Ti basta incollare
 
 Buona serata e a presto!
 
+
+📝 Recap stato attuale del progetto
+
+✅ Completato
+
+* **PossessionComponent/System** : Funziona correttamente, assegna il possesso al giocatore più vicino alla palla.
+* **Metodo `arrive` corretto** : Il giocatore si muove verso la palla, rallenta e si ferma poco prima.
+* **Kickoff - Parte 1** : Il primo giocatore raggiunge la palla e si prepara al passaggio.
+
+🔜 Da completare
+
+⚽ Kickoff - Parte 2
+
+* Il primo giocatore deve **passare la palla** al secondo giocatore più vicino.
+* Dopo il passaggio, **tutti i giocatori entrano nello stato `PlayState`** e la partita può iniziare.
+
+⏱️ Gestione del tempo
+
+* Attualmente il  **timer della partita parte troppo presto** , prima del passaggio iniziale.
+* Serve **ritardare l’inizio del timer** fino al completamento del kickoff (dopo il passaggio).
+
+💡 Idee per la prossima volta
+
+* Introdurre un **KickoffState** temporaneo che termina solo dopo il passaggio.
+* Usare un **evento di passaggio completato** per attivare il `PlayState` e far partire il timer.
+* Eventualmente, creare un **GameStateManager** che coordina transizioni tra `Kickoff`, `Play`, `Pause`, ecc.
+
+Fammi sapere quando vuoi riprendere da qui e ci mettiamo subito al lavoro 💪 Vuoi che ti prepari anche uno schema FSM per i GameStates?
+
 link dei sorgenti [michelemazzei/football_sim_core](https://github.com/michelemazzei/football_sim_core)

@@ -10,6 +10,9 @@ abstract class Fsm<T> {
 
   T get owner => _fsm.owner;
 
+  bool isInState(GameState<T> state) =>
+      currentState?.runtimeType == state.runtimeType;
+
   void update(double dt) {
     _fsm.update(dt);
   }
