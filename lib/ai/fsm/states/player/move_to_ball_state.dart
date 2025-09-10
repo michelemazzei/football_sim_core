@@ -2,8 +2,6 @@ import 'package:football_sim_core/ai/config/soccer_parameters.dart';
 import 'package:football_sim_core/ai/fsm/messaging/messaging.dart';
 import 'package:football_sim_core/ai/fsm/states/player/player_base_state.dart';
 import 'package:football_sim_core/ai/steering/steering_behaviors.dart';
-import 'package:football_sim_core/ecs/components/action_queue_component.dart';
-import 'package:football_sim_core/ecs/components/ball_intent_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';

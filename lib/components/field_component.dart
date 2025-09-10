@@ -292,8 +292,8 @@ class FieldComponent extends PositionComponent
     for (int i = 0; i < stripeCount; i++) {
       final paint = Paint()
         ..color = (i % 2 == 0)
-            ? const Color(0xFF2E7D32).withOpacity(0.95)
-            : const Color(0xFF388E3C).withOpacity(0.95);
+            ? const Color.fromRGBO(46, 125, 50, 0.95)
+            : const Color.fromRGBO(56, 142, 60, 0.95);
 
       final rect = Rect.fromLTWH(i * stripeWidth, 0, stripeWidth, size.height);
       canvas.drawRect(rect, paint);

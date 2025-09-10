@@ -3,6 +3,7 @@ import 'package:football_sim_core/ecs/components/fsm_component.dart';
 import 'package:football_sim_core/ai/fsm/referee_fsm.dart';
 import 'package:football_sim_core/ecs/components/game_reference_component.dart';
 import 'package:football_sim_core/ecs/components/match_component.dart';
+import 'package:football_sim_core/ecs/components/match_lifecycle_component.dart';
 import 'package:football_sim_core/ecs/components/message_sender_component.dart';
 import 'package:football_sim_core/ecs/components/referee_component.dart';
 import 'package:football_sim_core/ecs/components/team_possession_component.dart';
@@ -21,6 +22,8 @@ class RefereeEntity extends EcsEntity {
     addComponent(GameClockComponent());
     // Gestione tempo simulato
     addComponent(ScoreComponent()); // Punteggio
+    // Gestione tempo simulato
+    addComponent(MatchLifecycleComponent()); // Punteggio
 
     addComponent(MessageSenderComponent(sender: this, world: game.ecsWorld));
 

@@ -36,6 +36,6 @@ class RollingState extends BallBaseState {
 
   @override
   void exit(BallEntity entity) {
-    // TODO: implement exit
+    // do nothing
   }
 }

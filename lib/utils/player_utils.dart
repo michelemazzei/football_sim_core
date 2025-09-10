@@ -1,46 +1,43 @@
-import 'dart:developer';
-
 import 'package:football_sim_core/components/player_component.dart';
 import 'package:football_sim_core/ecs/components/render_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
-import 'package:football_sim_core/ecs/entities/player_entity.dart';
 import 'package:football_sim_core/game/football_game.dart';
 import 'package:football_sim_core/model/formation.dart';
 import 'package:football_sim_core/model/team.dart';
 
-Future<void> createTeamFromFormation({
-  required Formation formation,
-  required bool isLeftSide,
-  required Team team,
-  required FootballGame game,
-  required EcsWorld ecsWorld,
-}) async {
-  for (int i = 0; i < 11; i++) {
-    final id = ecsWorld.genId();
+extension CreateTeamFromFormation on FootballGame {
+  Future<void> createTeamFromFormation({
+    required Formation formation,
+    required bool isLeftSide,
+    required Team team,
+    required FootballGame game,
+    required EcsWorld ecsWorld,
+  }) async {
+    for (int i = 0; i < 11; i++) {
+      // Posizione normalizzata dalla formazione
+      final position = formation.getPosition(i, isLeftSide);
+      final role = formation.getRole(i);
+      logger.fine('Creating player $i at position $position with role $role');
+      // 1. Crea entità ECS
 
-    // Posizione normalizzata dalla formazione
-    final position = formation.getPosition(i, isLeftSide);
-    final role = formation.getRole(i);
-    log('Creating player $i at position $position with role $role');
-    // 1. Crea entità ECS
-    final playerEntity = PlayerEntity(
-      id,
-      initialPosition: position,
-      team: team.id,
-      game: game,
-      number: i + 1,
-      color: team.color,
-      role: role,
-    );
+      final playerEntity = registry.getPlayerEntity(
+        position,
+        team,
+        game,
+        i + 1,
+        role,
+      );
 
-    ecsWorld.addEntity(playerEntity);
-    log('Player entity created: ${playerEntity.id}');
+      logger.fine('Player entity created: ${playerEntity.id}');
 
-    // 2. Crea componente grafico
-    final playerComponent = PlayerComponent('P${i + 1}', i + 1, team.color);
-    // 3. Collega ECS → Flame
-    playerEntity.addComponent(RenderComponent(playerComponent));
+      // 2. Crea componente grafico
+      final playerComponent = PlayerComponent('P${i + 1}', i + 1, team.color);
+      // 3. Collega ECS → Flame
+      playerEntity.addComponent(
+        RenderComponent(entityId: playerEntity.id, component: playerComponent),
+      );
 
-    await game.add(playerComponent);
+      await game.add(playerComponent);
+    }
   }
 }

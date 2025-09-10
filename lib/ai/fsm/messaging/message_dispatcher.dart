@@ -5,10 +5,12 @@ import 'package:football_sim_core/ai/fsm/messaging/message_receiver.dart';
 import 'package:football_sim_core/ai/fsm/messaging/message_sender.dart';
 import 'package:football_sim_core/ai/fsm/messaging/telegram.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
+import 'package:logging/logging.dart';
 
 /// Gestisce l'invio dei messaggi tra agenti.
 /// Supporta messaggi immediati e ritardati.
 class MessageDispatcher {
+  final logger = Logger('Logging.MessageDispatcher');
   // Costanti simboliche
   static const sendMsgImmediately = 0;
   static const noAdditionalInfo = 1;
@@ -29,12 +31,12 @@ class MessageDispatcher {
           fsm?.handleMessage(telegram) ?? receiver.handleMessage(telegram);
 
       if (!handled) {
-        log('🗑️ Message not handled by $receiver', name: '📲');
+        logger.fine('🗑️ Message not handled by $receiver');
       }
     } else {
       final handled = receiver.handleMessage(telegram);
       if (!handled) {
-        log('🗑️ Message not handled by $receiver', name: '📲');
+        logger.fine('🗑️ Message not handled by $receiver');
       }
     }
   }
@@ -72,10 +74,7 @@ class MessageDispatcher {
     );
 
     if (delay == 0) {
-      log(
-        'Send message from: $sender to $receiver message: $message',
-        name: '📲',
-      );
+      logger.fine('Send message from: $sender to $receiver message: $message');
       discharge(receiver, telegram);
     } else {
       priorityQueue.add(telegram);

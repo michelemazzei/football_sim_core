@@ -9,8 +9,7 @@ import 'package:football_sim_core/ecs/entities/player_entity.dart';
 import 'package:logging/logging.dart';
 
 class PlayerIdleState extends PlayerBaseState {
-  final logger = Logger('Player Idle State');
-
+  final logger = Logger('PlayerBaseState.Idle');
   @override
   void enter(PlayerEntity entity) {
     logger.info('Entering IdleState');
@@ -20,7 +19,7 @@ class PlayerIdleState extends PlayerBaseState {
   void execute(PlayerEntity entity, double dt) {
     final possession = entity.getComponent<PossessionComponent>();
     if (possession?.hasBall == true) {
-      logger.info('Player ${entity.id} has the ball and is idle.');
+      logger.fine('Player ${entity.id} has the ball and is idle.');
     } else {
       // logger.info('Player ${entity.id} is idle without the ball.');
     }
@@ -28,7 +27,7 @@ class PlayerIdleState extends PlayerBaseState {
 
   @override
   bool onMessage(PlayerEntity entity, Telegram telegram) {
-    logger.info(
+    logger.fine(
       '${toString()} - Received message: ${telegram.message.toString()}  for Player: ${entity.id}',
     );
     if (entity.id != telegram.receiver.id) {
@@ -36,7 +35,7 @@ class PlayerIdleState extends PlayerBaseState {
     }
 
     final number = entity.getComponent<PlayerNumberComponent>()?.number ?? -1;
-    logger.info('closest player id: ${entity.id} - #$number');
+    logger.fine('closest player id: ${entity.id} - #$number');
     final msg = telegram.message;
     if (msg is! PlayerMessage) return false;
 
@@ -74,15 +73,9 @@ class PlayerIdleState extends PlayerBaseState {
         entity.getComponent<FsmComponent<PlayerEntity>>()!.fsm.changeState(
           MoveToBallState(intent: intent),
         );
-
-        // MessageDispatcher.instance.dispatchMessage(
-        //   sender: telegram.sender, //referee
-        //   receiver: telegram.receiver,
-        //   message: PlayerMessage.moveToBall(intent: intent),
-        // );
       },
       orElse: () {
-        logger.info(
+        logger.finest(
           'Player #$number received an unhandled message: ${telegram.message}.',
         );
       },
@@ -92,6 +85,6 @@ class PlayerIdleState extends PlayerBaseState {
 
   @override
   void exit(PlayerEntity entity) {
-    logger.info('Exiting IdleState');
+    logger.fine('Exiting IdleState');
   }
 }

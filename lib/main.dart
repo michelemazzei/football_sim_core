@@ -4,6 +4,10 @@ import 'package:logging/logging.dart';
 
 void setupLogging() {
   Logger.root.level = Level.ALL;
+  hierarchicalLoggingEnabled = true;
+
+  Logger('FootballGame').level = Level.INFO;
+
   Logger.root.onRecord.listen((record) {
     debugPrint(
       '[${record.level.name}: ${record.loggerName}]  ${record.message}',

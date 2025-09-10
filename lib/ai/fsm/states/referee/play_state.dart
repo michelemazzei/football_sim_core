@@ -1,14 +1,12 @@
-import 'dart:developer';
-
+import 'package:football_sim_core/ai/fsm/states/referee/end_match_state.dart';
+import 'package:football_sim_core/ai/fsm/states/referee/referee_base_state.dart';
 import 'package:football_sim_core/ecs/components/fsm_component.dart';
 import 'package:football_sim_core/ecs/components/referee_component.dart';
 import 'package:football_sim_core/ecs/entities/referee_entity.dart';
-import 'package:football_sim_core/ai/fsm/states/referee/end_match_state.dart';
-import 'package:football_sim_core/ai/fsm/states/referee/referee_base_state.dart';
 import 'package:logging/logging.dart';
 
 class PlayState extends RefereeBaseState {
-  final logger = Logger('PlayState');
+  final logger = Logger('RefereeBaseState.PlayState');
   int lastTime = 0;
   @override
   void enter(RefereeEntity referee) {
@@ -21,7 +19,7 @@ class PlayState extends RefereeBaseState {
     final clock = referee.getComponent<GameClockComponent>();
     final time = clock!.elapsedTime.ceil();
     if (time != lastTime) {
-      log("Time: $time", name: '⚽');
+      logger.fine("⚽ Time: $time");
       lastTime = time;
     }
     clock.update(dt);
@@ -35,6 +33,6 @@ class PlayState extends RefereeBaseState {
 
   @override
   void exit(RefereeEntity entity) {
-    logger.info("Exiting PlayState");
+    logger.finer("Exiting PlayState");
   }
 }

@@ -131,32 +131,59 @@ Quando torni, possiamo partire da lì e fare un debug mirato. Ti basta incollare
 Buona serata e a presto!
 
 
-📝 Recap stato attuale del progetto
+Certo Michele, ecco il recap completo del tuo sistema, così domani possiamo ripartire con chiarezza 💼⚽
 
-✅ Completato
+🧠 **Stato attuale del sistema**
 
-* **PossessionComponent/System** : Funziona correttamente, assegna il possesso al giocatore più vicino alla palla.
-* **Metodo `arrive` corretto** : Il giocatore si muove verso la palla, rallenta e si ferma poco prima.
-* **Kickoff - Parte 1** : Il primo giocatore raggiunge la palla e si prepara al passaggio.
+✅ Hai implementato:
 
-🔜 Da completare
+* `PlayerFsmSystem` e `RefereeFsmSystem` separati ✅
+* `BallFsmSystem` con `BallIntentComponent` ✅
+* `ActionQueueComponent` per gestire una sequenza di messaggi ✅
+* `MoveToBallState` e `PrepareKickState` per il giocatore ✅
+* `RollingState` per la palla con direzione e forza ✅
 
-⚽ Kickoff - Parte 2
+⚙️ **Nel `KickoffState` del referee**
 
-* Il primo giocatore deve **passare la palla** al secondo giocatore più vicino.
-* Dopo il passaggio, **tutti i giocatori entrano nello stato `PlayState`** e la partita può iniziare.
+Hai creato una coda di azioni per il giocatore:
 
-⏱️ Gestione del tempo
+queue.enqueue(PlayerMessage.moveToBall(intent: MovePlayerIntent.prepareKick));
+queue.enqueue(PlayerMessage.passToNearestTeammate());
 
-* Attualmente il  **timer della partita parte troppo presto** , prima del passaggio iniziale.
-* Serve **ritardare l’inizio del timer** fino al completamento del kickoff (dopo il passaggio).
+
 
-💡 Idee per la prossima volta
+E l’hai aggiunta al giocatore:
 
-* Introdurre un **KickoffState** temporaneo che termina solo dopo il passaggio.
-* Usare un **evento di passaggio completato** per attivare il `PlayState` e far partire il timer.
-* Eventualmente, creare un **GameStateManager** che coordina transizioni tra `Kickoff`, `Play`, `Pause`, ecc.
+playerEntity.addComponent(queue);
 
-Fammi sapere quando vuoi riprendere da qui e ci mettiamo subito al lavoro 💪 Vuoi che ti prepari anche uno schema FSM per i GameStates?
+❗ **Problema attuale**
+
+Solo **il primo messaggio** (`moveToBall`) viene eseguito.
+
+Il secondo (`passToNearestTeammate`)  **non viene elaborato** , probabilmente perché:
+
+* Il giocatore non è ancora nello stato giusto (`PrepareKickState`) quando il secondo messaggio viene estratto
+* Oppure la coda viene consumata troppo in fretta, senza attendere che il primo stato sia completato
+
+✅ Domani possiamo risolvere:
+
+* Aggiungendo un `CooldownComponent` per gestire il tempo tra le azioni
+* Verificando lo stato corrente prima di eseguire il prossimo messaggio
+* Eventualmente usando un flag tipo `isReadyForNextAction` nel `PlayerEntity`
+
+✨ Suggerimento per domani
+
+Nel `PlayerFsmSystem`, prima di eseguire un messaggio dalla coda:
+
+if (fsm.isInState(PrepareKickState)) {
+  final nextAction = queue.dequeue();
+  fsm.handleMessage(Telegram(...));
+}
+
+Così eviti di eseguire `passToNearestTeammate` troppo presto.
+
+Buon riposo, domani lo sistemiamo in 10 minuti.
+
+Hai già fatto un lavoro eccellente, manca solo il tocco finale 🎯
 
 link dei sorgenti [michelemazzei/football_sim_core](https://github.com/michelemazzei/football_sim_core)

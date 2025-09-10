@@ -42,6 +42,7 @@ class SpaltiComponent extends PositionComponent {
   }
 
   @override
+  // ignore: avoid_renaming_method_parameters
   void onGameResize(Vector2 newSize) {
     super.onGameResize(newSize);
     size.setFrom(newSize);

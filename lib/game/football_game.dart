@@ -1,25 +1,11 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:football_sim_core/components/spalti_component.dart';
-import 'package:football_sim_core/ecs/commands/command_system.dart';
 import 'package:football_sim_core/ecs/components/fsm_component.dart';
 import 'package:football_sim_core/ecs/components/render_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
-import 'package:football_sim_core/ecs/entities/ball_entity.dart';
-import 'package:football_sim_core/ecs/entities/referee_entity.dart';
-import 'package:football_sim_core/ecs/entities/stats_entity.dart';
-import 'package:football_sim_core/ecs/entities/team_id.dart';
-import 'package:football_sim_core/ecs/systems/ball_fsm_system.dart';
-import 'package:football_sim_core/ecs/systems/ball_proximity_system.dart';
-import 'package:football_sim_core/ecs/systems/match_start_system.dart';
-import 'package:football_sim_core/ecs/systems/movement_system.dart';
-import 'package:football_sim_core/ecs/systems/player_fsm_system.dart';
-import 'package:football_sim_core/ecs/systems/possession_event_system.dart';
-import 'package:football_sim_core/ecs/systems/referee_fsm_system.dart';
-import 'package:football_sim_core/ecs/systems/resize_system.dart';
-import 'package:football_sim_core/match/ecs_match.dart';
+import 'package:football_sim_core/game/ecs_entity_registry.dart';
 import 'package:football_sim_core/model/formation.dart';
-import 'package:football_sim_core/model/team.dart';
 import 'package:football_sim_core/utils/player_utils.dart';
 import 'package:logging/logging.dart';
 
@@ -28,12 +14,14 @@ import '../components/field_component.dart';
 
 class FootballGame extends FlameGame {
   final logger = Logger('FootballGame');
-  late final EcsWorld ecsWorld;
   late FieldComponent fieldComponent;
   late BallComponent ballComponent;
   SpaltiComponent? spaltiComponent;
 
   final Vector2 padding = Vector2(40, 40);
+  EcsWorld get ecsWorld => registry.ecsWorld;
+
+  final EcsEntityRegistry registry = EcsEntityRegistry();
 
   @override
   Color backgroundColor() => Colors.lightGreen.shade800;
@@ -48,8 +36,12 @@ class FootballGame extends FlameGame {
     }
   }
 
+  bool _hasLoaded = false;
   @override
   Future<void> onLoad() async {
+    if (_hasLoaded) return;
+    _hasLoaded = true;
+
     // Componenti grafici di gioco
     // 🟩 Campo
     fieldComponent = FieldComponent();
@@ -61,23 +53,21 @@ class FootballGame extends FlameGame {
     await add(spaltiComponent!);
 
     // Registra  ECS Sybsystem
-    //1 -   Crea il mondo ECS
-    ecsWorld = EcsWorld();
-
     //3 - Crea i Componenti ECS
     //.1 - ⚽ Crea la palla
     //.2 - ⚽ Crea e registra il componente ECS della palla
-    final ballEntity = BallEntity(ecsWorld.genId());
-    ecsWorld.addEntity(ballEntity);
+    final ballEntity = registry.getBallEntity();
     //.3 - ⚽ Crea e registra il componente grafico della palla
     ballComponent = BallComponent();
-    ballEntity.addComponent(RenderComponent(ballComponent));
+    ballEntity.addOrReplaceComponent(
+      RenderComponent(entityId: ballEntity.id, component: ballComponent),
+    );
     //.4 - ⚽ aggiungi il componente grafico della palla a Flame
     await add(ballComponent);
 
     // 🔵 Squadre
-    final teamRed = Team(id: TeamId.red, color: TeamId.red.color);
-    final teamBlue = Team(id: TeamId.blue, color: TeamId.blue.color);
+    final teamRed = registry.teamRed;
+    final teamBlue = registry.teamBlue;
     // 🔵 Giocatori
     await createTeamFromFormation(
       formation: formation442,
@@ -94,27 +84,14 @@ class FootballGame extends FlameGame {
       ecsWorld: ecsWorld,
     );
 
-    // 1. Crea la partita
-    final match = EcsMatch(teamA: teamRed, teamB: teamBlue);
-
     // 2. Crea l'entità
-    final refereeEntity = RefereeEntity(ecsWorld.genId(), this, match);
+    registry.getRefereeEntity(this);
 
     // 3. Registra nel mondo
-    ecsWorld.addEntity(refereeEntity);
-    ecsWorld.addEntity(StatsEntity(ecsWorld.genId(), this, match));
+    registry.getStatsEntity(this);
 
     //2 - Registra sistemi
-    ecsWorld.addSystem(BallFsmSystem());
-    ecsWorld.addSystem(PlayerFsmSystem());
-    ecsWorld.addSystem(RefereeFsmSystem());
-    ecsWorld.addSystem(CommandSystem());
-    ecsWorld.addSystem(BallProximitySystem());
-    ecsWorld.addSystem(MovementSystem(this));
-    ecsWorld.addSystem(ResizeSystem(this));
-
-    ecsWorld.addSystem(PossessionEventSystem());
-    ecsWorld.addSystem(MatchStartSystem());
+    registry.addSystems(this);
   }
 
   @override
@@ -130,7 +107,7 @@ class FootballGame extends FlameGame {
         ?.currentState
         ?.runtimeType;
     if (currentState != null) {
-      logger.info('Stato corrente: $currentState');
+      logger.fine('Stato corrente: $currentState');
     }
   }
 }

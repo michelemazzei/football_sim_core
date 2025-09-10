@@ -13,6 +13,7 @@ import 'package:logging/logging.dart';
 class KickoffState extends RefereeBaseState {
   static const double kickoffDelay = 3.0; // secondi simulati
   final logger = Logger('KickoffState');
+
   @override
   void enter(RefereeEntity referee) {
     logger.info('[KickoffState] Entrato. Attesa di $kickoffDelay secondi...');
@@ -57,18 +58,21 @@ class KickoffState extends RefereeBaseState {
       }
       return true;
     }());
-    final closestPlayer = closestPlayers.first;
-    final queue = ActionQueueComponent();
-    queue.enqueue(
-      PlayerMessage.moveToBall(intent: MovePlayerIntent.prepareKick),
-    );
-    queue.enqueue(PlayerMessage.passToNearestTeammate());
 
-    closestPlayer.addComponent(queue);
+    closestPlayers.first.addOrReplaceComponent(
+      ActionQueueComponent(
+        sender: referee,
+        canInterrupt: false,
+        userAction: [
+          PlayerMessage.moveToBall(intent: MovePlayerIntent.prepareKick),
+          PlayerMessage.passToNearestTeammate(),
+        ],
+      ),
+    );
 
     // Assegna la palla al giocatore
-    logger.info(
-      '[KickoffState] Il giocatore più vicino alla palla è: ${closestPlayer.id}',
+    logger.fine(
+      '[KickoffState] Il giocatore più vicino alla palla è: ${closestPlayers.first.id}',
     );
   }
 
