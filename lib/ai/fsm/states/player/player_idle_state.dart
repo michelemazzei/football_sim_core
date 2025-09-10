@@ -19,9 +19,9 @@ class PlayerIdleState extends PlayerBaseState {
   void execute(PlayerEntity entity, double dt) {
     final possession = entity.getComponent<PossessionComponent>();
     if (possession?.hasBall == true) {
-      logger.fine('Player ${entity.id} has the ball and is idle.');
+      logger.finest('Player ${entity.id} has the ball and is idle.');
     } else {
-      // logger.info('Player ${entity.id} is idle without the ball.');
+      logger.finest('Player ${entity.id} is idle without the ball.');
     }
   }
 
@@ -40,7 +40,7 @@ class PlayerIdleState extends PlayerBaseState {
     if (msg is! PlayerMessage) return false;
 
     msg.maybeWhen(
-      passToNearestTeammate: () {
+      passToNearestTeammate: (bool requireAck, Function? onAck) {
         final teammate = PlayerUtils.findClosestTeammate(entity);
         final ball = entity
             .getComponent<GameReferenceComponent>()
@@ -69,7 +69,7 @@ class PlayerIdleState extends PlayerBaseState {
         );
       },
 
-      moveToBall: (MovePlayerIntent intent) {
+      moveToBall: (MovePlayerIntent intent, bool requireAck, Function? onAck) {
         entity.getComponent<FsmComponent<PlayerEntity>>()!.fsm.changeState(
           MoveToBallState(intent: intent),
         );

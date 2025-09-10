@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:football_sim_core/ai/fsm/messaging/message.dart';
 import 'package:football_sim_core/ai/fsm/messaging/message_receiver.dart';
 import 'package:football_sim_core/ai/fsm/messaging/message_sender.dart';
+import 'package:football_sim_core/ai/fsm/messaging/player_messages.dart';
 import 'package:football_sim_core/ai/fsm/messaging/telegram.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 import 'package:logging/logging.dart';
@@ -32,6 +33,11 @@ class MessageDispatcher {
 
       if (!handled) {
         logger.fine('🗑️ Message not handled by $receiver');
+      } else {
+        if (telegram.message is PlayerMessage) {
+          final playerMessage = telegram.message as PlayerMessage;
+          if (playerMessage.requiresAck) playerMessage.onAck?.call();
+        }
       }
     } else {
       final handled = receiver.handleMessage(telegram);

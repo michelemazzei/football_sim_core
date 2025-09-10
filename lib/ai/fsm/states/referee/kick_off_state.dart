@@ -11,8 +11,9 @@ import 'package:football_sim_core/model/team.dart';
 import 'package:logging/logging.dart';
 
 class KickoffState extends RefereeBaseState {
-  static const double kickoffDelay = 3.0; // secondi simulati
+  static const double kickoffDelay = 1.0; // secondi simulati
   final logger = Logger('KickoffState');
+  var _executed = false;
 
   @override
   void enter(RefereeEntity referee) {
@@ -65,7 +66,15 @@ class KickoffState extends RefereeBaseState {
         canInterrupt: false,
         userAction: [
           PlayerMessage.moveToBall(intent: MovePlayerIntent.prepareKick),
-          PlayerMessage.passToNearestTeammate(),
+          PlayerMessage.passToNearestTeammate(
+            requiresAck: true,
+            onAck: () {
+              logger.info(
+                '[KickoffState] Passaggio effettuato da ${closestPlayers.first.id}',
+              );
+              _executed = true;
+            },
+          ),
         ],
       ),
     );
@@ -78,6 +87,10 @@ class KickoffState extends RefereeBaseState {
 
   @override
   void execute(RefereeEntity referee, double dt) {
+    if (!_executed) {
+      return;
+    }
+    logger.fine('[KickoffState] Esecuzione del kickoff in corso...');
     final clock = referee.getComponent<GameClockComponent>();
     clock?.update(dt);
     if (clock != null && clock.elapsedTime >= kickoffDelay) {

@@ -1,6 +1,7 @@
 import 'package:football_sim_core/ai/config/soccer_parameters.dart';
 import 'package:football_sim_core/ai/fsm/messaging/messaging.dart';
 import 'package:football_sim_core/ai/fsm/states/player/player_base_state.dart';
+import 'package:football_sim_core/ai/fsm/states/player/player_idle_state.dart';
 import 'package:football_sim_core/ai/steering/steering_behaviors.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/entities/ball_entity.dart';
@@ -55,17 +56,22 @@ class MoveToBallState extends PlayerBaseState {
     moving.velocity += steering;
     moving.targetPosition = ballPos;
     if (distance < touchThreshold) {
-      // logger.info('Player ${entity.id} reached the ball');
-
-      // Transizione a PrepareKickState
-      // entity.getComponent<FsmComponent<PlayerEntity>>()!.fsm.changeState(
-      //   PrepareKickState(),
-      // );
-    } else {}
+      entity.getComponent<FsmComponent<PlayerEntity>>()!.fsm.changeState(
+        PlayerIdleState(),
+      );
+    }
   }
 
   @override
   void exit(PlayerEntity entity) {
     logger.info('Player ${entity.id} exiting MoveToBallState');
+  }
+
+  @override
+  bool onMessage(PlayerEntity entity, Telegram telegram) {
+    logger.fine(
+      '${toString()} - Received message: ${telegram.message.toString()}  for Player: ${entity.id}',
+    );
+    return true;
   }
 }
