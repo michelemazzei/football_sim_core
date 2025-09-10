@@ -5,7 +5,6 @@ import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/systems/ecs_system.dart';
 import 'package:football_sim_core/game/football_game.dart';
-import 'package:football_sim_core/utils/coordinate_mapper.dart';
 
 class MovementSystem extends EcsSystem {
   final FootballGame game;
@@ -14,7 +13,6 @@ class MovementSystem extends EcsSystem {
 
   @override
   void update(EcsWorld world, double dt) {
-    final fieldPos = game.fieldComponent.position;
     final fieldSize = game.fieldComponent.size;
     if (fieldSize.x <= 0 || fieldSize.y <= 0) return;
 
@@ -55,7 +53,8 @@ class MovementSystem extends EcsSystem {
       moving.currentPosition += moving.velocity * dt;
 
       // 3. Conversione in coordinate assolute  e Rendering
-      final mapper = CoordinateMapper(fieldPos, fieldSize);
+      final mapper = game.mapper;
+      if (mapper == null) continue;
       render.component.position = mapper.toScreen(
         moving.currentPosition,
         anchor: Anchor.center,

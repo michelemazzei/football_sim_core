@@ -6,6 +6,7 @@ import 'package:football_sim_core/ecs/components/render_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/game/ecs_entity_registry.dart';
 import 'package:football_sim_core/model/formation.dart';
+import 'package:football_sim_core/utils/coordinate_mapper.dart';
 import 'package:football_sim_core/utils/player_utils.dart';
 import 'package:logging/logging.dart';
 
@@ -14,6 +15,8 @@ import '../components/field_component.dart';
 
 class FootballGame extends FlameGame {
   final logger = Logger('FootballGame');
+  CoordinateMapper? mapper;
+
   late FieldComponent fieldComponent;
   late BallComponent ballComponent;
   SpaltiComponent? spaltiComponent;
@@ -34,6 +37,7 @@ class FootballGame extends FlameGame {
         ..position = padding
         ..size = size;
     }
+    mapper?.update(fieldComponent.position, fieldComponent.size);
   }
 
   bool _hasLoaded = false;
@@ -46,6 +50,7 @@ class FootballGame extends FlameGame {
     // 🟩 Campo
     fieldComponent = FieldComponent();
     await add(fieldComponent);
+    mapper = CoordinateMapper(fieldComponent.position, fieldComponent.size);
 
     // 🏟️ Spalti
     spaltiComponent = SpaltiComponent.make(size: size, type: StadiumType.medium)

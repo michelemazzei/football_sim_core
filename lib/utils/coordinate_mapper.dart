@@ -1,10 +1,15 @@
 import 'package:flame/components.dart';
 
 class CoordinateMapper {
-  final Vector2 fieldPosition;
-  final Vector2 fieldSize;
+  Vector2 fieldPosition;
+  Vector2 fieldSize;
 
   CoordinateMapper(this.fieldPosition, this.fieldSize);
+
+  void update(Vector2 newPosition, Vector2 newSize) {
+    fieldPosition = newPosition;
+    fieldSize = newSize;
+  }
 
   Vector2 toScreen(
     Vector2 logical, {
@@ -35,7 +40,7 @@ class CoordinateMapper {
       case Anchor.bottomRight:
         return Vector2(size.x, size.y);
       default:
-        return Vector2.zero();
+        return Vector2(size.x / 2, size.y / 2);
     }
   }
 }
