@@ -1,6 +1,7 @@
 import 'package:football_sim_core/ai/fsm/messaging/messaging.dart';
 import 'package:football_sim_core/ecs/components/ecs_player_component.dart';
 import 'package:football_sim_core/ecs/components/game_reference_component.dart';
+import 'package:football_sim_core/ecs/components/match_lifecycle_component.dart';
 import 'package:football_sim_core/ecs/entities/referee_entity.dart';
 import 'package:football_sim_core/ai/fsm/states/referee/referee_base_state.dart';
 import 'package:logging/logging.dart';
@@ -11,6 +12,7 @@ class EndMatchState extends RefereeBaseState {
   void enter(RefereeEntity referee) {
     logger.info("Entering EndMatchState");
     final world = referee.getComponent<GameReferenceComponent>()!.game.ecsWorld;
+    final lifeCycle = referee.getComponent<MatchLifecycleComponent>();
 
     // Broadcast a 'matchEnded' message to all players
     for (final player in world.entitiesWith<EcsPlayerComponent>()) {
@@ -20,6 +22,8 @@ class EndMatchState extends RefereeBaseState {
         message: MatchMessage.ended(),
       );
     }
+    lifeCycle?.matchEnded = true;
+    lifeCycle?.kickoffStarted = false;
   }
 
   @override

@@ -31,11 +31,20 @@ class EcsEntityRegistry {
   late final Team teamBlue;
   late final EcsMatch match;
 
-  final ecsWorld = EcsWorld();
+  late EcsWorld ecsWorld;
 
   final Map<String, EcsEntity> _registry = {};
 
-  EcsEntityRegistry() {
+  static final EcsEntityRegistry _instance = EcsEntityRegistry._();
+  factory EcsEntityRegistry.instance() => _instance;
+
+  EcsEntityRegistry._() {
+    reset();
+  }
+  void reset() {
+    _registry.clear();
+    ecsWorld = EcsWorld();
+    _systemsAdded = false;
     teamRed = Team(id: TeamId.red, color: TeamId.red.color);
     teamBlue = Team(id: TeamId.blue, color: TeamId.blue.color);
     match = EcsMatch(teamA: teamRed, teamB: teamBlue);

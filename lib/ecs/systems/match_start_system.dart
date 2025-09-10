@@ -7,7 +7,7 @@ import 'package:football_sim_core/ecs/entities/referee_entity.dart';
 import 'package:football_sim_core/ecs/systems/ecs_system.dart';
 
 class MatchStartSystem extends EcsSystem {
-  bool alreadyCreated = false;
+  static bool alreadyCreated = false;
   MatchStartSystem() {
     assert(!alreadyCreated, "MatchStartSystem can only be created once.");
     alreadyCreated = true;
