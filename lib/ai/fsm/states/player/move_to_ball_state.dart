@@ -13,9 +13,6 @@ class MoveToBallState extends PlayerBaseState {
 
   final logger = Logger('MoveToBallState');
 
-  // Soglia di distanza per considerare il giocatore "arrivato"
-  final double touchThreshold = 0.1;
-
   MoveToBallState({required this.intent});
 
   @override
@@ -55,7 +52,7 @@ class MoveToBallState extends PlayerBaseState {
 
     moving.velocity += steering;
     moving.targetPosition = ballPos;
-    if (distance < touchThreshold) {
+    if (distance < SoccerParameters.possessionRadius) {
       entity.getComponent<FsmComponent<PlayerEntity>>()!.fsm.changeState(
         PlayerIdleState(),
       );

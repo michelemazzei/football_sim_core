@@ -29,7 +29,7 @@ class MovementSystem extends EcsSystem {
         final distance =
             (moving.targetPosition! - moving.currentPosition).length;
 
-        if (distance < 0.03) {
+        if (distance < SoccerParameters.possessionRadius) {
           moving.velocity = Vector2.zero();
           moving.targetPosition = null;
           return;

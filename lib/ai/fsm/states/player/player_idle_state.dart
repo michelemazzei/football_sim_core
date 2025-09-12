@@ -58,7 +58,7 @@ class PlayerIdleState extends PlayerBaseState {
         if (ballPos == null || teammatePos == null) return;
 
         final direction = (teammatePos - ballPos).normalized();
-        final force = 120.0; // puoi tararlo in base alla distanza
+        final force = 100.0; // puoi tararlo in base alla distanza
 
         ball.addComponent(
           BallIntentComponent(

@@ -6,7 +6,9 @@ void setupLogging() {
   Logger.root.level = Level.ALL;
   hierarchicalLoggingEnabled = true;
 
-  Logger('FootballGame').level = Level.INFO;
+  Logger('FootballGame').level = Level.FINE;
+  Logger('PlayerBaseState').level = Level.FINE;
+  Logger('EcsSystem').level = Level.INFO;
 
   Logger.root.onRecord.listen((record) {
     debugPrint(
