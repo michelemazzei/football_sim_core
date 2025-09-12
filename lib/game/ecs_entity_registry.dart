@@ -9,6 +9,7 @@ import 'package:football_sim_core/ecs/entities/team_id.dart';
 import 'package:football_sim_core/ecs/systems/action_queue_system.dart';
 import 'package:football_sim_core/ecs/systems/ball_fsm_system.dart';
 import 'package:football_sim_core/ecs/systems/ball_proximity_system.dart';
+import 'package:football_sim_core/ecs/systems/ball_reception_system.dart';
 import 'package:football_sim_core/ecs/systems/match_start_system.dart';
 import 'package:football_sim_core/ecs/systems/movement_system.dart';
 import 'package:football_sim_core/ecs/systems/player_fsm_system.dart';
@@ -60,6 +61,7 @@ class EcsEntityRegistry {
     ecsWorld.addSystem(BallProximitySystem());
     ecsWorld.addSystem(MovementSystem(game));
     ecsWorld.addSystem(ResizeSystem(game));
+    ecsWorld.addSystem(BallReceptionSystem(game));
 
     ecsWorld.addSystem(PossessionEventSystem());
     ecsWorld.addSystem(MatchStartSystem());

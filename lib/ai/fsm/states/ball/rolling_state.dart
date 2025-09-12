@@ -26,7 +26,7 @@ class RollingState extends BallBaseState {
     // Simula attrito
     moving.velocity *= 0.98;
 
-    if (moving.velocity.length < 0.5) {
+    if (moving.velocity.length < 0.03) {
       moving.velocity = Vector2.zero();
       ball.getComponent<FsmComponent<BallEntity>>()!.fsm.changeState(
         BallStoppedState(),

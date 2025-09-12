@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:football_sim_core/ai/config/soccer_parameters.dart';
 import 'package:football_sim_core/ai/steering/player_utils.dart';
 import 'package:football_sim_core/ecs/components/ball_possession_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
@@ -10,9 +11,6 @@ import 'package:football_sim_core/ecs/entities/referee_entity.dart';
 import 'package:football_sim_core/ecs/systems/ecs_system.dart';
 
 class BallInteractSystem extends EcsSystem {
-  static const double touchThreshold =
-      0.02; // distanza minima per considerare il contatto
-
   @override
   void update(EcsWorld world, double dt) {
     final referee = world.entitiesOf<RefereeEntity>().firstOrNull;
@@ -38,7 +36,7 @@ class BallInteractSystem extends EcsSystem {
         .currentPosition
         .distanceTo(ballPos);
 
-    if (distance <= touchThreshold) {
+    if (distance <= SoccerParameters.possessionRadius) {
       final teamComp = closest.getComponent<TeamComponent>();
       if (teamComp != null) {
         referee
