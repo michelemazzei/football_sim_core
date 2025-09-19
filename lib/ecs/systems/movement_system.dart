@@ -15,6 +15,8 @@ class MovementSystem extends EcsSystem {
   void update(EcsWorld world, double dt) {
     final fieldSize = game.fieldComponent.size;
     if (fieldSize.x <= 0 || fieldSize.y <= 0) return;
+    // Recupera il GameClockComponent come risorsa globale
+    final scaledDt = world.scaledDt;
 
     for (final entity
         in world.entitiesWithAll<MovingComponent, RenderComponent>()) {
@@ -50,7 +52,7 @@ class MovementSystem extends EcsSystem {
         moving.velocity.length = moving.maxSpeed;
       }
 
-      moving.currentPosition += moving.velocity * dt;
+      moving.currentPosition += moving.velocity * scaledDt;
 
       // 3. Conversione in coordinate assolute  e Rendering
       final mapper = game.mapper;

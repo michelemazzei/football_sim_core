@@ -13,7 +13,9 @@ class BallFsmSystem extends FsmSystem {
   void update(EcsWorld world, double dt) {
     final entities = world.entitiesWith<FsmComponent<BallEntity>>();
     for (final entity in entities) {
-      entity.getComponent<FsmComponent<BallEntity>>()?.updateFSM(dt);
+      entity.getComponent<FsmComponent<BallEntity>>()?.updateFSM(
+        world.scaledDt,
+      );
     }
     final balls = world
         .entitiesWithAll<BallIntentComponent, FsmComponent<BallEntity>>();

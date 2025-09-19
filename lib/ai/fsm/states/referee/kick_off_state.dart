@@ -4,6 +4,7 @@ import 'package:football_sim_core/ai/fsm/states/referee/referee_base_state.dart'
 import 'package:football_sim_core/ai/steering/player_utils.dart';
 import 'package:football_sim_core/ecs/components/action_queue_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
+import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
 import 'package:football_sim_core/ecs/entities/referee_entity.dart';
@@ -16,16 +17,18 @@ class KickoffState extends RefereeBaseState {
   var _executed = false;
 
   @override
-  void enter(RefereeEntity referee) {
+  void enter(RefereeEntity entity, EcsWorld world) {
     logger.info('[KickoffState] Entrato. Attesa di $kickoffDelay secondi...');
     // Reset del tempo
-    final team = _selectKickoffTeam(referee);
+    final team = _selectKickoffTeam(entity);
     if (team == null) return;
     logger.info(
       '[KickoffState] La squadra che effettua il kickoff è: ${team.id}',
     );
-    referee.getComponent<GameClockComponent>()?.reset();
-    final game = referee.getComponent<GameReferenceComponent>()!.game;
+    world.getResource<GameClockComponent>();
+
+    entity.getComponent<GameClockComponent>()?.reset();
+    final game = entity.getComponent<GameReferenceComponent>()!.game;
     // Recupera la palla
     final ball = game.ecsWorld.entitiesOf<BallEntity>().firstOrNull;
     if (ball == null) return;
@@ -62,7 +65,7 @@ class KickoffState extends RefereeBaseState {
 
     closestPlayers.first.addOrReplaceComponent(
       ActionQueueComponent(
-        sender: referee,
+        sender: entity,
         canInterrupt: false,
         userAction: [
           PlayerMessage.moveToBall(intent: MovePlayerIntent.prepareKick),
@@ -86,31 +89,31 @@ class KickoffState extends RefereeBaseState {
   }
 
   @override
-  void execute(RefereeEntity referee, double dt) {
+  void execute(RefereeEntity entity, double dt, EcsWorld world) {
     if (!_executed) {
       return;
     }
     logger.fine('[KickoffState] Esecuzione del kickoff in corso...');
-    final clock = referee.getComponent<GameClockComponent>();
+    final clock = entity.getComponent<GameClockComponent>();
     clock?.update(dt);
     if (clock != null && clock.elapsedTime >= kickoffDelay) {
       logger.info('[KickoffState] Tempo scaduto. Inizio partita!');
-      referee.getComponent<MessageSenderComponent>()?.broadcast(
+      entity.getComponent<MessageSenderComponent>()?.broadcast(
         MatchMessage.started(),
       );
-      referee.getComponent<FsmComponent<RefereeEntity>>()?.fsm.changeState(
+      entity.getComponent<FsmComponent<RefereeEntity>>()?.fsm.changeState(
         PlayState(),
       );
     }
   }
 
   @override
-  void exit(RefereeEntity referee) {
+  void exit(RefereeEntity entity, EcsWorld world) {
     logger.info('[KickoffState] Uscita dallo stato di kickoff.');
   }
 
   @override
-  bool onMessage(RefereeEntity entity, Telegram telegram) {
+  bool onMessage(RefereeEntity entity, Telegram telegram, EcsWorld world) {
     logger.info('[KickoffState] ricevuto un messaggio : ${telegram.message}.');
     return true;
   }

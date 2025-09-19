@@ -5,7 +5,7 @@ import 'package:football_sim_core/ecs/entities/referee_entity.dart';
 import 'states/referee/global_referee_state.dart';
 
 class RefereeFsm extends Fsm<RefereeEntity> {
-  RefereeFsm(super.owner) {
+  RefereeFsm(super.owner, super.world) {
     changeState(InitializingState());
     fsm.globalState = GlobalRefereeState();
   }

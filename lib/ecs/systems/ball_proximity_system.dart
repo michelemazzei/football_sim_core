@@ -11,12 +11,12 @@ import 'package:football_sim_core/ecs/systems/ecs_system.dart';
 class BallProximitySystem extends EcsSystem {
   @override
   void update(EcsWorld world, double dt) {
-    final clock = world.entitiesWith<GameClockComponent>().firstOrNull;
+    // Recupera il GameClockComponent come risorsa globale
+    final clock = world.getResource<GameClockComponent>();
     if (clock == null) {
       log(name: 'BallProximitySystem', '⚠️ Nessun clock trovato nel mondo.');
       return;
     }
-    final timeIsUp = clock.getComponent<GameClockComponent>()!.isTimeUp;
     final ball = world.entitiesWith<EcsBallComponent>().firstOrNull;
     if (ball == null) {
       log(name: 'BallProximitySystem', '⚠️ Nessuna palla trovata nel mondo.');
@@ -56,7 +56,7 @@ class BallProximitySystem extends EcsSystem {
       return true;
     }());
     // Se il tempo è scaduto, nessun giocatore può avere il possesso
-    if (timeIsUp || closestPlayers.isEmpty) {
+    if (clock.isTimeUp || closestPlayers.isEmpty) {
       ball.addOrReplaceComponent<BallProximityComponent>(
         BallProximityComponent(),
       );

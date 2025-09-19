@@ -95,6 +95,8 @@ class FootballGame extends FlameGame {
     // 3. Registra nel mondo
     registry.getStatsEntity(this);
 
+    //4. inizializza il clock di gioco
+    registry.getClock(duration: 90.0, speedFactor: 1.0);
     //2 - Registra sistemi
     registry.addSystems(this);
   }

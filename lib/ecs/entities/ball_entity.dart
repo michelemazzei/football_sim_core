@@ -3,11 +3,12 @@ import 'package:football_sim_core/ai/config/soccer_parameters.dart';
 import 'package:football_sim_core/ai/fsm/ball_fsm.dart';
 import 'package:football_sim_core/ecs/components/ball_proximity_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
+import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 
 class BallEntity extends EcsEntity {
   /// Returns the [BallEntity] associated with this [EcsEntity].
-  BallEntity(super.id) {
+  BallEntity(super.id, EcsWorld world) {
     addComponent(EcsBallComponent());
     addComponent(BallProximityComponent());
 
@@ -32,6 +33,6 @@ class BallEntity extends EcsEntity {
     addComponent(const SizeRatioComponent(0.02));
 
     /// FSM del match
-    addComponent(FsmComponent<BallEntity>(BallFSM(this)));
+    addComponent(FsmComponent<BallEntity>(BallFSM(this, world)));
   }
 }

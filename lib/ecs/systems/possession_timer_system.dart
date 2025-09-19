@@ -6,6 +6,8 @@ import 'package:football_sim_core/ecs/systems/ecs_system.dart';
 class PossessionTimerSystem extends EcsSystem {
   @override
   void update(EcsWorld world, double dt) {
+    // Recupera il GameClockComponent come risorsa globale
+    final scaledDt = world.scaledDt;
     for (final player
         in world
             .entitiesWithAll<PossessionComponent, PossessionTimerComponent>()) {
@@ -13,7 +15,7 @@ class PossessionTimerSystem extends EcsSystem {
       final timer = player.getComponent<PossessionTimerComponent>();
 
       if (possession?.hasBall == true) {
-        timer?.timeInPossession += dt;
+        timer?.timeInPossession += scaledDt;
       }
     }
   }

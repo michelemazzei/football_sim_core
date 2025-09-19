@@ -1,4 +1,5 @@
 import 'package:flame/game.dart';
+import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
@@ -25,6 +26,7 @@ class EcsEntityRegistry {
   static const String player = 'Player';
   static const String stats = 'Stats';
   static const String referee = 'Referee';
+  static const String clock = 'Clock';
   bool _systemsAdded = false;
 
   // 🔵 Squadre
@@ -35,6 +37,7 @@ class EcsEntityRegistry {
   late EcsWorld ecsWorld;
 
   final Map<String, EcsEntity> _registry = {};
+  final Map<String, EcsComponent> _resources = {};
 
   static final EcsEntityRegistry _instance = EcsEntityRegistry._();
   factory EcsEntityRegistry.instance() => _instance;
@@ -44,11 +47,16 @@ class EcsEntityRegistry {
   }
   void reset() {
     _registry.clear();
+    _resources.clear();
     ecsWorld = EcsWorld();
     _systemsAdded = false;
     teamRed = Team(id: TeamId.red, color: TeamId.red.color);
     teamBlue = Team(id: TeamId.blue, color: TeamId.blue.color);
     match = EcsMatch(teamA: teamRed, teamB: teamBlue);
+  }
+
+  EcsComponent? getResource<T extends EcsComponent>() {
+    return ecsWorld.getResource<T>();
   }
 
   void addSystems(FootballGame game) {
@@ -70,12 +78,24 @@ class EcsEntityRegistry {
   EcsEntity? getEntity(String type) => _registry[type];
 
   EcsEntity getBallEntity() =>
-      _getOrAddEntity(ball, (int id) => BallEntity(id));
+      _getOrAddEntity(ball, (int id) => BallEntity(id, ecsWorld));
 
   EcsEntity getRefereeEntity(FootballGame game) =>
       _getOrAddEntity(referee, (int id) => RefereeEntity(id, game, match));
   EcsEntity getStatsEntity(FootballGame game) =>
       _getOrAddEntity(stats, (int id) => StatsEntity(id, game, match));
+
+  GameClockComponent getClock({
+    double duration = 90.0,
+    double speedFactor = 10.0, // es. 10x più veloce
+  }) {
+    return _getOrAddResource(
+          clock,
+          (int id) =>
+              GameClockComponent(duration: duration, speedFactor: speedFactor),
+        )
+        as GameClockComponent;
+  }
 
   EcsEntity getPlayerEntity(
     Vector2 position,
@@ -88,6 +108,7 @@ class EcsEntityRegistry {
       '${player}_${team.id}_$number',
       (int id) => PlayerEntity(
         id,
+        ecsWorld,
         initialPosition: position,
         team: team.id,
         game: game,
@@ -108,6 +129,20 @@ class EcsEntityRegistry {
       ecsWorld.addEntity(ecsEntity);
       entity = ecsEntity;
       _registry[type] = entity;
+    }
+    return entity;
+  }
+
+  EcsComponent _getOrAddResource(
+    String type,
+    EcsComponent Function(int id) constructor,
+  ) {
+    var entity = _resources[type];
+    if (entity == null) {
+      final ecsEntity = constructor(ecsWorld.genId());
+      ecsWorld.addResource(ecsEntity);
+      entity = ecsEntity;
+      _resources[type] = entity;
     }
     return entity;
   }

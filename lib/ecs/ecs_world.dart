@@ -1,13 +1,38 @@
 import 'package:football_sim_core/ecs/components/ecs_component.dart';
+import 'package:football_sim_core/ecs/components/game_clock_component.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 import 'package:football_sim_core/ecs/systems/ecs_system.dart';
 
 class EcsWorld {
   final List<EcsEntity> _entities = [];
   final List<EcsSystem> _systems = [];
+
+  final Map<Type, EcsComponent> _resources = {};
+
+  void addResource(EcsComponent resource) {
+    _resources[resource.runtimeType] = resource;
+  }
+
+  T? getResource<T extends EcsComponent>() {
+    return _resources[T] as T?;
+  }
+
+  void removeResource<T extends EcsComponent>() {
+    _resources.remove(T);
+  }
+
   int _nextId = 0;
 
   int genId() => _nextId++;
+
+  double _lastDt = 0.0;
+  double get lastDt => _lastDt;
+  GameClockComponent? _clockComponent;
+  double get scaledDt {
+    _clockComponent ??= getResource<GameClockComponent>();
+    return _lastDt * (_clockComponent?.speedFactor ?? 1.0);
+  }
+
   final List<EcsSystem> _pendingRemovals = [];
 
   void removeSystemLater(EcsSystem system) {
@@ -27,6 +52,7 @@ class EcsWorld {
   }
 
   void update(double dt) {
+    _lastDt = dt;
     for (final system in _systems) {
       system.update(this, dt);
     }

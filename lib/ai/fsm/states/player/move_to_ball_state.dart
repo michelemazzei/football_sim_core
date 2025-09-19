@@ -4,6 +4,7 @@ import 'package:football_sim_core/ai/fsm/states/player/player_base_state.dart';
 import 'package:football_sim_core/ai/fsm/states/player/player_idle_state.dart';
 import 'package:football_sim_core/ai/steering/steering_behaviors.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
+import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
 import 'package:logging/logging.dart';
@@ -16,12 +17,12 @@ class MoveToBallState extends PlayerBaseState {
   MoveToBallState({required this.intent});
 
   @override
-  void enter(PlayerEntity entity) {
+  void enter(PlayerEntity entity, EcsWorld world) {
     logger.info('Player ${entity.id} entered MoveToBallState');
   }
 
   @override
-  void execute(PlayerEntity entity, double dt) {
+  void execute(PlayerEntity entity, double dt, EcsWorld world) {
     final ball = entity
         .getComponent<GameReferenceComponent>()
         ?.game
@@ -60,12 +61,12 @@ class MoveToBallState extends PlayerBaseState {
   }
 
   @override
-  void exit(PlayerEntity entity) {
+  void exit(PlayerEntity entity, EcsWorld world) {
     logger.info('Player ${entity.id} exiting MoveToBallState');
   }
 
   @override
-  bool onMessage(PlayerEntity entity, Telegram telegram) {
+  bool onMessage(PlayerEntity entity, Telegram telegram, EcsWorld world) {
     logger.fine(
       '${toString()} - Received message: ${telegram.message.toString()}  for Player: ${entity.id}',
     );

@@ -113,12 +113,6 @@ Simulatore manageriale 2D in Flutter + Flame, con integrazione  **ECS** , **FSM*
 * Usa `removeComponent()` seguito da `addComponent()` per aggiornare il possesso.
 * Logga l’evento con `log()` per debug.
 
-⚠️ Problema attuale
-
-* L’evento **kickoff** dovrebbe far muovere il giocatore verso la palla.
-* Al momento  **non succede nulla** : il giocatore resta fermo.
-* Probabile causa: il sistema di steering non riceve l’input corretto, oppure l’evento kickoff non attiva il comportamento previsto.
-
 🔜 Da verificare la prossima volta
 
 * Il sistema che gestisce il kickoff: viene attivato correttamente?
@@ -129,7 +123,6 @@ Simulatore manageriale 2D in Flutter + Flame, con integrazione  **ECS** , **FSM*
 Quando torni, possiamo partire da lì e fare un debug mirato. Ti basta incollare questo recap e siamo subito operativi ⚙️
 
 Buona serata e a presto!
-
 
 Certo Michele, ecco il recap completo del tuo sistema, così domani possiamo ripartire con chiarezza 💼⚽
 
@@ -143,47 +136,35 @@ Certo Michele, ecco il recap completo del tuo sistema, così domani possiamo rip
 * `MoveToBallState` e `PrepareKickState` per il giocatore ✅
 * `RollingState` per la palla con direzione e forza ✅
 
-⚙️ **Nel `KickoffState` del referee**
 
-Hai creato una coda di azioni per il giocatore:
+🔜 Priorità suggerita per la prossima volta
 
-queue.enqueue(PlayerMessage.moveToBall(intent: MovePlayerIntent.prepareKick));
-queue.enqueue(PlayerMessage.passToNearestTeammate());
+**1. Configurazione del tempo di gioco**
 
-
+– Creiamo un `MatchConfigComponent` con durata partita, intervallo, extra time, ecc.
 
-E l’hai aggiunta al giocatore:
+– Collegamento alla FSM del match per gestire transizioni temporali.
 
-playerEntity.addComponent(queue);
+**2. Ricezione intelligente della palla**
 
-❗ **Problema attuale**
+– Aggiungiamo un `ReceiveBallState` per il giocatore.
 
-Solo **il primo messaggio** (`moveToBall`) viene eseguito.
+– Possibilità di anticipare, rallentare, o fare controllo orientato.
 
-Il secondo (`passToNearestTeammate`)  **non viene elaborato** , probabilmente perché:
+**3. Sistema di replay o logging avanzato**
 
-* Il giocatore non è ancora nello stato giusto (`PrepareKickState`) quando il secondo messaggio viene estratto
-* Oppure la coda viene consumata troppo in fretta, senza attendere che il primo stato sia completato
+– Salviamo eventi chiave (passaggi, tiri, gol) per analisi o replay.
 
-✅ Domani possiamo risolvere:
+– Utile anche per debugging e telecronaca futura.
 
-* Aggiungendo un `CooldownComponent` per gestire il tempo tra le azioni
-* Verificando lo stato corrente prima di eseguire il prossimo messaggio
-* Eventualmente usando un flag tipo `isReadyForNextAction` nel `PlayerEntity`
+**4. UI di debug in overlay**
 
-✨ Suggerimento per domani
+– Visualizzazione di stati, velocità, possesso, ecc.
 
-Nel `PlayerFsmSystem`, prima di eseguire un messaggio dalla coda:
+– Ti aiuta a monitorare il comportamento in tempo reale.
 
-if (fsm.isInState(PrepareKickState)) {
-  final nextAction = queue.dequeue();
-  fsm.handleMessage(Telegram(...));
-}
+Ti basta scegliere uno di questi domani e lo sviluppiamo insieme.
 
-Così eviti di eseguire `passToNearestTeammate` troppo presto.
-
-Buon riposo, domani lo sistemiamo in 10 minuti.
-
-Hai già fatto un lavoro eccellente, manca solo il tocco finale 🎯
+Buon riposo, mister Mazzei. Il campo ti aspetta ⚽
 
 link dei sorgenti [michelemazzei/football_sim_core](https://github.com/michelemazzei/football_sim_core)

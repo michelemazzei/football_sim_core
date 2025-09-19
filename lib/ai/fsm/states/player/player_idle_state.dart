@@ -4,6 +4,7 @@ import 'package:football_sim_core/ai/fsm/states/player/player_base_state.dart';
 import 'package:football_sim_core/ai/steering/player_utils.dart';
 import 'package:football_sim_core/ecs/components/ball_intent_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
+import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
 import 'package:logging/logging.dart';
@@ -11,12 +12,12 @@ import 'package:logging/logging.dart';
 class PlayerIdleState extends PlayerBaseState {
   final logger = Logger('PlayerBaseState.Idle');
   @override
-  void enter(PlayerEntity entity) {
+  void enter(PlayerEntity entity, EcsWorld world) {
     logger.info('Entering IdleState');
   }
 
   @override
-  void execute(PlayerEntity entity, double dt) {
+  void execute(PlayerEntity entity, double dt, EcsWorld world) {
     final possession = entity.getComponent<PossessionComponent>();
     if (possession?.hasBall == true) {
       logger.finest('Player ${entity.id} has the ball and is idle.');
@@ -26,7 +27,7 @@ class PlayerIdleState extends PlayerBaseState {
   }
 
   @override
-  bool onMessage(PlayerEntity entity, Telegram telegram) {
+  bool onMessage(PlayerEntity entity, Telegram telegram, EcsWorld world) {
     logger.fine(
       '${toString()} - Received message: ${telegram.message.toString()}  for Player: ${entity.id}',
     );
@@ -84,7 +85,7 @@ class PlayerIdleState extends PlayerBaseState {
   }
 
   @override
-  void exit(PlayerEntity entity) {
+  void exit(PlayerEntity entity, EcsWorld world) {
     logger.fine('Exiting IdleState');
   }
 }

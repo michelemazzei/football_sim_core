@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:football_sim_core/ai/config/soccer_parameters.dart';
 import 'package:football_sim_core/ai/fsm/player_fsm.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
+import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 import 'package:football_sim_core/ecs/entities/team_id.dart';
 import 'package:football_sim_core/game/football_game.dart';
@@ -12,7 +13,8 @@ import 'package:football_sim_core/model/team.dart';
 class PlayerEntity extends EcsEntity {
   /// Returns the [PlayerEntity] associated with this [EcsEntity].
   PlayerEntity(
-    super.id, {
+    super.id,
+    EcsWorld world, {
     required int number,
     required Color color,
     required FootballGame game,
@@ -43,6 +45,6 @@ class PlayerEntity extends EcsEntity {
     );
 
     /// FSM del match
-    addComponent(FsmComponent<PlayerEntity>(PlayerFsm(this)));
+    addComponent(FsmComponent<PlayerEntity>(PlayerFsm(this, world)));
   }
 }

@@ -37,10 +37,6 @@ class BallReceptionSystem extends EcsSystem {
           BallIdleState(),
         );
 
-        // // Aggiorna possesso
-        // final referee = world.entitiesOf<RefereeEntity>().firstOrNull;
-        // referee?.addOrReplaceComponent(BallPossessionComponent(player));
-
         log('Player ${player.id} has intercepted the ball!');
       }
     }

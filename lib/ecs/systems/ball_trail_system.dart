@@ -15,6 +15,8 @@ class BallTrailSystem extends EcsSystem {
 
   @override
   void update(EcsWorld world, double dt) {
+    // Recupera il GameClockComponent come risorsa globale
+    final scaledDt = world.scaledDt;
     for (final e in world.entitiesWith<EcsBallComponent>()) {
       final ballComp = e.getComponent<EcsBallComponent>()!;
       final sizeComp = e.getComponent<SizeComponent>();
@@ -22,7 +24,8 @@ class BallTrailSystem extends EcsSystem {
       final posComp = e.getComponent<MovingComponent>()?.currentPosition;
 
       if (velComp.velocity.length2 > 1) {
-        ballComp.angle += velComp.velocity.length * dt * ballComp.angleSpin;
+        ballComp.angle +=
+            velComp.velocity.length * scaledDt * ballComp.angleSpin;
       }
 
       if (velComp.velocity.length2 > 0.2 && posComp != null) {
