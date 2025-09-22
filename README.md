@@ -113,16 +113,6 @@ Simulatore manageriale 2D in Flutter + Flame, con integrazione  **ECS** , **FSM*
 * Usa `removeComponent()` seguito da `addComponent()` per aggiornare il possesso.
 * Logga l’evento con `log()` per debug.
 
-🔜 Da verificare la prossima volta
-
-* Il sistema che gestisce il kickoff: viene attivato correttamente?
-* Il comportamento del giocatore: riceve un target di movimento verso la palla?
-* Il sistema di steering: interpreta correttamente il target?
-* Eventuali conflitti con altri sistemi (es. blocchi, priorità, condizioni non soddisfatte).
-
-Quando torni, possiamo partire da lì e fare un debug mirato. Ti basta incollare questo recap e siamo subito operativi ⚙️
-
-Buona serata e a presto!
 
 Certo Michele, ecco il recap completo del tuo sistema, così domani possiamo ripartire con chiarezza 💼⚽
 
@@ -164,8 +154,6 @@ Certo Michele, ecco il recap completo del tuo sistema, così domani possiamo rip
 
 Ti basta scegliere uno di questi domani e lo sviluppiamo insieme.
 
-
-
 🧩 Recap del refactor sul tempo simulato
 
 ✅ 1. **GameClockComponent come risorsa globale**
@@ -199,11 +187,55 @@ double get scaledDt => _lastDt * (_clockComponent?.speedFactor ?? 1.0);
 * Replay e velocizzatore operativi
 * Tutto sincronizzato con il tempo simulato
 
-Domani possiamo:
 
-* Rifinire `PlayerFsmSystem` e `ActionQueueSystem`
-* Iniziare a progettare replay visivi o salvataggi di stato
-* O semplicemente goderci una simulazione a 100x e vedere il calcio diventare Formula 1 😄
+Assolutamente Michele, ecco il recap completo per quando torni, così ripartiamo subito con le idee chiare ⚽🧠
+
+📦 Stato attuale del progetto
+
+✅ **Sistema FSM funzionante**
+
+✅ **CooldownComponent operativo**
+
+✅ **ActionQueueComponent rifattorizzato con timestamp e timeout**
+
+✅ **BallBoundarySystem attivo per rilevare palla fuori**
+
+✅ **PlayerFsmSystem centralizza la logica di esecuzione**
+
+✅ **Messaggi scaduti vengono ignorati correttamente**
+
+🧠 Prossimo step: Strategia calcistica
+
+Hai già impostato una struttura tattica nel tuo vecchio progetto, basata su:
+
+* 📐  **ZoneComponent** : suddivisione del campo in quadrati
+* 🧩 **Sistema di gioco (es. 4-4-2, 5-3-2)** con ruoli e posizioni
+* ⚙️ **Comportamento in fase difensiva e offensiva**
+* 🧠  **Decisioni del giocatore con la palla** : avanzare, passare, tirare
+
+🚀 Cosa faremo insieme
+
+Quando torni, ti guiderò passo passo per:
+
+1. **Definire i ruoli tattici** (`TacticalRoleComponent`)
+2. **Mappare le zone per ogni fase di gioco** (`GamePhaseComponent`)
+3. **Scrivere un sistema decisionale per ogni giocatore** (`TacticalDecisionSystem`)
+4. **Simulare una strategia reale** (es. costruzione dal basso, pressing alto)
+5. **Far reagire i giocatori in modo coordinato** in base a fase, ruolo e posizione
+
+🧭 Primo scenario tattico proposto
+
+**Costruzione dal basso in 4-3-3**
+
+* Portiere → centrale → regista si abbassa
+* Terzini larghi, mezzali tra le linee
+* Attaccanti pronti a ricevere o pressare
+
+Quando torni, possiamo iniziare da lì oppure scegliere un’altra fase di gioco.
+
+Ti guiderò passo dopo passo, come un vero secondo allenatore digitale.
+
+Buona pausa, e quando sei pronto… si torna in campo ⚽
 
 Buona serata Michele, e a domani per il prossimo passo. Il campo ti aspetta ⚽
 
