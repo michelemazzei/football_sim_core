@@ -1,6 +1,7 @@
 import 'package:football_sim_core/ai/fsm/messaging/telegram.dart';
 import 'package:football_sim_core/ai/fsm/states/player/player_idle_state.dart';
 import 'package:football_sim_core/ecs/components/action_queue_component.dart';
+import 'package:football_sim_core/ecs/components/cool_down_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
@@ -19,15 +20,25 @@ class PlayerFsmSystem extends FsmSystem {
     for (final player in players) {
       final queue = player.getComponent<ActionQueueComponent>();
       final fsm = player.getComponent<FsmComponent<PlayerEntity>>()?.fsm;
-      if (queue == null || fsm == null) return;
+      if (queue == null || queue.isEmpty || fsm == null) return;
 
       // Se il giocatore è pronto (Idle o Stopped), esegui la prossima azione
-      if (fsm.isInState(PlayerIdleState())) {
-        final nextAction = queue.dequeue();
+      final cooldown = player.getComponent<CooldownComponent>();
+      cooldown?.update(world.scaledDt);
+
+      if (fsm.isInState(PlayerIdleState()) && (cooldown?.isReady ?? true)) {
+        final now = DateTime.now();
+        final nextAction = queue.dequeueValid(now);
         if (nextAction != null) {
+          cooldown?.start(0.5); // blocca per 0.5s dopo l’azione
           fsm.handleMessage(
-            Telegram(sender: player, receiver: player, message: nextAction),
+            Telegram(
+              sender: player,
+              receiver: player,
+              message: nextAction.message,
+            ),
           );
+          logger.info('Message next action $nextAction');
         }
       }
     }

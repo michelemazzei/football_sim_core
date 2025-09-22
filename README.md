@@ -136,7 +136,6 @@ Certo Michele, ecco il recap completo del tuo sistema, così domani possiamo rip
 * `MoveToBallState` e `PrepareKickState` per il giocatore ✅
 * `RollingState` per la palla con direzione e forza ✅
 
-
 🔜 Priorità suggerita per la prossima volta
 
 **1. Configurazione del tempo di gioco**
@@ -165,6 +164,47 @@ Certo Michele, ecco il recap completo del tuo sistema, così domani possiamo rip
 
 Ti basta scegliere uno di questi domani e lo sviluppiamo insieme.
 
-Buon riposo, mister Mazzei. Il campo ti aspetta ⚽
+
+
+🧩 Recap del refactor sul tempo simulato
+
+✅ 1. **GameClockComponent come risorsa globale**
+
+* Registrato nel `EcsWorld` con `duration` e `speedFactor`
+* Accessibile ovunque tramite `world.getResource<gameclockcomponent>()</gameclockcomponent>`
+
+✅ 2. **Introduzione di `scaledDt`**
+
+* Aggiunto in `EcsWorld` come proprietà calcolata:
+
+double get scaledDt => _lastDt * (_clockComponent?.speedFactor ?? 1.0);
+
+* Usato nei sistemi e negli stati FSM per rispettare il tempo simulato
+
+✅ 3. **Sistemi aggiornati**
+
+* `MovementSystem`: usa `scaledDt` per aggiornare posizione e velocità
+* `PossessionTimerSystem`: accumula tempo di possesso con `scaledDt`
+* `BallFsmSystem`: passa `scaledDt` alla FSM della palla
+* `RollingState`: applica attrito con `math.pow(friction, scaledDt).toDouble()`
+
+✅ 4. **FSM refactor**
+
+* `GameState` ora accetta `EcsWorld` in `enter`, `execute`, `exit`, `onMessage`
+* `StateMachine` e `Fsm<t></t>` aggiornati per passare il `world` agli stati
+
+✅ 5. **Test riuscito**
+
+* Simulazione con `speedFactor = 50.0` funziona perfettamente
+* Replay e velocizzatore operativi
+* Tutto sincronizzato con il tempo simulato
+
+Domani possiamo:
+
+* Rifinire `PlayerFsmSystem` e `ActionQueueSystem`
+* Iniziare a progettare replay visivi o salvataggi di stato
+* O semplicemente goderci una simulazione a 100x e vedere il calcio diventare Formula 1 😄
+
+Buona serata Michele, e a domani per il prossimo passo. Il campo ti aspetta ⚽
 
 link dei sorgenti [michelemazzei/football_sim_core](https://github.com/michelemazzei/football_sim_core)

@@ -2,6 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:football_sim_core/ai/config/soccer_parameters.dart';
 import 'package:football_sim_core/ai/fsm/player_fsm.dart';
+import 'package:football_sim_core/ecs/components/cool_down_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
@@ -34,6 +35,7 @@ class PlayerEntity extends EcsEntity {
     addComponent(RoleComponent(role));
     addComponent(TeamComponent(Team(id: team, color: color)));
     addComponent(PossessionComponent());
+    addComponent(CooldownComponent());
     addComponent(
       MovingComponent(
         maxSpeed: SoccerParameters.playerMaxSpeed,
