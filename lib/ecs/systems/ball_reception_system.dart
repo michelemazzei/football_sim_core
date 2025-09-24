@@ -32,10 +32,6 @@ class BallReceptionSystem extends EcsSystem {
           ballSpeed < 0.1 ||
           (ballVel.normalized().dot((playerPos - ballPos).normalized())) > 0.8;
 
-      if (player.id == 11) {
-        logger.info('distance $distance - approaching $isApproaching');
-      }
-
       if (distance < SoccerParameters.possessionRadius && isApproaching) {
         // Intercettazione riuscita
         ballVel.setZero(); // ferma la palla
