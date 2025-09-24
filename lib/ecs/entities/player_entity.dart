@@ -1,6 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:football_sim_core/ai/config/soccer_parameters.dart';
+import 'package:football_sim_core/ai/fsm/fsm.dart';
 import 'package:football_sim_core/ai/fsm/player_fsm.dart';
 import 'package:football_sim_core/ecs/components/cool_down_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
@@ -49,4 +50,14 @@ class PlayerEntity extends EcsEntity {
     /// FSM del match
     addComponent(FsmComponent<PlayerEntity>(PlayerFsm(this, world)));
   }
+
+  @override
+  String toString() =>
+      'Player($id,  ${getComponent<TeamComponent>()?.team.id}, #${getComponent<PlayerNumberComponent>()?.number})';
+
+  Fsm<PlayerEntity> get fsm => getComponent<FsmComponent<PlayerEntity>>()!.fsm;
+  Vector2 get position =>
+      getComponent<MovingComponent>()?.currentPosition ?? Vector2.zero();
+  Vector2 get velocity =>
+      getComponent<MovingComponent>()?.velocity ?? Vector2.zero();
 }

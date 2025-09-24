@@ -1,9 +1,11 @@
 import 'package:football_sim_core/ai/fsm/messaging/messaging.dart';
 import 'package:football_sim_core/ai/fsm/states/player/move_to_ball_state.dart';
 import 'package:football_sim_core/ai/fsm/states/player/player_base_state.dart';
+import 'package:football_sim_core/ai/fsm/states/player/receive_ball_state.dart';
 import 'package:football_sim_core/ai/steering/player_utils.dart';
 import 'package:football_sim_core/ecs/components/ball_intent_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
+import 'package:football_sim_core/ecs/components/receive_ball_intent_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
@@ -60,6 +62,13 @@ class PlayerIdleState extends PlayerBaseState {
 
         final direction = (teammatePos - ballPos).normalized();
         final force = 300.0; // puoi tararlo in base alla distanza
+
+        teammate.addComponent(
+          ReceiveBallIntentComponent.fromMessage(
+            ReceiveBallIntent(receiver: teammate, targetPosition: ballPos),
+          ),
+        );
+        teammate.fsm.changeState(ReceiveBallState());
 
         ball.addComponent(
           BallIntentComponent(

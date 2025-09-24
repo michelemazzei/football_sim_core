@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:football_sim_core/ai/config/soccer_parameters.dart';
 import 'package:football_sim_core/ai/fsm/states/ball/ball_idle_state.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
@@ -8,8 +6,11 @@ import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
 import 'package:football_sim_core/ecs/systems/ecs_system.dart';
 import 'package:football_sim_core/game/football_game.dart';
+import 'package:logging/logging.dart';
 
 class BallReceptionSystem extends EcsSystem {
+  final logger = Logger('systems.BallReceptionSystem');
+  PlayerEntity? lastInterceptingPlayer;
   final FootballGame game;
   BallReceptionSystem(this.game);
   @override
@@ -23,12 +24,17 @@ class BallReceptionSystem extends EcsSystem {
     if (ballPos == null || ballVel == null) return;
 
     for (final player in players) {
-      final playerPos = player.getComponent<MovingComponent>()?.currentPosition;
-      if (playerPos == null) continue;
+      final playerPos = player.position;
 
       final distance = (ballPos - playerPos).length;
+      final ballSpeed = ballVel.length;
       final isApproaching =
+          ballSpeed < 0.1 ||
           (ballVel.normalized().dot((playerPos - ballPos).normalized())) > 0.8;
+
+      if (player.id == 11) {
+        logger.info('distance $distance - approaching $isApproaching');
+      }
 
       if (distance < SoccerParameters.possessionRadius && isApproaching) {
         // Intercettazione riuscita
@@ -37,7 +43,10 @@ class BallReceptionSystem extends EcsSystem {
           BallIdleState(),
         );
 
-        log('Player ${player.id} has intercepted the ball!');
+        if (lastInterceptingPlayer?.id != player.id) {
+          lastInterceptingPlayer = player;
+          logger.info('Player ${player.id} has intercepted the ball!');
+        }
       }
     }
   }

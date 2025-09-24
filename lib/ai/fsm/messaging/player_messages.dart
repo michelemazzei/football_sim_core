@@ -1,5 +1,6 @@
 // lib/messages/player_messages.dart
 import 'package:flame/game.dart';
+import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'message.dart';
 
@@ -15,6 +16,13 @@ enum MovePlayerIntent {
 
 @freezed
 sealed class PlayerMessage with _$PlayerMessage implements Message {
+  const factory PlayerMessage.receiveBallIntent({
+    void Function()? onAck,
+    @Default(false) bool requiresAck,
+    required EcsEntity receiver,
+    required Vector2 targetPosition,
+  }) = ReceiveBallIntent;
+
   const factory PlayerMessage.goHome({
     @Default(false) bool requiresAck,
     void Function()? onAck,
