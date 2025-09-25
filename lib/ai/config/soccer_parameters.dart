@@ -6,9 +6,9 @@ class SoccerParameters {
   static const double possessionRadius = 0.02;
   static const playerMass = 3.0;
   static const playerMaxForce = 0.3;
-  static const playerMaxSpeed = 0.4;
+  static const playerMaxSpeed = 0.5;
   static const playerMinSpeed = 0.1;
-  static const playerComfortZone = 50.0;
+  static const playerComfortZone = 0.1;
   static const playerDecrease = -0.01;
   static const playerRadius = 25.0;
   static const playerPanicDistance = 2.0;
@@ -16,6 +16,7 @@ class SoccerParameters {
   //
   //Ball Constants
   //
+  static const ballOffsetFromFeet = 0.02;
   static const ballFriction = -0.015;
   static const ballMass = 1.0;
   static const ballRadius = 20.0;

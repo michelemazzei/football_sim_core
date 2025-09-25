@@ -7,12 +7,12 @@ import 'package:football_sim_core/ecs/entities/player_entity.dart';
 import 'package:football_sim_core/ecs/entities/referee_entity.dart';
 import 'package:football_sim_core/ecs/entities/stats_entity.dart';
 import 'package:football_sim_core/ecs/entities/team_id.dart';
-import 'package:football_sim_core/ecs/systems/action_queue_system.dart';
 import 'package:football_sim_core/ecs/systems/ball_fsm_system.dart';
 import 'package:football_sim_core/ecs/systems/ball_proximity_system.dart';
 import 'package:football_sim_core/ecs/systems/ball_reception_system.dart';
 import 'package:football_sim_core/ecs/systems/match_start_system.dart';
 import 'package:football_sim_core/ecs/systems/movement_system.dart';
+import 'package:football_sim_core/ecs/systems/player_action_message_system.dart';
 import 'package:football_sim_core/ecs/systems/player_fsm_system.dart';
 import 'package:football_sim_core/ecs/systems/possession_event_system.dart';
 import 'package:football_sim_core/ecs/systems/referee_fsm_system.dart';
@@ -62,12 +62,12 @@ class EcsEntityRegistry {
   void addSystems(FootballGame game) {
     if (_systemsAdded) return;
     _systemsAdded = true;
-    ecsWorld.addSystem(ActionQueueSystem());
+    ecsWorld.addSystem(MovementSystem(game));
+    ecsWorld.addSystem(PlayerActionHandlerSystem());
     ecsWorld.addSystem(BallFsmSystem());
     ecsWorld.addSystem(PlayerFsmSystem());
     ecsWorld.addSystem(RefereeFsmSystem());
     ecsWorld.addSystem(BallProximitySystem());
-    ecsWorld.addSystem(MovementSystem(game));
     ecsWorld.addSystem(ResizeSystem(game));
     ecsWorld.addSystem(BallReceptionSystem(game));
 

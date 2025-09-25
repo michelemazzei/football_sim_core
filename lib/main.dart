@@ -9,6 +9,7 @@ void setupLogging() {
   Logger('FootballGame').level = Level.FINE;
   Logger('PlayerBaseState').level = Level.FINE;
   Logger('EcsSystem').level = Level.INFO;
+  Logger('states.ball').level = Level.INFO;
 
   Logger.root.onRecord.listen((record) {
     debugPrint(

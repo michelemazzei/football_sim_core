@@ -2,8 +2,9 @@ import 'package:football_sim_core/ai/fsm/core/game_state.dart';
 import 'package:football_sim_core/ai/fsm/core/state_machine.dart';
 import 'package:football_sim_core/ai/fsm/messaging/telegram.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
+import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 
-abstract class Fsm<T> {
+abstract class Fsm<T extends EcsEntity> {
   final StateMachine<T> _fsm;
   Fsm(T owner, EcsWorld world) : _fsm = StateMachine<T>(owner, world);
 

@@ -15,6 +15,9 @@ class QueuedPlayerMessage {
     required this.timeout,
   });
 
+  @override
+  String toString() =>
+      'QueuedPlayerMessage(message: ${message.toShortString()}, timestamp: $timestamp, timeout: $timeout)';
   bool isExpired(DateTime now) => now.difference(timestamp) > timeout;
 }
 
@@ -24,6 +27,7 @@ class ActionQueueComponent extends EcsComponent {
   bool isBusy = false;
   bool canInterrupt = true;
   final EcsEntity sender;
+  static const _longTimeout = Duration(seconds: 90);
 
   ActionQueueComponent({
     required this.sender,
@@ -37,16 +41,13 @@ class ActionQueueComponent extends EcsComponent {
         (msg) => QueuedPlayerMessage(
           message: msg,
           timestamp: now,
-          timeout: const Duration(seconds: 2),
+          timeout: _longTimeout,
         ),
       ),
     );
   }
 
-  void enqueue(
-    PlayerMessage message, {
-    Duration timeout = const Duration(seconds: 2),
-  }) {
+  void enqueue(PlayerMessage message, {Duration timeout = _longTimeout}) {
     actions.addLast(
       QueuedPlayerMessage(
         message: message,

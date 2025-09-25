@@ -1,6 +1,7 @@
 import 'package:football_sim_core/ai/fsm/messaging/messaging.dart';
 import 'package:football_sim_core/ai/fsm/states/referee/play_state.dart';
 import 'package:football_sim_core/ai/fsm/states/referee/referee_base_state.dart';
+import 'package:football_sim_core/ai/intents/move_player_intent.dart';
 import 'package:football_sim_core/ai/steering/player_utils.dart';
 import 'package:football_sim_core/ecs/components/action_queue_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
@@ -17,8 +18,7 @@ class KickoffState extends RefereeBaseState {
   var _executed = false;
 
   @override
-  void enter(RefereeEntity entity, EcsWorld world) {
-    logger.info('[KickoffState] Entrato. Attesa di $kickoffDelay secondi...');
+  void doEnter(RefereeEntity entity, EcsWorld world) {
     // Reset del tempo
     final team = _selectKickoffTeam(entity);
     if (team == null) return;
@@ -68,7 +68,7 @@ class KickoffState extends RefereeBaseState {
         sender: entity,
         canInterrupt: false,
         userAction: [
-          PlayerMessage.moveToBall(intent: MovePlayerIntent.prepareKick),
+          PlayerMessage.moveToBall(intent: MovePlayerIntent.prepareKick()),
           PlayerMessage.passToNearestTeammate(
             requiresAck: true,
             onAck: () {
@@ -89,7 +89,7 @@ class KickoffState extends RefereeBaseState {
   }
 
   @override
-  void execute(RefereeEntity entity, double dt, EcsWorld world) {
+  void doExecute(RefereeEntity entity, double dt, EcsWorld world) {
     if (!_executed) {
       return;
     }
@@ -105,17 +105,6 @@ class KickoffState extends RefereeBaseState {
         PlayState(),
       );
     }
-  }
-
-  @override
-  void exit(RefereeEntity entity, EcsWorld world) {
-    logger.info('[KickoffState] Uscita dallo stato di kickoff.');
-  }
-
-  @override
-  bool onMessage(RefereeEntity entity, Telegram telegram, EcsWorld world) {
-    logger.info('[KickoffState] ricevuto un messaggio : ${telegram.message}.');
-    return true;
   }
 
   Team? _selectKickoffTeam(RefereeEntity referee) {

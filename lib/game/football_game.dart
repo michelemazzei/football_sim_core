@@ -1,7 +1,6 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:football_sim_core/components/spalti_component.dart';
-import 'package:football_sim_core/ecs/components/fsm_component.dart';
 import 'package:football_sim_core/ecs/components/render_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/game/ecs_entity_registry.dart';
@@ -105,16 +104,5 @@ class FootballGame extends FlameGame {
   void update(double dt) {
     super.update(dt);
     ecsWorld.update(dt);
-
-    final matchEntity = ecsWorld
-        .entitiesWith<FsmComponent<Match>>()
-        .firstOrNull;
-    final currentState = matchEntity
-        ?.getComponent<FsmComponent<Match>>()
-        ?.currentState
-        ?.runtimeType;
-    if (currentState != null) {
-      logger.fine('Stato corrente: $currentState');
-    }
   }
 }

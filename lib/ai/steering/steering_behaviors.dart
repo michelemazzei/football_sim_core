@@ -35,7 +35,7 @@ class SteeringBehaviors {
     required Vector2 velocity,
     required double maxSpeed,
     required double maxForce,
-    double slowingRadius = 100.0,
+    double slowingRadius = SoccerParameters.playerComfortZone,
   }) {
     final toTarget = target - position;
     final distance = toTarget.length;
@@ -49,7 +49,7 @@ class SteeringBehaviors {
         ? maxSpeed * easeInOutQuad(t)
         : maxSpeed;
 
-    final minSpeed = 0.5;
+    final minSpeed = 0.001;
     final finalSpeed = max(easedSpeed, minSpeed);
 
     final desiredVelocity = toTarget.normalized() * finalSpeed;

@@ -12,14 +12,9 @@ import 'package:logging/logging.dart';
 
 class MoveToPositionState extends PlayerBaseState {
   final logger = Logger('MoveToPositionState');
-  @override
-  void enter(PlayerEntity entity, EcsWorld world) {
-    logger.info('Player ${entity.id} entered MoveToPositionState');
-  }
 
   @override
-  void execute(PlayerEntity entity, double dt, EcsWorld world) {
-    logger.info('Player ${entity.id} executes MoveToPositionState');
+  void doExecute(PlayerEntity entity, double dt, EcsWorld world) {
     final movingComp = entity.getComponent<MovingComponent>();
 
     if (movingComp == null || movingComp.targetPosition == null) return;
@@ -38,19 +33,18 @@ class MoveToPositionState extends PlayerBaseState {
     movingComp.velocity += steering;
     movingComp.targetPosition = movingComp.targetPosition!;
     if (distance < SoccerParameters.possessionRadius * 10) {
-      entity.removeComponent<MovingComponent>();
       entity.fsm.changeState(PlayerIdleState());
     }
   }
 
   @override
-  bool onMessage(PlayerEntity entity, Telegram telegram, EcsWorld world) {
+  bool handleMessage(PlayerEntity entity, Telegram telegram, EcsWorld world) {
     if (telegram.message is MoveToPosition) {
       final msg = telegram.message as MoveToPosition;
 
       entity.addOrReplaceComponent(
         MovingComponent(
-          mass: 1.0,
+          mass: SoccerParameters.playerMass,
           heading: (msg.target - entity.position).normalized(),
           currentPosition: entity.position,
           targetPosition: msg.target,
@@ -66,10 +60,5 @@ class MoveToPositionState extends PlayerBaseState {
     }
 
     return false;
-  }
-
-  @override
-  void exit(PlayerEntity entity, EcsWorld world) {
-    logger.info('Player ${entity.id} exiting MoveToPositionState');
   }
 }

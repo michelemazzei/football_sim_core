@@ -6,15 +6,17 @@ import 'package:football_sim_core/ai/fsm/states/ball/ball_stopped_state.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/ball_entity.dart';
+import 'package:logging/logging.dart';
 
 class RollingState extends BallBaseState {
+  final logger = Logger('states.ball.RollingState');
   final Vector2 direction;
   final double force;
 
   RollingState({required this.direction, required this.force});
 
   @override
-  void enter(BallEntity entity, EcsWorld world) {
+  void doEnter(BallEntity entity, EcsWorld world) {
     final moving = entity.getComponent<MovingComponent>();
     if (moving != null) {
       moving.velocity = direction * force;
@@ -22,7 +24,7 @@ class RollingState extends BallBaseState {
   }
 
   @override
-  void execute(BallEntity entity, double dt, EcsWorld world) {
+  void doExecute(BallEntity entity, double dt, EcsWorld world) {
     final moving = entity.getComponent<MovingComponent>();
     if (moving == null) return;
 

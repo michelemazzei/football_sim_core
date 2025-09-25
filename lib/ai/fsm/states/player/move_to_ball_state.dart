@@ -1,7 +1,8 @@
 import 'package:football_sim_core/ai/config/soccer_parameters.dart';
-import 'package:football_sim_core/ai/fsm/messaging/messaging.dart';
+import 'package:football_sim_core/ai/fsm/states/ball/ball_possession_state.dart';
 import 'package:football_sim_core/ai/fsm/states/player/player_base_state.dart';
-import 'package:football_sim_core/ai/fsm/states/player/player_idle_state.dart';
+import 'package:football_sim_core/ai/fsm/states/player/prepare_kick_state.dart';
+import 'package:football_sim_core/ai/intents/move_player_intent.dart';
 import 'package:football_sim_core/ai/steering/steering_behaviors.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
@@ -17,12 +18,7 @@ class MoveToBallState extends PlayerBaseState {
   MoveToBallState({required this.intent});
 
   @override
-  void enter(PlayerEntity entity, EcsWorld world) {
-    logger.info('Player ${entity.id} entered MoveToBallState');
-  }
-
-  @override
-  void execute(PlayerEntity entity, double dt, EcsWorld world) {
+  void doExecute(PlayerEntity entity, double dt, EcsWorld world) {
     final ball = entity
         .getComponent<GameReferenceComponent>()
         ?.game
@@ -37,9 +33,9 @@ class MoveToBallState extends PlayerBaseState {
 
     final moving = entity.getComponent<MovingComponent>();
     final playerPos = moving?.currentPosition;
-    final ballPos = ball.getComponent<MovingComponent>()?.currentPosition;
+    final ballPos = ball.position;
 
-    if (moving == null || playerPos == null || ballPos == null) return;
+    if (moving == null || playerPos == null) return;
 
     final distance = (playerPos - ballPos).length;
     // Steering con comportamento "arrive"
@@ -50,26 +46,14 @@ class MoveToBallState extends PlayerBaseState {
       maxSpeed: moving.maxSpeed,
       maxForce: SoccerParameters.playerMaxForce,
     );
-
     moving.velocity += steering;
+    moving.heading = moving.velocity.normalized();
     moving.targetPosition = ballPos;
     if (distance < SoccerParameters.possessionRadius) {
-      entity.getComponent<FsmComponent<PlayerEntity>>()!.fsm.changeState(
-        PlayerIdleState(),
-      );
+      // allVelocity.setZero();
+      ball.fsm.changeState(BallPossessionState(owner: entity));
+
+      entity.fsm.changeState(PrepareKickState());
     }
-  }
-
-  @override
-  void exit(PlayerEntity entity, EcsWorld world) {
-    logger.info('Player ${entity.id} exiting MoveToBallState');
-  }
-
-  @override
-  bool onMessage(PlayerEntity entity, Telegram telegram, EcsWorld world) {
-    logger.fine(
-      '${toString()} - Received message: ${telegram.message.toString()}  for Player: ${entity.id}',
-    );
-    return true;
   }
 }

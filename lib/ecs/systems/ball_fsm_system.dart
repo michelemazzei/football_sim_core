@@ -19,31 +19,33 @@ class BallFsmSystem extends FsmSystem {
     }
     final balls = world
         .entitiesWithAll<BallIntentComponent, FsmComponent<BallEntity>>();
-    for (final ball in balls) {
-      final intent = ball.getComponent<BallIntentComponent>();
-      if (intent == null) continue;
-      final intentType = ball.getComponent<BallIntentComponent>()?.intent;
-      final fsm = ball.getComponent<FsmComponent<BallEntity>>()?.fsm;
-      if (fsm == null || intentType == null) continue;
-
-      switch (intentType) {
-        case BallIntent.kicked:
-          fsm.changeState(
-            RollingState(direction: intent.direction, force: intent.force),
-          );
-          break;
-        case BallIntent.stopped:
-          fsm.changeState(BallStoppedState());
-          break;
-        case BallIntent.outOfPlay:
-          fsm.changeState(OutOfPlayState());
-          break;
-        case BallIntent.idle:
-          fsm.changeState(BallIdleState());
-          break;
-      }
-
-      ball.removeComponent<BallIntentComponent>();
+    if (balls.isEmpty) {
+      return;
     }
+    final ball = balls.first as BallEntity;
+    final intent = ball.getComponent<BallIntentComponent>();
+    if (intent == null) return;
+    final intentType = ball.getComponent<BallIntentComponent>()?.intent;
+    final fsm = ball.fsm;
+    if (intentType == null) return;
+    ball.removeComponent<BallIntentComponent>();
+    switch (intentType) {
+      case BallIntent.kicked:
+        fsm.changeState(
+          RollingState(direction: intent.direction, force: intent.force),
+        );
+        break;
+      case BallIntent.stopped:
+        fsm.changeState(BallStoppedState());
+        break;
+      case BallIntent.outOfPlay:
+        fsm.changeState(OutOfPlayState());
+        break;
+      case BallIntent.idle:
+        fsm.changeState(BallIdleState());
+        break;
+    }
+
+    ball.removeComponent<BallIntentComponent>();
   }
 }

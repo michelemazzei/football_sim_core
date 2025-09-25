@@ -1,6 +1,7 @@
 import 'package:flame/game.dart';
 import 'package:football_sim_core/ai/config/soccer_parameters.dart';
 import 'package:football_sim_core/ai/fsm/ball_fsm.dart';
+import 'package:football_sim_core/ai/fsm/fsm.dart';
 import 'package:football_sim_core/ecs/components/ball_proximity_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
@@ -35,4 +36,10 @@ class BallEntity extends EcsEntity {
     /// FSM del match
     addComponent(FsmComponent<BallEntity>(BallFSM(this, world)));
   }
+
+  Fsm<BallEntity> get fsm => getComponent<FsmComponent<BallEntity>>()!.fsm;
+  Vector2 get position =>
+      getComponent<MovingComponent>()?.currentPosition ?? Vector2.zero();
+  Vector2 get velocity =>
+      getComponent<MovingComponent>()?.velocity ?? Vector2.zero();
 }

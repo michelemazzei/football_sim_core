@@ -56,8 +56,12 @@ class PlayerEntity extends EcsEntity {
       'Player($id,  ${getComponent<TeamComponent>()?.team.id}, #${getComponent<PlayerNumberComponent>()?.number})';
 
   Fsm<PlayerEntity> get fsm => getComponent<FsmComponent<PlayerEntity>>()!.fsm;
+  int get number => getComponent<PlayerNumberComponent>()!.number;
+  Team get team => getComponent<TeamComponent>()!.team;
   Vector2 get position =>
       getComponent<MovingComponent>()?.currentPosition ?? Vector2.zero();
+  Vector2 get head =>
+      getComponent<MovingComponent>()?.heading ?? Vector2.zero();
   Vector2 get velocity =>
       getComponent<MovingComponent>()?.velocity ?? Vector2.zero();
 }

@@ -1,13 +1,19 @@
 import 'package:football_sim_core/ai/fsm/messaging/messaging.dart';
-import 'package:football_sim_core/ecs/components/ecs_component.dart';
-import 'package:football_sim_core/ecs/components/fsm_component.dart';
-import 'package:football_sim_core/ecs/components/is_fsm_component.dart';
+import 'package:football_sim_core/ecs/components/ecs_components.dart';
 
 abstract class EcsEntity implements MessageReceiver, MessageSender {
   @override
   final int id;
   EcsEntity(this.id);
   final Map<Type, EcsComponent> _components = {};
+
+  bool isPlayer() {
+    return hasComponent<EcsPlayerComponent>();
+  }
+
+  bool isBall() {
+    return hasComponent<EcsBallComponent>();
+  }
 
   void addComponent(EcsComponent component) {
     _components[component.runtimeType] = component;

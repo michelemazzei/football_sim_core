@@ -61,15 +61,13 @@ class PlayerUtils {
     Iterable<PlayerEntity> players,
     BallEntity ball,
   ) {
-    final ballPos = ball.getComponent<MovingComponent>()?.currentPosition;
-    if (ballPos == null) return [];
+    final ballPos = ball.position;
 
     // Mappa ogni giocatore alla sua distanza dalla palla
     final playerDistances = <PlayerEntity, double>{};
 
     for (final player in players) {
-      final posComp = player.getComponent<MovingComponent>()?.currentPosition;
-      if (posComp == null) continue;
+      final posComp = player.position;
 
       final distance = posComp.distanceToSquared(ballPos);
       playerDistances[player] = distance;

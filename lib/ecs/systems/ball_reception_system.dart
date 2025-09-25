@@ -1,5 +1,6 @@
 import 'package:football_sim_core/ai/config/soccer_parameters.dart';
-import 'package:football_sim_core/ai/fsm/states/ball/ball_idle_state.dart';
+import 'package:football_sim_core/ai/fsm/states/ball/ball_possession_state.dart';
+import 'package:football_sim_core/ecs/components/ball_possession_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/ball_entity.dart';
@@ -34,10 +35,16 @@ class BallReceptionSystem extends EcsSystem {
 
       if (distance < SoccerParameters.possessionRadius && isApproaching) {
         // Intercettazione riuscita
-        ballVel.setZero(); // ferma la palla
-        ball.getComponent<FsmComponent<BallEntity>>()?.fsm.changeState(
-          BallIdleState(),
+        ball.addOrReplaceComponent(
+          BallPossessionComponent(
+            teamId: player.getComponent<TeamComponent>()!.team,
+
+            playerId: player.id,
+          ),
         );
+        ball.getComponent<MovingComponent>()?.velocity.setZero();
+        ball.getComponent<MovingComponent>()?.targetPosition = null;
+        ball.fsm.changeState(BallPossessionState(owner: player));
 
         if (lastInterceptingPlayer?.id != player.id) {
           lastInterceptingPlayer = player;

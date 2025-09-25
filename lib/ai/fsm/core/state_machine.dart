@@ -1,8 +1,9 @@
 import 'package:football_sim_core/ai/fsm/core/game_state.dart';
 import 'package:football_sim_core/ai/fsm/messaging/telegram.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
+import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 
-class StateMachine<EntityType> {
+class StateMachine<EntityType extends EcsEntity> {
   final EntityType owner;
   GameState<EntityType>? currentState;
   GameState<EntityType>? previousState;
@@ -20,6 +21,8 @@ class StateMachine<EntityType> {
       (globalState?.onMessage(owner, telegram, world) ?? false);
 
   void changeState(GameState<EntityType>? newState) {
+    // Evita transizioni ridondanti verso lo stesso tipo di stato
+    if (newState.runtimeType == currentState.runtimeType) return;
     previousState = currentState;
     currentState?.exit(owner, world);
     currentState = newState;

@@ -66,12 +66,7 @@ class BallProximitySystem extends EcsSystem {
         BallProximityComponent(
           playerEntity: closestPlayer,
           teamId: closestPlayer.getComponent<TeamComponent>()?.team.id,
-          distance: closestPlayer
-              .getComponent<MovingComponent>()!
-              .currentPosition
-              .distanceTo(
-                ball.getComponent<MovingComponent>()!.currentPosition,
-              ),
+          distance: closestPlayer.position.distanceTo(ball.position),
         ),
       );
     }

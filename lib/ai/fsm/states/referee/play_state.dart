@@ -11,14 +11,13 @@ class PlayState extends RefereeBaseState {
   int lastLoggedMinute = 0;
 
   @override
-  void enter(RefereeEntity entity, EcsWorld world) {
-    logger.info("🎬 Entering PlayState");
+  void doEnter(RefereeEntity entity, EcsWorld world) {
     world.getResource<GameClockComponent>()?.reset();
     entity.getComponent<GameClockComponent>()?.reset();
   }
 
   @override
-  void execute(RefereeEntity entity, double dt, EcsWorld world) {
+  void doExecute(RefereeEntity entity, double dt, EcsWorld world) {
     final clock = entity.getComponent<GameClockComponent>();
     if (clock == null) {
       logger.warning("⚠️ GameClockComponent not found on referee");
@@ -44,10 +43,5 @@ class PlayState extends RefereeBaseState {
         EndMatchState(),
       );
     }
-  }
-
-  @override
-  void exit(RefereeEntity entity, EcsWorld world) {
-    logger.finer("🏁 Exiting PlayState");
   }
 }

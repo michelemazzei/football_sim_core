@@ -1,18 +1,11 @@
 // lib/messages/player_messages.dart
 import 'package:flame/game.dart';
+import 'package:football_sim_core/ai/intents/move_player_intent.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'message.dart';
 
 part 'player_messages.freezed.dart';
-
-enum MovePlayerIntent {
-  prepareKick,
-  intercept,
-  markOpponent,
-  receivePass,
-  pressOpponent,
-}
 
 @freezed
 sealed class PlayerMessage with _$PlayerMessage implements Message {

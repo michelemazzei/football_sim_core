@@ -1,7 +1,7 @@
 import 'package:flame/components.dart';
-import 'package:football_sim_core/ai/fsm/messaging/messaging.dart';
 import 'package:football_sim_core/ai/fsm/states/player/move_to_ball_state.dart';
 import 'package:football_sim_core/ai/fsm/states/player/player_base_state.dart';
+import 'package:football_sim_core/ai/intents/move_player_intent.dart';
 import 'package:football_sim_core/ecs/components/receive_ball_intent_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
@@ -13,8 +13,7 @@ class ReceiveBallState extends PlayerBaseState {
   bool _hasDispatchedMove = false;
 
   @override
-  void enter(PlayerEntity entity, EcsWorld world) {
-    logger.info('Player ${entity.id} entered ReceiveBallState');
+  void doEnter(PlayerEntity entity, EcsWorld world) {
     final intent = entity.getComponent<ReceiveBallIntentComponent>();
     if (intent == null) return;
 
@@ -23,11 +22,10 @@ class ReceiveBallState extends PlayerBaseState {
   }
 
   @override
-  void execute(PlayerEntity entity, double dt, EcsWorld world) {
-    logger.info('Player ${entity.id} executes ReceiveBallState');
+  void doExecute(PlayerEntity entity, double dt, EcsWorld world) {
     if (!_hasDispatchedMove) {
       entity.fsm.changeState(
-        MoveToBallState(intent: MovePlayerIntent.intercept),
+        MoveToBallState(intent: MovePlayerIntent.intercept()),
       );
 
       _hasDispatchedMove = true;
@@ -35,12 +33,7 @@ class ReceiveBallState extends PlayerBaseState {
   }
 
   @override
-  void exit(PlayerEntity entity, EcsWorld world) {
-    logger.info('Player ${entity.id} exiting ReceiveBallState');
+  void doExit(PlayerEntity entity, EcsWorld world) {
     entity.removeComponent<ReceiveBallIntentComponent>();
   }
-
-  @override
-  bool onMessage(PlayerEntity entity, Telegram telegram, EcsWorld world) =>
-      false;
 }
