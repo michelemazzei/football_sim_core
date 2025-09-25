@@ -4,6 +4,7 @@ import 'package:football_sim_core/components/spalti_component.dart';
 import 'package:football_sim_core/ecs/components/render_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/game/ecs_entity_registry.dart';
+import 'package:football_sim_core/game/setup/setup_registry.dart';
 import 'package:football_sim_core/model/formation.dart';
 import 'package:football_sim_core/utils/coordinate_mapper.dart';
 import 'package:football_sim_core/utils/player_utils.dart';
@@ -68,6 +69,10 @@ class FootballGame extends FlameGame {
     );
     //.4 - ⚽ aggiungi il componente grafico della palla a Flame
     await add(ballComponent);
+    final messageRegistry = setupPlayerMessageRegistry(ecsWorld);
+    logger.info(
+      '📦 PlayerMessageRegistry initialized with ${messageRegistry.count} handlers',
+    );
 
     // 🔵 Squadre
     final teamRed = registry.teamRed;
