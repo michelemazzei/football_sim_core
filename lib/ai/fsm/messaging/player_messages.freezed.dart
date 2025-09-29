@@ -556,12 +556,12 @@ $MoveToBallCopyWith<MoveToBall> get copyWith => _$MoveToBallCopyWithImpl<MoveToB
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MoveToBall&&const DeepCollectionEquality().equals(other.intent, intent)&&(identical(other.requiresAck, requiresAck) || other.requiresAck == requiresAck)&&(identical(other.onAck, onAck) || other.onAck == onAck));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MoveToBall&&(identical(other.intent, intent) || other.intent == intent)&&(identical(other.requiresAck, requiresAck) || other.requiresAck == requiresAck)&&(identical(other.onAck, onAck) || other.onAck == onAck));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(intent),requiresAck,onAck);
+int get hashCode => Object.hash(runtimeType,intent,requiresAck,onAck);
 
 @override
 String toString() {
@@ -580,7 +580,7 @@ $Res call({
 });
 
 
-
+$MovePlayerIntentCopyWith<$Res> get intent;
 
 }
 /// @nodoc
@@ -593,16 +593,25 @@ class _$MoveToBallCopyWithImpl<$Res>
 
 /// Create a copy of PlayerMessage
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? intent = freezed,Object? requiresAck = null,Object? onAck = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? intent = null,Object? requiresAck = null,Object? onAck = freezed,}) {
   return _then(MoveToBall(
-intent: freezed == intent ? _self.intent : intent // ignore: cast_nullable_to_non_nullable
+intent: null == intent ? _self.intent : intent // ignore: cast_nullable_to_non_nullable
 as MovePlayerIntent,requiresAck: null == requiresAck ? _self.requiresAck : requiresAck // ignore: cast_nullable_to_non_nullable
 as bool,onAck: freezed == onAck ? _self.onAck : onAck // ignore: cast_nullable_to_non_nullable
 as void Function()?,
   ));
 }
 
-
+/// Create a copy of PlayerMessage
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MovePlayerIntentCopyWith<$Res> get intent {
+  
+  return $MovePlayerIntentCopyWith<$Res>(_self.intent, (value) {
+    return _then(_self.copyWith(intent: value));
+  });
+}
 }
 
 /// @nodoc
