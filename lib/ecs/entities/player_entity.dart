@@ -1,8 +1,8 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:football_sim_core/ai/config/soccer_parameters.dart';
-import 'package:football_sim_core/ai/fsm/fsm.dart';
-import 'package:football_sim_core/ai/fsm/player_fsm.dart';
+import 'package:football_sim_core/ai/fsm/components/fsm.dart';
+import 'package:football_sim_core/ai/fsm/components/player_fsm.dart';
 import 'package:football_sim_core/ecs/components/cool_down_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';

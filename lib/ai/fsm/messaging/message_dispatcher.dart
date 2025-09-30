@@ -1,17 +1,16 @@
-import 'dart:developer';
-
 import 'package:football_sim_core/ai/fsm/messaging/message.dart';
 import 'package:football_sim_core/ai/fsm/messaging/message_receiver.dart';
 import 'package:football_sim_core/ai/fsm/messaging/message_sender.dart';
 import 'package:football_sim_core/ai/fsm/messaging/player_messages.dart';
 import 'package:football_sim_core/ai/fsm/messaging/telegram.dart';
+import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 import 'package:logging/logging.dart';
 
 /// Gestisce l'invio dei messaggi tra agenti.
 /// Supporta messaggi immediati e ritardati.
 class MessageDispatcher {
-  final logger = Logger('Logging.MessageDispatcher');
+  final logger = Logger('ai.fsm.messaging.MessageDispatcher');
   // Costanti simboliche
   static const sendMsgImmediately = 0;
   static const noAdditionalInfo = 1;
@@ -25,15 +24,18 @@ class MessageDispatcher {
   MessageDispatcher._();
   factory MessageDispatcher() => instance;
 
-  void discharge(MessageReceiver receiver, Telegram telegram) {
+  void _discharge(Telegram telegram) {
+    MessageReceiver receiver = telegram.receiver;
     if (receiver is EcsEntity) {
-      final fsm = receiver.getFsmComponent();
-      final handled =
-          fsm?.handleMessage(telegram) ?? receiver.handleMessage(telegram);
+      final fsm = receiver.getComponent<FsmComponent>()?.fsm;
+      final handled = fsm?.handleMessage(telegram) ?? false;
 
       if (!handled) {
         logger.fine('🗑️ Message not handled by $receiver');
       } else {
+        logger.fine(
+          '✅ Consumed ${telegram.message.runtimeType} at ${DateTime.now()}',
+        );
         if (telegram.message is PlayerMessage) {
           final playerMessage = telegram.message as PlayerMessage;
           if (playerMessage.requiresAck) playerMessage.onAck?.call();
@@ -47,20 +49,34 @@ class MessageDispatcher {
     }
   }
 
-  /// Controlla e invia messaggi ritardati che sono maturati.
-  void dispatchDelayedMessages() {
+  void consume<MessageType extends Message>({
+    void Function(Telegram message)? discharge,
+
+    int numerOfMessages = 1,
+  }) {
     final now = DateTime.now();
 
+    priorityQueue.sort(
+      (a, b) => a.messageTime?.compareTo(b.messageTime ?? now) ?? 0,
+    );
     final readyMessages = priorityQueue
-        .where((msg) => msg.messageTime?.isBefore(now) ?? true)
+        .where(
+          (msg) =>
+              msg.messageTime?.isBefore(now) ??
+              true && msg.message is MessageType,
+        )
+        .take(numerOfMessages)
         .toList();
 
     for (final msg in readyMessages) {
-      discharge(msg.receiver, msg);
+      discharge != null ? discharge(msg) : _discharge(msg);
     }
-
-    priorityQueue.removeWhere((msg) => msg.messageTime?.isBefore(now) ?? true);
+    priorityQueue.removeWhere((msg) => readyMessages.contains(msg));
   }
+
+  void consumeElapsed<MessageType extends Message>({
+    void Function(Telegram message)? discharge,
+  }) => consume<MessageType>(numerOfMessages: 100, discharge: discharge);
 
   /// Invia un messaggio, immediato o ritardato.
   void dispatchMessage({
@@ -79,12 +95,7 @@ class MessageDispatcher {
           : DateTime.now().add(Duration(seconds: delay)),
     );
 
-    if (delay == 0) {
-      logger.fine('Send message from: $sender to $receiver message: $message');
-      discharge(receiver, telegram);
-    } else {
-      priorityQueue.add(telegram);
-      log('Recorded delayed message $telegram', name: '📲');
-    }
+    logger.fine('📲 - $telegram');
+    priorityQueue.add(telegram);
   }
 }

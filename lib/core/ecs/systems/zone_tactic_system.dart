@@ -1,9 +1,9 @@
-import 'package:football_sim_core/ai/fsm/messaging/message_dispatcher.dart';
 import 'package:football_sim_core/core/ecs/components/tactical_role_component.dart';
 import 'package:football_sim_core/core/ecs/messages/tactic_messages.dart';
 import 'package:football_sim_core/core/field/field_grid.dart';
 import 'package:football_sim_core/core/tactics/game_phases.dart';
 import 'package:football_sim_core/core/tactics/tactical_zone_map.dart';
+import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/systems/ecs_system.dart';
 
@@ -16,6 +16,8 @@ class ZoneTacticSystem extends EcsSystem {
 
   @override
   void update(EcsWorld world, double dt) {
+    final sender = world.getResource<MessageSenderComponent>();
+    if (sender == null) return;
     for (final entity in world.entitiesWith<TacticalRoleComponent>()) {
       final role = entity.getComponent<TacticalRoleComponent>()?.role;
       if (role == null) continue;
@@ -24,7 +26,7 @@ class ZoneTacticSystem extends EcsSystem {
         zone = FieldGrid().mirrorZone(zone);
       }
       if (zone != null) {
-        MessageDispatcher.instance.dispatchMessage(
+        sender.sendMessage(
           sender: entity,
           receiver: entity,
           message: MoveToZone(targetZone: zone),

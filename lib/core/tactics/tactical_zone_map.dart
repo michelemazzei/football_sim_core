@@ -24,7 +24,7 @@ class TacticalZoneMap {
       for (final entry in roleMap.entries) {
         final zone = entry.value;
         final mirroredZone = Zone(
-          x: FieldGrid.width - 1 - zone.x,
+          x: FieldGrid.columns - 1 - zone.x,
           y: zone.y,
           type: zone.type,
           weight: zone.weight,

@@ -1,4 +1,4 @@
-import 'package:football_sim_core/ai/fsm/fsm.dart';
+import 'package:football_sim_core/ai/fsm/components/fsm.dart';
 import 'package:football_sim_core/ai/fsm/messaging/message.dart';
 import 'package:football_sim_core/ai/fsm/messaging/player_messages.dart';
 import 'package:football_sim_core/ai/fsm/messaging/telegram.dart';

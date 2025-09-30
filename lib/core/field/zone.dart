@@ -1,3 +1,5 @@
+import 'package:flame/game.dart';
+import 'package:football_sim_core/core/field/field_grid.dart';
 import 'package:football_sim_core/core/field/zone_tag.dart';
 import 'package:football_sim_core/core/field/zone_types.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -21,6 +23,8 @@ extension ZoneX on Zone {
   bool get isMildfield => type is MildfieldZone;
   bool get isAttacking => type is AttackingZone;
   bool get isSpecial => type is SpecialZone;
+
+  Vector2 get center => FieldGrid().centerOfZone(this);
 
   int distanceTo(Zone other) => (x - other.x).abs() + (y - other.y).abs();
 

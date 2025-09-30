@@ -98,8 +98,10 @@ class KickoffState extends RefereeBaseState {
     clock?.update(dt);
     if (clock != null && clock.elapsedTime >= kickoffDelay) {
       logger.info('[KickoffState] Tempo scaduto. Inizio partita!');
-      entity.getComponent<MessageSenderComponent>()?.broadcast(
-        MatchMessage.started(),
+
+      world.getResource<MessageSenderComponent>()?.broadcast(
+        message: MatchMessage.started(),
+        sender: entity,
       );
       entity.getComponent<FsmComponent<RefereeEntity>>()?.fsm.changeState(
         PlayState(),

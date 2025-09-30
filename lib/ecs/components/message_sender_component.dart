@@ -6,12 +6,15 @@ import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 
 class MessageSenderComponent extends EcsComponent {
   final MessageDispatcher dispatcher = MessageDispatcher();
-  final EcsEntity sender;
   final EcsWorld world;
 
-  MessageSenderComponent({required this.sender, required this.world});
+  MessageSenderComponent({required this.world});
 
-  void sendMessage(Message message, EcsEntity receiver) {
+  void sendMessage({
+    required EcsEntity sender,
+    required Message message,
+    required EcsEntity receiver,
+  }) {
     dispatcher.dispatchMessage(
       sender: sender,
       message: message,
@@ -19,7 +22,7 @@ class MessageSenderComponent extends EcsComponent {
     );
   }
 
-  void broadcast(Message message) {
+  void broadcast({required EcsEntity sender, required Message message}) {
     for (final entity in world.entities()) {
       dispatcher.dispatchMessage(
         sender: sender,
@@ -29,7 +32,11 @@ class MessageSenderComponent extends EcsComponent {
     }
   }
 
-  void sendToGroup(String groupId, Message message) {
+  void sendToGroup({
+    required EcsEntity sender,
+    required String groupId,
+    required Message message,
+  }) {
     for (final entity in world.entities()) {
       final group = entity.getComponent<GroupComponent>();
       if (group != null && group.groupId == groupId) {

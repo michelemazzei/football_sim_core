@@ -1,4 +1,4 @@
-import 'package:football_sim_core/ai/fsm/fsm.dart';
+import 'package:football_sim_core/ai/fsm/components/fsm.dart';
 import 'package:football_sim_core/ai/fsm/messaging/player_message_registry.dart';
 import 'package:football_sim_core/ai/fsm/messaging/player_messages.dart';
 import 'package:football_sim_core/ai/fsm/states/player/move_to_ball_state.dart';

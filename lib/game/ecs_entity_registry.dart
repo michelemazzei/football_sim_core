@@ -49,6 +49,8 @@ class EcsEntityRegistry {
     _registry.clear();
     _resources.clear();
     ecsWorld = EcsWorld();
+    ecsWorld.addResource(MessageSenderComponent(world: ecsWorld));
+
     _systemsAdded = false;
     teamRed = Team(id: TeamId.red, color: TeamId.red.color);
     teamBlue = Team(id: TeamId.blue, color: TeamId.blue.color);
