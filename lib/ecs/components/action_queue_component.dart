@@ -2,7 +2,6 @@ import 'dart:collection';
 
 import 'package:football_sim_core/ai/fsm/messaging/messaging.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
-import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 
 class QueuedPlayerMessage {
   final PlayerMessage message;
@@ -26,11 +25,9 @@ class ActionQueueComponent extends EcsComponent {
 
   bool isBusy = false;
   bool canInterrupt = true;
-  final EcsEntity sender;
   static const _longTimeout = Duration(seconds: 90);
 
   ActionQueueComponent({
-    required this.sender,
     this.canInterrupt = true,
     this.isBusy = false,
     Iterable<PlayerMessage>? userAction,
@@ -60,7 +57,7 @@ class ActionQueueComponent extends EcsComponent {
   QueuedPlayerMessage? dequeueValid(DateTime now) {
     while (actions.isNotEmpty) {
       final next = actions.first;
-      if (next.isExpired(now)) {
+      if (next.isExpired(now) || next.message.cancelled) {
         actions.removeFirst(); // scarta messaggio scaduto
       } else {
         return actions.removeFirst(); // valido

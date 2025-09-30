@@ -12,40 +12,33 @@ part of 'tactic_messages.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$TacticMessage {
+mixin _$TacticUnion {
 
- void Function()? get onAck; bool get requiresAck; Zone get targetZone;
-/// Create a copy of TacticMessage
+ EcsEntity get receiver; bool get cancelled; set cancelled(bool value); bool get requiresAck; OnAck? get onAck; Zone get targetZone; set targetZone(Zone value);
+/// Create a copy of TacticUnion
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$TacticMessageCopyWith<TacticMessage> get copyWith => _$TacticMessageCopyWithImpl<TacticMessage>(this as TacticMessage, _$identity);
+$TacticUnionCopyWith<TacticUnion> get copyWith => _$TacticUnionCopyWithImpl<TacticUnion>(this as TacticUnion, _$identity);
 
 
 
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TacticMessage&&(identical(other.onAck, onAck) || other.onAck == onAck)&&(identical(other.requiresAck, requiresAck) || other.requiresAck == requiresAck)&&(identical(other.targetZone, targetZone) || other.targetZone == targetZone));
-}
 
-
-@override
-int get hashCode => Object.hash(runtimeType,onAck,requiresAck,targetZone);
 
 @override
 String toString() {
-  return 'TacticMessage(onAck: $onAck, requiresAck: $requiresAck, targetZone: $targetZone)';
+  return 'TacticUnion(receiver: $receiver, cancelled: $cancelled, requiresAck: $requiresAck, onAck: $onAck, targetZone: $targetZone)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $TacticMessageCopyWith<$Res>  {
-  factory $TacticMessageCopyWith(TacticMessage value, $Res Function(TacticMessage) _then) = _$TacticMessageCopyWithImpl;
+abstract mixin class $TacticUnionCopyWith<$Res>  {
+  factory $TacticUnionCopyWith(TacticUnion value, $Res Function(TacticUnion) _then) = _$TacticUnionCopyWithImpl;
 @useResult
 $Res call({
- void Function()? onAck, bool requiresAck, Zone targetZone
+ EcsEntity receiver, bool cancelled, bool requiresAck, OnAck? onAck, Zone targetZone
 });
 
 
@@ -53,24 +46,26 @@ $ZoneCopyWith<$Res> get targetZone;
 
 }
 /// @nodoc
-class _$TacticMessageCopyWithImpl<$Res>
-    implements $TacticMessageCopyWith<$Res> {
-  _$TacticMessageCopyWithImpl(this._self, this._then);
+class _$TacticUnionCopyWithImpl<$Res>
+    implements $TacticUnionCopyWith<$Res> {
+  _$TacticUnionCopyWithImpl(this._self, this._then);
 
-  final TacticMessage _self;
-  final $Res Function(TacticMessage) _then;
+  final TacticUnion _self;
+  final $Res Function(TacticUnion) _then;
 
-/// Create a copy of TacticMessage
+/// Create a copy of TacticUnion
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? onAck = freezed,Object? requiresAck = null,Object? targetZone = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? receiver = null,Object? cancelled = null,Object? requiresAck = null,Object? onAck = freezed,Object? targetZone = null,}) {
   return _then(_self.copyWith(
-onAck: freezed == onAck ? _self.onAck : onAck // ignore: cast_nullable_to_non_nullable
-as void Function()?,requiresAck: null == requiresAck ? _self.requiresAck : requiresAck // ignore: cast_nullable_to_non_nullable
-as bool,targetZone: null == targetZone ? _self.targetZone : targetZone // ignore: cast_nullable_to_non_nullable
+receiver: null == receiver ? _self.receiver : receiver // ignore: cast_nullable_to_non_nullable
+as EcsEntity,cancelled: null == cancelled ? _self.cancelled : cancelled // ignore: cast_nullable_to_non_nullable
+as bool,requiresAck: null == requiresAck ? _self.requiresAck : requiresAck // ignore: cast_nullable_to_non_nullable
+as bool,onAck: freezed == onAck ? _self.onAck : onAck // ignore: cast_nullable_to_non_nullable
+as OnAck?,targetZone: null == targetZone ? _self.targetZone : targetZone // ignore: cast_nullable_to_non_nullable
 as Zone,
   ));
 }
-/// Create a copy of TacticMessage
+/// Create a copy of TacticUnion
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -83,8 +78,8 @@ $ZoneCopyWith<$Res> get targetZone {
 }
 
 
-/// Adds pattern-matching-related methods to [TacticMessage].
-extension TacticMessagePatterns on TacticMessage {
+/// Adds pattern-matching-related methods to [TacticUnion].
+extension TacticUnionPatterns on TacticUnion {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -97,10 +92,10 @@ extension TacticMessagePatterns on TacticMessage {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( MoveToZone value)?  moveToZone,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( TacticalMoveToZone value)?  moveToZone,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case MoveToZone() when moveToZone != null:
+case TacticalMoveToZone() when moveToZone != null:
 return moveToZone(_that);case _:
   return orElse();
 
@@ -119,10 +114,10 @@ return moveToZone(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( MoveToZone value)  moveToZone,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( TacticalMoveToZone value)  moveToZone,}){
 final _that = this;
 switch (_that) {
-case MoveToZone():
+case TacticalMoveToZone():
 return moveToZone(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -137,10 +132,10 @@ return moveToZone(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( MoveToZone value)?  moveToZone,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( TacticalMoveToZone value)?  moveToZone,}){
 final _that = this;
 switch (_that) {
-case MoveToZone() when moveToZone != null:
+case TacticalMoveToZone() when moveToZone != null:
 return moveToZone(_that);case _:
   return null;
 
@@ -158,10 +153,10 @@ return moveToZone(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( void Function()? onAck,  bool requiresAck,  Zone targetZone)?  moveToZone,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( EcsEntity receiver,  bool cancelled,  bool requiresAck,  OnAck? onAck,  Zone targetZone)?  moveToZone,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case MoveToZone() when moveToZone != null:
-return moveToZone(_that.onAck,_that.requiresAck,_that.targetZone);case _:
+case TacticalMoveToZone() when moveToZone != null:
+return moveToZone(_that.receiver,_that.cancelled,_that.requiresAck,_that.onAck,_that.targetZone);case _:
   return orElse();
 
 }
@@ -179,10 +174,10 @@ return moveToZone(_that.onAck,_that.requiresAck,_that.targetZone);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( void Function()? onAck,  bool requiresAck,  Zone targetZone)  moveToZone,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( EcsEntity receiver,  bool cancelled,  bool requiresAck,  OnAck? onAck,  Zone targetZone)  moveToZone,}) {final _that = this;
 switch (_that) {
-case MoveToZone():
-return moveToZone(_that.onAck,_that.requiresAck,_that.targetZone);}
+case TacticalMoveToZone():
+return moveToZone(_that.receiver,_that.cancelled,_that.requiresAck,_that.onAck,_that.targetZone);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -196,10 +191,10 @@ return moveToZone(_that.onAck,_that.requiresAck,_that.targetZone);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( void Function()? onAck,  bool requiresAck,  Zone targetZone)?  moveToZone,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( EcsEntity receiver,  bool cancelled,  bool requiresAck,  OnAck? onAck,  Zone targetZone)?  moveToZone,}) {final _that = this;
 switch (_that) {
-case MoveToZone() when moveToZone != null:
-return moveToZone(_that.onAck,_that.requiresAck,_that.targetZone);case _:
+case TacticalMoveToZone() when moveToZone != null:
+return moveToZone(_that.receiver,_that.cancelled,_that.requiresAck,_that.onAck,_that.targetZone);case _:
   return null;
 
 }
@@ -210,45 +205,40 @@ return moveToZone(_that.onAck,_that.requiresAck,_that.targetZone);case _:
 /// @nodoc
 
 
-class MoveToZone implements TacticMessage {
-  const MoveToZone({this.onAck, this.requiresAck = false, required this.targetZone});
+class TacticalMoveToZone extends TacticUnion {
+   TacticalMoveToZone({required this.receiver, this.cancelled = false, this.requiresAck = false, this.onAck, required this.targetZone}): super._();
   
 
-@override final  void Function()? onAck;
+@override final  EcsEntity receiver;
+@override@JsonKey()  bool cancelled;
 @override@JsonKey() final  bool requiresAck;
-@override final  Zone targetZone;
+@override final  OnAck? onAck;
+@override  Zone targetZone;
 
-/// Create a copy of TacticMessage
+/// Create a copy of TacticUnion
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$MoveToZoneCopyWith<MoveToZone> get copyWith => _$MoveToZoneCopyWithImpl<MoveToZone>(this, _$identity);
+$TacticalMoveToZoneCopyWith<TacticalMoveToZone> get copyWith => _$TacticalMoveToZoneCopyWithImpl<TacticalMoveToZone>(this, _$identity);
 
 
 
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MoveToZone&&(identical(other.onAck, onAck) || other.onAck == onAck)&&(identical(other.requiresAck, requiresAck) || other.requiresAck == requiresAck)&&(identical(other.targetZone, targetZone) || other.targetZone == targetZone));
-}
 
-
-@override
-int get hashCode => Object.hash(runtimeType,onAck,requiresAck,targetZone);
 
 @override
 String toString() {
-  return 'TacticMessage.moveToZone(onAck: $onAck, requiresAck: $requiresAck, targetZone: $targetZone)';
+  return 'TacticUnion.moveToZone(receiver: $receiver, cancelled: $cancelled, requiresAck: $requiresAck, onAck: $onAck, targetZone: $targetZone)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $MoveToZoneCopyWith<$Res> implements $TacticMessageCopyWith<$Res> {
-  factory $MoveToZoneCopyWith(MoveToZone value, $Res Function(MoveToZone) _then) = _$MoveToZoneCopyWithImpl;
+abstract mixin class $TacticalMoveToZoneCopyWith<$Res> implements $TacticUnionCopyWith<$Res> {
+  factory $TacticalMoveToZoneCopyWith(TacticalMoveToZone value, $Res Function(TacticalMoveToZone) _then) = _$TacticalMoveToZoneCopyWithImpl;
 @override @useResult
 $Res call({
- void Function()? onAck, bool requiresAck, Zone targetZone
+ EcsEntity receiver, bool cancelled, bool requiresAck, OnAck? onAck, Zone targetZone
 });
 
 
@@ -256,25 +246,27 @@ $Res call({
 
 }
 /// @nodoc
-class _$MoveToZoneCopyWithImpl<$Res>
-    implements $MoveToZoneCopyWith<$Res> {
-  _$MoveToZoneCopyWithImpl(this._self, this._then);
+class _$TacticalMoveToZoneCopyWithImpl<$Res>
+    implements $TacticalMoveToZoneCopyWith<$Res> {
+  _$TacticalMoveToZoneCopyWithImpl(this._self, this._then);
 
-  final MoveToZone _self;
-  final $Res Function(MoveToZone) _then;
+  final TacticalMoveToZone _self;
+  final $Res Function(TacticalMoveToZone) _then;
 
-/// Create a copy of TacticMessage
+/// Create a copy of TacticUnion
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? onAck = freezed,Object? requiresAck = null,Object? targetZone = null,}) {
-  return _then(MoveToZone(
-onAck: freezed == onAck ? _self.onAck : onAck // ignore: cast_nullable_to_non_nullable
-as void Function()?,requiresAck: null == requiresAck ? _self.requiresAck : requiresAck // ignore: cast_nullable_to_non_nullable
-as bool,targetZone: null == targetZone ? _self.targetZone : targetZone // ignore: cast_nullable_to_non_nullable
+@override @pragma('vm:prefer-inline') $Res call({Object? receiver = null,Object? cancelled = null,Object? requiresAck = null,Object? onAck = freezed,Object? targetZone = null,}) {
+  return _then(TacticalMoveToZone(
+receiver: null == receiver ? _self.receiver : receiver // ignore: cast_nullable_to_non_nullable
+as EcsEntity,cancelled: null == cancelled ? _self.cancelled : cancelled // ignore: cast_nullable_to_non_nullable
+as bool,requiresAck: null == requiresAck ? _self.requiresAck : requiresAck // ignore: cast_nullable_to_non_nullable
+as bool,onAck: freezed == onAck ? _self.onAck : onAck // ignore: cast_nullable_to_non_nullable
+as OnAck?,targetZone: null == targetZone ? _self.targetZone : targetZone // ignore: cast_nullable_to_non_nullable
 as Zone,
   ));
 }
 
-/// Create a copy of TacticMessage
+/// Create a copy of TacticUnion
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')

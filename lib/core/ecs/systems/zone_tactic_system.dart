@@ -29,7 +29,7 @@ class ZoneTacticSystem extends EcsSystem {
         sender.sendMessage(
           sender: entity,
           receiver: entity,
-          message: MoveToZone(targetZone: zone),
+          message: TacticalMoveToZone(receiver: entity, targetZone: zone),
         );
       }
     }

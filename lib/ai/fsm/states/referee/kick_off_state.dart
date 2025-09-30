@@ -65,12 +65,12 @@ class KickoffState extends RefereeBaseState {
 
     closestPlayers.first.addOrReplaceComponent(
       ActionQueueComponent(
-        sender: entity,
         canInterrupt: false,
         userAction: [
-          PlayerMessage.moveToBall(intent: MovePlayerIntent.prepareKick()),
-          PlayerMessage.passToNearestTeammate(
+          MoveToBall(receiver: entity, intent: MovePlayerIntent.prepareKick()),
+          PassToNearestTeammate(
             requiresAck: true,
+            receiver: entity,
             onAck: () {
               logger.info(
                 '[KickoffState] Passaggio effettuato da ${closestPlayers.first.id}',
