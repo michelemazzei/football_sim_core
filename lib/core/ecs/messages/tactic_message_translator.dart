@@ -7,7 +7,7 @@ class TacticMessageTranslator {
   final logger = Logger('core.ecs.messages.TacticMessageTranslator');
 
   /// Traduce un messaggio tattico in una lista di messaggi di sistema
-  List<PlayerMessage> translate(TacticUnion message) {
+  List<PlayerMessage> translate(TacticMessage message) {
     return message.mapOrNull(
           moveToZone: (TacticalMoveToZone m) => <PlayerMessage>[
             MoveToPosition(receiver: m.receiver, target: m.targetZone.center),
@@ -18,7 +18,7 @@ class TacticMessageTranslator {
         _logUnhandled(message);
   }
 
-  List<PlayerMessage> _logUnhandled(TacticUnion message) {
+  List<PlayerMessage> _logUnhandled(TacticMessage message) {
     logger.warning('⚠️ Unhandled TacticMessage: ${message.runtimeType}');
     return <PlayerMessage>[];
   }

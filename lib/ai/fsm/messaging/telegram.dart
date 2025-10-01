@@ -6,57 +6,115 @@ import 'package:uuid/uuid.dart';
 
 part 'telegram.freezed.dart';
 
+abstract class Telegram implements Comparable<Telegram> {
+  String get id;
+  MessageSender? get sender;
+  MessageReceiver get receiver;
+  Message get message;
+  bool get cancelled;
+
+  DateTime? get messageTime;
+  DateTime? get timeOut;
+}
+
 /// Rappresenta un messaggio tra agenti nel simulatore.
-@Freezed(equal: false)
-abstract class Telegram with _$Telegram {
-  const Telegram._(); // Costruttore privato per metodi personalizzati
-  factory Telegram.create({
-    required String id,
-    required MessageSender sender,
-    required MessageReceiver receiver,
-    required Message message,
-    String? additionalInfo,
-    DateTime? messageTime,
-  }) = _Telegram;
+@unfreezed
+abstract class TelegramUnion with _$TelegramUnion implements Telegram {
+  const TelegramUnion._(); // Costruttore privato per metodi personalizzati
+  factory TelegramUnion({
+    required final String id,
+    final MessageSender? sender,
+    required final MessageReceiver receiver,
+    final DateTime? timeOut,
+    required final Message message,
+    @Default(false) bool cancelled,
+    final String? additionalInfo,
+    final DateTime? messageTime,
+  }) = _TelegramUnion;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) || (other is Telegram && other.id == id);
 
   @override
+  int compareTo(Telegram other) {
+    if (this == other) return 0;
+    if (messageTime == null && other.messageTime == null) return 0;
+    if (messageTime == null) return -1;
+    if (other.messageTime == null) return 1;
+    return messageTime!.compareTo(other.messageTime!);
+  }
+
+  @override
   int get hashCode => id.hashCode;
 
-  factory Telegram({
-    required MessageSender sender,
-    required MessageReceiver receiver,
-    required Message message,
-    String? additionalInfo,
-    DateTime? messageTime,
-  }) => Telegram.create(
+  factory TelegramUnion.create({
+    final MessageSender? sender,
+    required final MessageReceiver receiver,
+    required final Message message,
+    final String? additionalInfo,
+    final DateTime? timeOut,
+    final DateTime? messageTime,
+  }) => TelegramUnion(
     id: Uuid().v4(),
     sender: sender,
+    cancelled: false,
+    timeOut: timeOut,
     receiver: receiver,
     message: message,
     additionalInfo: additionalInfo,
     messageTime: messageTime,
   );
 
+  factory TelegramUnion.delayed({
+    required final MessageSender sender,
+    required final MessageReceiver receiver,
+    required final Message message,
+    final String? additionalInfo,
+    required final DateTime messageTime,
+  }) => TelegramUnion(
+    id: Uuid().v4(),
+    sender: sender,
+    cancelled: false,
+    timeOut: null,
+    receiver: receiver,
+    message: message,
+    additionalInfo: additionalInfo,
+    messageTime: messageTime,
+  );
+
+  factory TelegramUnion.immediate({
+    required final MessageSender sender,
+    required final MessageReceiver receiver,
+    required final Message message,
+    final String? additionalInfo,
+  }) => TelegramUnion(
+    id: Uuid().v4(),
+    sender: sender,
+    cancelled: false,
+    timeOut: null,
+    receiver: receiver,
+    message: message,
+    additionalInfo: additionalInfo,
+    messageTime: null,
+  );
+
+  @override
+  String toString() {
+    return 'Telegram(sender: ${sender?.id ?? -1}, receiver: ${receiver.id}, message: $message, messageTime: $messageTime)';
+  }
+}
+
+extension TelegramExtension on Telegram {
   /// Indica se il messaggio va gestito subito.
   bool get immediate => messageTime == null;
 
-  /// Ordina due Telegram in base al tempo di invio.
-  bool isBefore(Telegram other) {
-    if (immediate || other.messageTime == null) return true;
-    return messageTime!.isBefore(other.messageTime!);
-  }
-
-  bool isElapsed([DateTime? now]) {
+  bool isReady([DateTime? now]) {
     if (immediate) return true;
     return messageTime!.isBefore(now ?? DateTime.now());
   }
 
-  @override
-  String toString() {
-    return 'Telegram(sender: ${sender.id}, receiver: ${receiver.id}, message: $message, messageTime: $messageTime)';
+  bool isExpired() {
+    return messageTime != null && messageTime!.isBefore(DateTime.now());
   }
 }

@@ -6,6 +6,7 @@ import 'package:football_sim_core/ai/fsm/messaging/telegram.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 import 'package:logging/logging.dart';
+import 'package:collection/collection.dart';
 
 /// Gestisce l'invio dei messaggi tra agenti.
 /// Supporta messaggi immediati e ritardati.
@@ -16,8 +17,7 @@ class MessageDispatcher {
   static const noAdditionalInfo = 1;
   static const senderIdIrrelevant = -1;
 
-  /// Coda dei messaggi ritardati
-  final priorityQueue = <Telegram>[];
+  final _queue = PriorityQueue<Telegram>();
 
   /// Singleton instance
   static final instance = MessageDispatcher._();
@@ -25,6 +25,10 @@ class MessageDispatcher {
   factory MessageDispatcher() => instance;
 
   void _discharge(Telegram telegram) {
+    if (telegram.cancelled) {
+      logger.fine('🗑️ Discarded message ${telegram.message.toShortString()}');
+      return;
+    }
     MessageReceiver receiver = telegram.receiver;
     if (receiver is EcsEntity) {
       final fsm = receiver.getComponent<FsmComponent>()?.fsm;
@@ -49,34 +53,11 @@ class MessageDispatcher {
     }
   }
 
-  void consume<MessageType extends Message>({
-    void Function(Telegram message)? discharge,
-
-    int numerOfMessages = 1,
-  }) {
-    final now = DateTime.now();
-
-    priorityQueue.sort(
-      (a, b) => a.messageTime?.compareTo(b.messageTime ?? now) ?? 0,
-    );
-    final readyMessages = priorityQueue
-        .where(
-          (msg) =>
-              msg.messageTime?.isBefore(now) ??
-              true && msg.message is MessageType,
-        )
-        .take(numerOfMessages)
-        .toList();
-
-    for (final msg in readyMessages) {
-      discharge != null ? discharge(msg) : _discharge(msg);
-    }
-    priorityQueue.removeWhere((msg) => readyMessages.contains(msg));
+  void consume() {
+    if (_queue.isEmpty) return;
+    final first = _queue.first;
+    if (first.isReady() && _queue.remove(first)) _discharge(first);
   }
-
-  void consumeElapsed<MessageType extends Message>({
-    void Function(Telegram message)? discharge,
-  }) => consume<MessageType>(numerOfMessages: 100, discharge: discharge);
 
   /// Invia un messaggio, immediato o ritardato.
   void dispatchMessage({
@@ -86,7 +67,7 @@ class MessageDispatcher {
     required Message message,
     dynamic additionalInfo,
   }) {
-    final telegram = Telegram(
+    final telegram = TelegramUnion.create(
       sender: sender,
       receiver: receiver,
       message: message,
@@ -96,6 +77,6 @@ class MessageDispatcher {
     );
 
     logger.fine('📲 - $telegram');
-    priorityQueue.add(telegram);
+    _queue.add(telegram);
   }
 }

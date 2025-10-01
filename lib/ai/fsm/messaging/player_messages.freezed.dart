@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PlayerUnion {
 
- OnAck? get onAck; bool get cancelled; set cancelled(bool value); bool get requiresAck; EcsEntity get receiver;
+ OnAck? get onAck; bool get requiresAck; EcsEntity get receiver;
 /// Create a copy of PlayerUnion
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -23,11 +23,18 @@ $PlayerUnionCopyWith<PlayerUnion> get copyWith => _$PlayerUnionCopyWithImpl<Play
 
 
 
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlayerUnion&&(identical(other.onAck, onAck) || other.onAck == onAck)&&(identical(other.requiresAck, requiresAck) || other.requiresAck == requiresAck)&&(identical(other.receiver, receiver) || other.receiver == receiver));
+}
 
 
 @override
+int get hashCode => Object.hash(runtimeType,onAck,requiresAck,receiver);
+
+@override
 String toString() {
-  return 'PlayerUnion(onAck: $onAck, cancelled: $cancelled, requiresAck: $requiresAck, receiver: $receiver)';
+  return 'PlayerUnion(onAck: $onAck, requiresAck: $requiresAck, receiver: $receiver)';
 }
 
 
@@ -38,7 +45,7 @@ abstract mixin class $PlayerUnionCopyWith<$Res>  {
   factory $PlayerUnionCopyWith(PlayerUnion value, $Res Function(PlayerUnion) _then) = _$PlayerUnionCopyWithImpl;
 @useResult
 $Res call({
- void Function()? onAck, bool cancelled, bool requiresAck, EcsEntity receiver
+ void Function()? onAck, bool requiresAck, EcsEntity receiver
 });
 
 
@@ -55,11 +62,10 @@ class _$PlayerUnionCopyWithImpl<$Res>
 
 /// Create a copy of PlayerUnion
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? onAck = freezed,Object? cancelled = null,Object? requiresAck = null,Object? receiver = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? onAck = freezed,Object? requiresAck = null,Object? receiver = null,}) {
   return _then(_self.copyWith(
 onAck: freezed == onAck ? _self.onAck : onAck // ignore: cast_nullable_to_non_nullable
-as void Function()?,cancelled: null == cancelled ? _self.cancelled : cancelled // ignore: cast_nullable_to_non_nullable
-as bool,requiresAck: null == requiresAck ? _self.requiresAck : requiresAck // ignore: cast_nullable_to_non_nullable
+as void Function()?,requiresAck: null == requiresAck ? _self.requiresAck : requiresAck // ignore: cast_nullable_to_non_nullable
 as bool,receiver: null == receiver ? _self.receiver : receiver // ignore: cast_nullable_to_non_nullable
 as EcsEntity,
   ));
@@ -158,15 +164,15 @@ return receiveBall(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( OnAck? onAck,  bool cancelled,  bool requiresAck,  EcsEntity receiver,  Vector2 targetPosition)?  receiveBallIntent,TResult Function( bool cancelled,  bool requiresAck,  EcsEntity receiver,  OnAck? onAck)?  passToNearestTeammate,TResult Function( bool cancelled,  Vector2 target,  EcsEntity receiver,  bool requiresAck,  OnAck? onAck)?  moveToPosition,TResult Function( bool cancelled,  EcsEntity receiver,  MovePlayerIntent intent,  bool requiresAck,  OnAck? onAck)?  moveToBall,TResult Function( EcsEntity receiver,  bool cancelled,  bool requiresAck,  OnAck? onAck)?  placeToKickOff,TResult Function( EcsEntity receiver,  bool cancelled,  bool requiresAck,  OnAck? onAck)?  receiveBall,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( OnAck? onAck,  bool requiresAck,  EcsEntity receiver,  Vector2 targetPosition)?  receiveBallIntent,TResult Function( bool requiresAck,  EcsEntity receiver,  OnAck? onAck)?  passToNearestTeammate,TResult Function( Vector2 target,  EcsEntity receiver,  bool requiresAck,  OnAck? onAck)?  moveToPosition,TResult Function( EcsEntity receiver,  MovePlayerIntent intent,  bool requiresAck,  OnAck? onAck)?  moveToBall,TResult Function( EcsEntity receiver,  bool requiresAck,  OnAck? onAck)?  placeToKickOff,TResult Function( EcsEntity receiver,  bool requiresAck,  OnAck? onAck)?  receiveBall,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case ReceiveBallIntent() when receiveBallIntent != null:
-return receiveBallIntent(_that.onAck,_that.cancelled,_that.requiresAck,_that.receiver,_that.targetPosition);case PassToNearestTeammate() when passToNearestTeammate != null:
-return passToNearestTeammate(_that.cancelled,_that.requiresAck,_that.receiver,_that.onAck);case MoveToPosition() when moveToPosition != null:
-return moveToPosition(_that.cancelled,_that.target,_that.receiver,_that.requiresAck,_that.onAck);case MoveToBall() when moveToBall != null:
-return moveToBall(_that.cancelled,_that.receiver,_that.intent,_that.requiresAck,_that.onAck);case PlaceToKickOff() when placeToKickOff != null:
-return placeToKickOff(_that.receiver,_that.cancelled,_that.requiresAck,_that.onAck);case ReceiveBall() when receiveBall != null:
-return receiveBall(_that.receiver,_that.cancelled,_that.requiresAck,_that.onAck);case _:
+return receiveBallIntent(_that.onAck,_that.requiresAck,_that.receiver,_that.targetPosition);case PassToNearestTeammate() when passToNearestTeammate != null:
+return passToNearestTeammate(_that.requiresAck,_that.receiver,_that.onAck);case MoveToPosition() when moveToPosition != null:
+return moveToPosition(_that.target,_that.receiver,_that.requiresAck,_that.onAck);case MoveToBall() when moveToBall != null:
+return moveToBall(_that.receiver,_that.intent,_that.requiresAck,_that.onAck);case PlaceToKickOff() when placeToKickOff != null:
+return placeToKickOff(_that.receiver,_that.requiresAck,_that.onAck);case ReceiveBall() when receiveBall != null:
+return receiveBall(_that.receiver,_that.requiresAck,_that.onAck);case _:
   return orElse();
 
 }
@@ -184,15 +190,15 @@ return receiveBall(_that.receiver,_that.cancelled,_that.requiresAck,_that.onAck)
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( OnAck? onAck,  bool cancelled,  bool requiresAck,  EcsEntity receiver,  Vector2 targetPosition)  receiveBallIntent,required TResult Function( bool cancelled,  bool requiresAck,  EcsEntity receiver,  OnAck? onAck)  passToNearestTeammate,required TResult Function( bool cancelled,  Vector2 target,  EcsEntity receiver,  bool requiresAck,  OnAck? onAck)  moveToPosition,required TResult Function( bool cancelled,  EcsEntity receiver,  MovePlayerIntent intent,  bool requiresAck,  OnAck? onAck)  moveToBall,required TResult Function( EcsEntity receiver,  bool cancelled,  bool requiresAck,  OnAck? onAck)  placeToKickOff,required TResult Function( EcsEntity receiver,  bool cancelled,  bool requiresAck,  OnAck? onAck)  receiveBall,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( OnAck? onAck,  bool requiresAck,  EcsEntity receiver,  Vector2 targetPosition)  receiveBallIntent,required TResult Function( bool requiresAck,  EcsEntity receiver,  OnAck? onAck)  passToNearestTeammate,required TResult Function( Vector2 target,  EcsEntity receiver,  bool requiresAck,  OnAck? onAck)  moveToPosition,required TResult Function( EcsEntity receiver,  MovePlayerIntent intent,  bool requiresAck,  OnAck? onAck)  moveToBall,required TResult Function( EcsEntity receiver,  bool requiresAck,  OnAck? onAck)  placeToKickOff,required TResult Function( EcsEntity receiver,  bool requiresAck,  OnAck? onAck)  receiveBall,}) {final _that = this;
 switch (_that) {
 case ReceiveBallIntent():
-return receiveBallIntent(_that.onAck,_that.cancelled,_that.requiresAck,_that.receiver,_that.targetPosition);case PassToNearestTeammate():
-return passToNearestTeammate(_that.cancelled,_that.requiresAck,_that.receiver,_that.onAck);case MoveToPosition():
-return moveToPosition(_that.cancelled,_that.target,_that.receiver,_that.requiresAck,_that.onAck);case MoveToBall():
-return moveToBall(_that.cancelled,_that.receiver,_that.intent,_that.requiresAck,_that.onAck);case PlaceToKickOff():
-return placeToKickOff(_that.receiver,_that.cancelled,_that.requiresAck,_that.onAck);case ReceiveBall():
-return receiveBall(_that.receiver,_that.cancelled,_that.requiresAck,_that.onAck);}
+return receiveBallIntent(_that.onAck,_that.requiresAck,_that.receiver,_that.targetPosition);case PassToNearestTeammate():
+return passToNearestTeammate(_that.requiresAck,_that.receiver,_that.onAck);case MoveToPosition():
+return moveToPosition(_that.target,_that.receiver,_that.requiresAck,_that.onAck);case MoveToBall():
+return moveToBall(_that.receiver,_that.intent,_that.requiresAck,_that.onAck);case PlaceToKickOff():
+return placeToKickOff(_that.receiver,_that.requiresAck,_that.onAck);case ReceiveBall():
+return receiveBall(_that.receiver,_that.requiresAck,_that.onAck);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -206,15 +212,15 @@ return receiveBall(_that.receiver,_that.cancelled,_that.requiresAck,_that.onAck)
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( OnAck? onAck,  bool cancelled,  bool requiresAck,  EcsEntity receiver,  Vector2 targetPosition)?  receiveBallIntent,TResult? Function( bool cancelled,  bool requiresAck,  EcsEntity receiver,  OnAck? onAck)?  passToNearestTeammate,TResult? Function( bool cancelled,  Vector2 target,  EcsEntity receiver,  bool requiresAck,  OnAck? onAck)?  moveToPosition,TResult? Function( bool cancelled,  EcsEntity receiver,  MovePlayerIntent intent,  bool requiresAck,  OnAck? onAck)?  moveToBall,TResult? Function( EcsEntity receiver,  bool cancelled,  bool requiresAck,  OnAck? onAck)?  placeToKickOff,TResult? Function( EcsEntity receiver,  bool cancelled,  bool requiresAck,  OnAck? onAck)?  receiveBall,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( OnAck? onAck,  bool requiresAck,  EcsEntity receiver,  Vector2 targetPosition)?  receiveBallIntent,TResult? Function( bool requiresAck,  EcsEntity receiver,  OnAck? onAck)?  passToNearestTeammate,TResult? Function( Vector2 target,  EcsEntity receiver,  bool requiresAck,  OnAck? onAck)?  moveToPosition,TResult? Function( EcsEntity receiver,  MovePlayerIntent intent,  bool requiresAck,  OnAck? onAck)?  moveToBall,TResult? Function( EcsEntity receiver,  bool requiresAck,  OnAck? onAck)?  placeToKickOff,TResult? Function( EcsEntity receiver,  bool requiresAck,  OnAck? onAck)?  receiveBall,}) {final _that = this;
 switch (_that) {
 case ReceiveBallIntent() when receiveBallIntent != null:
-return receiveBallIntent(_that.onAck,_that.cancelled,_that.requiresAck,_that.receiver,_that.targetPosition);case PassToNearestTeammate() when passToNearestTeammate != null:
-return passToNearestTeammate(_that.cancelled,_that.requiresAck,_that.receiver,_that.onAck);case MoveToPosition() when moveToPosition != null:
-return moveToPosition(_that.cancelled,_that.target,_that.receiver,_that.requiresAck,_that.onAck);case MoveToBall() when moveToBall != null:
-return moveToBall(_that.cancelled,_that.receiver,_that.intent,_that.requiresAck,_that.onAck);case PlaceToKickOff() when placeToKickOff != null:
-return placeToKickOff(_that.receiver,_that.cancelled,_that.requiresAck,_that.onAck);case ReceiveBall() when receiveBall != null:
-return receiveBall(_that.receiver,_that.cancelled,_that.requiresAck,_that.onAck);case _:
+return receiveBallIntent(_that.onAck,_that.requiresAck,_that.receiver,_that.targetPosition);case PassToNearestTeammate() when passToNearestTeammate != null:
+return passToNearestTeammate(_that.requiresAck,_that.receiver,_that.onAck);case MoveToPosition() when moveToPosition != null:
+return moveToPosition(_that.target,_that.receiver,_that.requiresAck,_that.onAck);case MoveToBall() when moveToBall != null:
+return moveToBall(_that.receiver,_that.intent,_that.requiresAck,_that.onAck);case PlaceToKickOff() when placeToKickOff != null:
+return placeToKickOff(_that.receiver,_that.requiresAck,_that.onAck);case ReceiveBall() when receiveBall != null:
+return receiveBall(_that.receiver,_that.requiresAck,_that.onAck);case _:
   return null;
 
 }
@@ -226,11 +232,10 @@ return receiveBall(_that.receiver,_that.cancelled,_that.requiresAck,_that.onAck)
 
 
 class ReceiveBallIntent extends PlayerUnion {
-   ReceiveBallIntent({this.onAck, this.cancelled = false, this.requiresAck = false, required this.receiver, required this.targetPosition}): super._();
+   ReceiveBallIntent({this.onAck, this.requiresAck = false, required this.receiver, required this.targetPosition}): super._();
   
 
-@override  OnAck? onAck;
-@override@JsonKey()  bool cancelled;
+@override final  OnAck? onAck;
 @override@JsonKey() final  bool requiresAck;
 @override final  EcsEntity receiver;
  final  Vector2 targetPosition;
@@ -243,11 +248,18 @@ $ReceiveBallIntentCopyWith<ReceiveBallIntent> get copyWith => _$ReceiveBallInten
 
 
 
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReceiveBallIntent&&(identical(other.onAck, onAck) || other.onAck == onAck)&&(identical(other.requiresAck, requiresAck) || other.requiresAck == requiresAck)&&(identical(other.receiver, receiver) || other.receiver == receiver)&&(identical(other.targetPosition, targetPosition) || other.targetPosition == targetPosition));
+}
 
 
 @override
+int get hashCode => Object.hash(runtimeType,onAck,requiresAck,receiver,targetPosition);
+
+@override
 String toString() {
-  return 'PlayerUnion.receiveBallIntent(onAck: $onAck, cancelled: $cancelled, requiresAck: $requiresAck, receiver: $receiver, targetPosition: $targetPosition)';
+  return 'PlayerUnion.receiveBallIntent(onAck: $onAck, requiresAck: $requiresAck, receiver: $receiver, targetPosition: $targetPosition)';
 }
 
 
@@ -258,7 +270,7 @@ abstract mixin class $ReceiveBallIntentCopyWith<$Res> implements $PlayerUnionCop
   factory $ReceiveBallIntentCopyWith(ReceiveBallIntent value, $Res Function(ReceiveBallIntent) _then) = _$ReceiveBallIntentCopyWithImpl;
 @override @useResult
 $Res call({
- OnAck? onAck, bool cancelled, bool requiresAck, EcsEntity receiver, Vector2 targetPosition
+ OnAck? onAck, bool requiresAck, EcsEntity receiver, Vector2 targetPosition
 });
 
 
@@ -275,11 +287,10 @@ class _$ReceiveBallIntentCopyWithImpl<$Res>
 
 /// Create a copy of PlayerUnion
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? onAck = freezed,Object? cancelled = null,Object? requiresAck = null,Object? receiver = null,Object? targetPosition = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? onAck = freezed,Object? requiresAck = null,Object? receiver = null,Object? targetPosition = null,}) {
   return _then(ReceiveBallIntent(
 onAck: freezed == onAck ? _self.onAck : onAck // ignore: cast_nullable_to_non_nullable
-as OnAck?,cancelled: null == cancelled ? _self.cancelled : cancelled // ignore: cast_nullable_to_non_nullable
-as bool,requiresAck: null == requiresAck ? _self.requiresAck : requiresAck // ignore: cast_nullable_to_non_nullable
+as OnAck?,requiresAck: null == requiresAck ? _self.requiresAck : requiresAck // ignore: cast_nullable_to_non_nullable
 as bool,receiver: null == receiver ? _self.receiver : receiver // ignore: cast_nullable_to_non_nullable
 as EcsEntity,targetPosition: null == targetPosition ? _self.targetPosition : targetPosition // ignore: cast_nullable_to_non_nullable
 as Vector2,
@@ -293,10 +304,9 @@ as Vector2,
 
 
 class PassToNearestTeammate extends PlayerUnion {
-   PassToNearestTeammate({this.cancelled = false, this.requiresAck = false, required this.receiver, this.onAck}): super._();
+   PassToNearestTeammate({this.requiresAck = false, required this.receiver, this.onAck}): super._();
   
 
-@override@JsonKey()  bool cancelled;
 @override@JsonKey() final  bool requiresAck;
 @override final  EcsEntity receiver;
 @override final  OnAck? onAck;
@@ -309,11 +319,18 @@ $PassToNearestTeammateCopyWith<PassToNearestTeammate> get copyWith => _$PassToNe
 
 
 
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PassToNearestTeammate&&(identical(other.requiresAck, requiresAck) || other.requiresAck == requiresAck)&&(identical(other.receiver, receiver) || other.receiver == receiver)&&(identical(other.onAck, onAck) || other.onAck == onAck));
+}
 
 
 @override
+int get hashCode => Object.hash(runtimeType,requiresAck,receiver,onAck);
+
+@override
 String toString() {
-  return 'PlayerUnion.passToNearestTeammate(cancelled: $cancelled, requiresAck: $requiresAck, receiver: $receiver, onAck: $onAck)';
+  return 'PlayerUnion.passToNearestTeammate(requiresAck: $requiresAck, receiver: $receiver, onAck: $onAck)';
 }
 
 
@@ -324,7 +341,7 @@ abstract mixin class $PassToNearestTeammateCopyWith<$Res> implements $PlayerUnio
   factory $PassToNearestTeammateCopyWith(PassToNearestTeammate value, $Res Function(PassToNearestTeammate) _then) = _$PassToNearestTeammateCopyWithImpl;
 @override @useResult
 $Res call({
- bool cancelled, bool requiresAck, EcsEntity receiver, OnAck? onAck
+ bool requiresAck, EcsEntity receiver, OnAck? onAck
 });
 
 
@@ -341,10 +358,9 @@ class _$PassToNearestTeammateCopyWithImpl<$Res>
 
 /// Create a copy of PlayerUnion
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? cancelled = null,Object? requiresAck = null,Object? receiver = null,Object? onAck = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? requiresAck = null,Object? receiver = null,Object? onAck = freezed,}) {
   return _then(PassToNearestTeammate(
-cancelled: null == cancelled ? _self.cancelled : cancelled // ignore: cast_nullable_to_non_nullable
-as bool,requiresAck: null == requiresAck ? _self.requiresAck : requiresAck // ignore: cast_nullable_to_non_nullable
+requiresAck: null == requiresAck ? _self.requiresAck : requiresAck // ignore: cast_nullable_to_non_nullable
 as bool,receiver: null == receiver ? _self.receiver : receiver // ignore: cast_nullable_to_non_nullable
 as EcsEntity,onAck: freezed == onAck ? _self.onAck : onAck // ignore: cast_nullable_to_non_nullable
 as OnAck?,
@@ -358,10 +374,9 @@ as OnAck?,
 
 
 class MoveToPosition extends PlayerUnion {
-   MoveToPosition({this.cancelled = false, required this.target, required this.receiver, this.requiresAck = false, this.onAck}): super._();
+   MoveToPosition({required this.target, required this.receiver, this.requiresAck = false, this.onAck}): super._();
   
 
-@override@JsonKey()  bool cancelled;
  final  Vector2 target;
 @override final  EcsEntity receiver;
 @override@JsonKey() final  bool requiresAck;
@@ -375,11 +390,18 @@ $MoveToPositionCopyWith<MoveToPosition> get copyWith => _$MoveToPositionCopyWith
 
 
 
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MoveToPosition&&(identical(other.target, target) || other.target == target)&&(identical(other.receiver, receiver) || other.receiver == receiver)&&(identical(other.requiresAck, requiresAck) || other.requiresAck == requiresAck)&&(identical(other.onAck, onAck) || other.onAck == onAck));
+}
 
 
 @override
+int get hashCode => Object.hash(runtimeType,target,receiver,requiresAck,onAck);
+
+@override
 String toString() {
-  return 'PlayerUnion.moveToPosition(cancelled: $cancelled, target: $target, receiver: $receiver, requiresAck: $requiresAck, onAck: $onAck)';
+  return 'PlayerUnion.moveToPosition(target: $target, receiver: $receiver, requiresAck: $requiresAck, onAck: $onAck)';
 }
 
 
@@ -390,7 +412,7 @@ abstract mixin class $MoveToPositionCopyWith<$Res> implements $PlayerUnionCopyWi
   factory $MoveToPositionCopyWith(MoveToPosition value, $Res Function(MoveToPosition) _then) = _$MoveToPositionCopyWithImpl;
 @override @useResult
 $Res call({
- bool cancelled, Vector2 target, EcsEntity receiver, bool requiresAck, OnAck? onAck
+ Vector2 target, EcsEntity receiver, bool requiresAck, OnAck? onAck
 });
 
 
@@ -407,10 +429,9 @@ class _$MoveToPositionCopyWithImpl<$Res>
 
 /// Create a copy of PlayerUnion
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? cancelled = null,Object? target = null,Object? receiver = null,Object? requiresAck = null,Object? onAck = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? target = null,Object? receiver = null,Object? requiresAck = null,Object? onAck = freezed,}) {
   return _then(MoveToPosition(
-cancelled: null == cancelled ? _self.cancelled : cancelled // ignore: cast_nullable_to_non_nullable
-as bool,target: null == target ? _self.target : target // ignore: cast_nullable_to_non_nullable
+target: null == target ? _self.target : target // ignore: cast_nullable_to_non_nullable
 as Vector2,receiver: null == receiver ? _self.receiver : receiver // ignore: cast_nullable_to_non_nullable
 as EcsEntity,requiresAck: null == requiresAck ? _self.requiresAck : requiresAck // ignore: cast_nullable_to_non_nullable
 as bool,onAck: freezed == onAck ? _self.onAck : onAck // ignore: cast_nullable_to_non_nullable
@@ -425,10 +446,9 @@ as OnAck?,
 
 
 class MoveToBall extends PlayerUnion {
-   MoveToBall({this.cancelled = false, required this.receiver, required this.intent, this.requiresAck = false, this.onAck}): super._();
+   MoveToBall({required this.receiver, required this.intent, this.requiresAck = false, this.onAck}): super._();
   
 
-@override@JsonKey()  bool cancelled;
 @override final  EcsEntity receiver;
  final  MovePlayerIntent intent;
 @override@JsonKey() final  bool requiresAck;
@@ -442,11 +462,18 @@ $MoveToBallCopyWith<MoveToBall> get copyWith => _$MoveToBallCopyWithImpl<MoveToB
 
 
 
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MoveToBall&&(identical(other.receiver, receiver) || other.receiver == receiver)&&(identical(other.intent, intent) || other.intent == intent)&&(identical(other.requiresAck, requiresAck) || other.requiresAck == requiresAck)&&(identical(other.onAck, onAck) || other.onAck == onAck));
+}
 
 
 @override
+int get hashCode => Object.hash(runtimeType,receiver,intent,requiresAck,onAck);
+
+@override
 String toString() {
-  return 'PlayerUnion.moveToBall(cancelled: $cancelled, receiver: $receiver, intent: $intent, requiresAck: $requiresAck, onAck: $onAck)';
+  return 'PlayerUnion.moveToBall(receiver: $receiver, intent: $intent, requiresAck: $requiresAck, onAck: $onAck)';
 }
 
 
@@ -457,7 +484,7 @@ abstract mixin class $MoveToBallCopyWith<$Res> implements $PlayerUnionCopyWith<$
   factory $MoveToBallCopyWith(MoveToBall value, $Res Function(MoveToBall) _then) = _$MoveToBallCopyWithImpl;
 @override @useResult
 $Res call({
- bool cancelled, EcsEntity receiver, MovePlayerIntent intent, bool requiresAck, OnAck? onAck
+ EcsEntity receiver, MovePlayerIntent intent, bool requiresAck, OnAck? onAck
 });
 
 
@@ -474,10 +501,9 @@ class _$MoveToBallCopyWithImpl<$Res>
 
 /// Create a copy of PlayerUnion
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? cancelled = null,Object? receiver = null,Object? intent = null,Object? requiresAck = null,Object? onAck = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? receiver = null,Object? intent = null,Object? requiresAck = null,Object? onAck = freezed,}) {
   return _then(MoveToBall(
-cancelled: null == cancelled ? _self.cancelled : cancelled // ignore: cast_nullable_to_non_nullable
-as bool,receiver: null == receiver ? _self.receiver : receiver // ignore: cast_nullable_to_non_nullable
+receiver: null == receiver ? _self.receiver : receiver // ignore: cast_nullable_to_non_nullable
 as EcsEntity,intent: null == intent ? _self.intent : intent // ignore: cast_nullable_to_non_nullable
 as MovePlayerIntent,requiresAck: null == requiresAck ? _self.requiresAck : requiresAck // ignore: cast_nullable_to_non_nullable
 as bool,onAck: freezed == onAck ? _self.onAck : onAck // ignore: cast_nullable_to_non_nullable
@@ -501,11 +527,10 @@ $MovePlayerIntentCopyWith<$Res> get intent {
 
 
 class PlaceToKickOff extends PlayerUnion {
-   PlaceToKickOff({required this.receiver, this.cancelled = false, this.requiresAck = false, this.onAck}): super._();
+   PlaceToKickOff({required this.receiver, this.requiresAck = false, this.onAck}): super._();
   
 
 @override final  EcsEntity receiver;
-@override@JsonKey()  bool cancelled;
 @override@JsonKey() final  bool requiresAck;
 @override final  OnAck? onAck;
 
@@ -517,11 +542,18 @@ $PlaceToKickOffCopyWith<PlaceToKickOff> get copyWith => _$PlaceToKickOffCopyWith
 
 
 
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlaceToKickOff&&(identical(other.receiver, receiver) || other.receiver == receiver)&&(identical(other.requiresAck, requiresAck) || other.requiresAck == requiresAck)&&(identical(other.onAck, onAck) || other.onAck == onAck));
+}
 
 
 @override
+int get hashCode => Object.hash(runtimeType,receiver,requiresAck,onAck);
+
+@override
 String toString() {
-  return 'PlayerUnion.placeToKickOff(receiver: $receiver, cancelled: $cancelled, requiresAck: $requiresAck, onAck: $onAck)';
+  return 'PlayerUnion.placeToKickOff(receiver: $receiver, requiresAck: $requiresAck, onAck: $onAck)';
 }
 
 
@@ -532,7 +564,7 @@ abstract mixin class $PlaceToKickOffCopyWith<$Res> implements $PlayerUnionCopyWi
   factory $PlaceToKickOffCopyWith(PlaceToKickOff value, $Res Function(PlaceToKickOff) _then) = _$PlaceToKickOffCopyWithImpl;
 @override @useResult
 $Res call({
- EcsEntity receiver, bool cancelled, bool requiresAck, OnAck? onAck
+ EcsEntity receiver, bool requiresAck, OnAck? onAck
 });
 
 
@@ -549,11 +581,10 @@ class _$PlaceToKickOffCopyWithImpl<$Res>
 
 /// Create a copy of PlayerUnion
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? receiver = null,Object? cancelled = null,Object? requiresAck = null,Object? onAck = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? receiver = null,Object? requiresAck = null,Object? onAck = freezed,}) {
   return _then(PlaceToKickOff(
 receiver: null == receiver ? _self.receiver : receiver // ignore: cast_nullable_to_non_nullable
-as EcsEntity,cancelled: null == cancelled ? _self.cancelled : cancelled // ignore: cast_nullable_to_non_nullable
-as bool,requiresAck: null == requiresAck ? _self.requiresAck : requiresAck // ignore: cast_nullable_to_non_nullable
+as EcsEntity,requiresAck: null == requiresAck ? _self.requiresAck : requiresAck // ignore: cast_nullable_to_non_nullable
 as bool,onAck: freezed == onAck ? _self.onAck : onAck // ignore: cast_nullable_to_non_nullable
 as OnAck?,
   ));
@@ -566,11 +597,10 @@ as OnAck?,
 
 
 class ReceiveBall extends PlayerUnion {
-   ReceiveBall({required this.receiver, this.cancelled = false, this.requiresAck = false, this.onAck}): super._();
+   ReceiveBall({required this.receiver, this.requiresAck = false, this.onAck}): super._();
   
 
 @override final  EcsEntity receiver;
-@override@JsonKey()  bool cancelled;
 @override@JsonKey() final  bool requiresAck;
 @override final  OnAck? onAck;
 
@@ -582,11 +612,18 @@ $ReceiveBallCopyWith<ReceiveBall> get copyWith => _$ReceiveBallCopyWithImpl<Rece
 
 
 
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReceiveBall&&(identical(other.receiver, receiver) || other.receiver == receiver)&&(identical(other.requiresAck, requiresAck) || other.requiresAck == requiresAck)&&(identical(other.onAck, onAck) || other.onAck == onAck));
+}
 
 
 @override
+int get hashCode => Object.hash(runtimeType,receiver,requiresAck,onAck);
+
+@override
 String toString() {
-  return 'PlayerUnion.receiveBall(receiver: $receiver, cancelled: $cancelled, requiresAck: $requiresAck, onAck: $onAck)';
+  return 'PlayerUnion.receiveBall(receiver: $receiver, requiresAck: $requiresAck, onAck: $onAck)';
 }
 
 
@@ -597,7 +634,7 @@ abstract mixin class $ReceiveBallCopyWith<$Res> implements $PlayerUnionCopyWith<
   factory $ReceiveBallCopyWith(ReceiveBall value, $Res Function(ReceiveBall) _then) = _$ReceiveBallCopyWithImpl;
 @override @useResult
 $Res call({
- EcsEntity receiver, bool cancelled, bool requiresAck, OnAck? onAck
+ EcsEntity receiver, bool requiresAck, OnAck? onAck
 });
 
 
@@ -614,11 +651,10 @@ class _$ReceiveBallCopyWithImpl<$Res>
 
 /// Create a copy of PlayerUnion
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? receiver = null,Object? cancelled = null,Object? requiresAck = null,Object? onAck = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? receiver = null,Object? requiresAck = null,Object? onAck = freezed,}) {
   return _then(ReceiveBall(
 receiver: null == receiver ? _self.receiver : receiver // ignore: cast_nullable_to_non_nullable
-as EcsEntity,cancelled: null == cancelled ? _self.cancelled : cancelled // ignore: cast_nullable_to_non_nullable
-as bool,requiresAck: null == requiresAck ? _self.requiresAck : requiresAck // ignore: cast_nullable_to_non_nullable
+as EcsEntity,requiresAck: null == requiresAck ? _self.requiresAck : requiresAck // ignore: cast_nullable_to_non_nullable
 as bool,onAck: freezed == onAck ? _self.onAck : onAck // ignore: cast_nullable_to_non_nullable
 as OnAck?,
   ));

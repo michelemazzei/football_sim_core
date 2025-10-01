@@ -1,8 +1,7 @@
 import 'package:football_sim_core/ai/fsm/messaging/messaging.dart';
 
 abstract class GameState<EntityType> {
-  final MessageDispatcher dispatcher;
-  GameState() : dispatcher = MessageDispatcher();
+  GameState();
   void enter(EntityType entity);
   void execute(EntityType entity);
   void exit(EntityType entity);

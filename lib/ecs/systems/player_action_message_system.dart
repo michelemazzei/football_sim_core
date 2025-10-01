@@ -32,8 +32,8 @@ class PlayerActionHandlerSystem extends EcsSystem {
     for (final player in players) {
       final fsm = player.getComponent<FsmComponent<PlayerEntity>>()?.fsm;
       if (fsm == null) continue;
-      final queue = player.getComponent<ActionQueueComponent>();
-      if (queue == null || queue.isEmpty) continue;
+      final comp = player.getComponent<ActionQueueComponent>();
+      if (comp == null || comp.isEmpty) continue;
 
       final cooldown = player.getComponent<CooldownComponent>();
       cooldown?.update(world.scaledDt);
@@ -41,8 +41,7 @@ class PlayerActionHandlerSystem extends EcsSystem {
 
       if (!canAct) continue;
 
-      final now = DateTime.now();
-      final nextAction = queue.dequeueValid(now);
+      final nextAction = _dequeueValid(comp);
       if (nextAction != null) {
         cooldown?.start(0.5); // blocca per 0.5s dopo l’azione
         logger.info('✉️ Received $nextAction  for player: ${player.number}');
@@ -50,7 +49,7 @@ class PlayerActionHandlerSystem extends EcsSystem {
         logger.info('📨 Processing $nextAction');
         _handleActionMessage(
           player,
-          Telegram(
+          TelegramUnion.create(
             sender: player,
             receiver: player,
             message: nextAction.message,
@@ -61,6 +60,18 @@ class PlayerActionHandlerSystem extends EcsSystem {
         logger.info('✅ Completed $nextAction');
       }
     }
+  }
+
+  Telegram? _dequeueValid(ActionQueueComponent component) {
+    if (component.actions.isNotEmpty) {
+      final next = component.actions.first;
+      if (next.isReady() && next.cancelled) {
+        component.actions.removeFirst(); // scarta messaggio scaduto
+      } else {
+        return component.actions.removeFirst(); // valido
+      }
+    }
+    return null;
   }
 
   bool _handleActionMessage(

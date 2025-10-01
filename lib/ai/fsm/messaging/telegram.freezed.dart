@@ -12,14 +12,14 @@ part of 'telegram.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$Telegram {
+mixin _$TelegramUnion {
 
- String get id; MessageSender get sender; MessageReceiver get receiver; Message get message; String? get additionalInfo; DateTime? get messageTime;
-/// Create a copy of Telegram
+ String get id; MessageSender? get sender; MessageReceiver get receiver; DateTime? get timeOut; Message get message; bool get cancelled; set cancelled(bool value); String? get additionalInfo; DateTime? get messageTime;
+/// Create a copy of TelegramUnion
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$TelegramCopyWith<Telegram> get copyWith => _$TelegramCopyWithImpl<Telegram>(this as Telegram, _$identity);
+$TelegramUnionCopyWith<TelegramUnion> get copyWith => _$TelegramUnionCopyWithImpl<TelegramUnion>(this as TelegramUnion, _$identity);
 
 
 
@@ -30,11 +30,11 @@ $TelegramCopyWith<Telegram> get copyWith => _$TelegramCopyWithImpl<Telegram>(thi
 }
 
 /// @nodoc
-abstract mixin class $TelegramCopyWith<$Res>  {
-  factory $TelegramCopyWith(Telegram value, $Res Function(Telegram) _then) = _$TelegramCopyWithImpl;
+abstract mixin class $TelegramUnionCopyWith<$Res>  {
+  factory $TelegramUnionCopyWith(TelegramUnion value, $Res Function(TelegramUnion) _then) = _$TelegramUnionCopyWithImpl;
 @useResult
 $Res call({
- String id, MessageSender sender, MessageReceiver receiver, Message message, String? additionalInfo, DateTime? messageTime
+ String id, MessageSender? sender, MessageReceiver receiver, DateTime? timeOut, Message message, bool cancelled, String? additionalInfo, DateTime? messageTime
 });
 
 
@@ -42,22 +42,24 @@ $Res call({
 
 }
 /// @nodoc
-class _$TelegramCopyWithImpl<$Res>
-    implements $TelegramCopyWith<$Res> {
-  _$TelegramCopyWithImpl(this._self, this._then);
+class _$TelegramUnionCopyWithImpl<$Res>
+    implements $TelegramUnionCopyWith<$Res> {
+  _$TelegramUnionCopyWithImpl(this._self, this._then);
 
-  final Telegram _self;
-  final $Res Function(Telegram) _then;
+  final TelegramUnion _self;
+  final $Res Function(TelegramUnion) _then;
 
-/// Create a copy of Telegram
+/// Create a copy of TelegramUnion
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? sender = null,Object? receiver = null,Object? message = null,Object? additionalInfo = freezed,Object? messageTime = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? sender = freezed,Object? receiver = null,Object? timeOut = freezed,Object? message = null,Object? cancelled = null,Object? additionalInfo = freezed,Object? messageTime = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,sender: null == sender ? _self.sender : sender // ignore: cast_nullable_to_non_nullable
-as MessageSender,receiver: null == receiver ? _self.receiver : receiver // ignore: cast_nullable_to_non_nullable
-as MessageReceiver,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
-as Message,additionalInfo: freezed == additionalInfo ? _self.additionalInfo : additionalInfo // ignore: cast_nullable_to_non_nullable
+as String,sender: freezed == sender ? _self.sender : sender // ignore: cast_nullable_to_non_nullable
+as MessageSender?,receiver: null == receiver ? _self.receiver : receiver // ignore: cast_nullable_to_non_nullable
+as MessageReceiver,timeOut: freezed == timeOut ? _self.timeOut : timeOut // ignore: cast_nullable_to_non_nullable
+as DateTime?,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as Message,cancelled: null == cancelled ? _self.cancelled : cancelled // ignore: cast_nullable_to_non_nullable
+as bool,additionalInfo: freezed == additionalInfo ? _self.additionalInfo : additionalInfo // ignore: cast_nullable_to_non_nullable
 as String?,messageTime: freezed == messageTime ? _self.messageTime : messageTime // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
@@ -66,8 +68,8 @@ as DateTime?,
 }
 
 
-/// Adds pattern-matching-related methods to [Telegram].
-extension TelegramPatterns on Telegram {
+/// Adds pattern-matching-related methods to [TelegramUnion].
+extension TelegramUnionPatterns on TelegramUnion {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -80,11 +82,11 @@ extension TelegramPatterns on Telegram {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Telegram value)?  create,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _TelegramUnion value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _Telegram() when create != null:
-return create(_that);case _:
+case _TelegramUnion() when $default != null:
+return $default(_that);case _:
   return orElse();
 
 }
@@ -102,11 +104,11 @@ return create(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Telegram value)  create,}){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _TelegramUnion value)  $default,){
 final _that = this;
 switch (_that) {
-case _Telegram():
-return create(_that);case _:
+case _TelegramUnion():
+return $default(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -123,11 +125,11 @@ return create(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Telegram value)?  create,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _TelegramUnion value)?  $default,){
 final _that = this;
 switch (_that) {
-case _Telegram() when create != null:
-return create(_that);case _:
+case _TelegramUnion() when $default != null:
+return $default(_that);case _:
   return null;
 
 }
@@ -144,10 +146,10 @@ return create(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  MessageSender sender,  MessageReceiver receiver,  Message message,  String? additionalInfo,  DateTime? messageTime)?  create,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  MessageSender? sender,  MessageReceiver receiver,  DateTime? timeOut,  Message message,  bool cancelled,  String? additionalInfo,  DateTime? messageTime)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _Telegram() when create != null:
-return create(_that.id,_that.sender,_that.receiver,_that.message,_that.additionalInfo,_that.messageTime);case _:
+case _TelegramUnion() when $default != null:
+return $default(_that.id,_that.sender,_that.receiver,_that.timeOut,_that.message,_that.cancelled,_that.additionalInfo,_that.messageTime);case _:
   return orElse();
 
 }
@@ -165,10 +167,10 @@ return create(_that.id,_that.sender,_that.receiver,_that.message,_that.additiona
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  MessageSender sender,  MessageReceiver receiver,  Message message,  String? additionalInfo,  DateTime? messageTime)  create,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  MessageSender? sender,  MessageReceiver receiver,  DateTime? timeOut,  Message message,  bool cancelled,  String? additionalInfo,  DateTime? messageTime)  $default,) {final _that = this;
 switch (_that) {
-case _Telegram():
-return create(_that.id,_that.sender,_that.receiver,_that.message,_that.additionalInfo,_that.messageTime);case _:
+case _TelegramUnion():
+return $default(_that.id,_that.sender,_that.receiver,_that.timeOut,_that.message,_that.cancelled,_that.additionalInfo,_that.messageTime);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -185,10 +187,10 @@ return create(_that.id,_that.sender,_that.receiver,_that.message,_that.additiona
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  MessageSender sender,  MessageReceiver receiver,  Message message,  String? additionalInfo,  DateTime? messageTime)?  create,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  MessageSender? sender,  MessageReceiver receiver,  DateTime? timeOut,  Message message,  bool cancelled,  String? additionalInfo,  DateTime? messageTime)?  $default,) {final _that = this;
 switch (_that) {
-case _Telegram() when create != null:
-return create(_that.id,_that.sender,_that.receiver,_that.message,_that.additionalInfo,_that.messageTime);case _:
+case _TelegramUnion() when $default != null:
+return $default(_that.id,_that.sender,_that.receiver,_that.timeOut,_that.message,_that.cancelled,_that.additionalInfo,_that.messageTime);case _:
   return null;
 
 }
@@ -199,22 +201,24 @@ return create(_that.id,_that.sender,_that.receiver,_that.message,_that.additiona
 /// @nodoc
 
 
-class _Telegram extends Telegram {
-   _Telegram({required this.id, required this.sender, required this.receiver, required this.message, this.additionalInfo, this.messageTime}): super._();
+class _TelegramUnion extends TelegramUnion {
+   _TelegramUnion({required this.id, this.sender, required this.receiver, this.timeOut, required this.message, this.cancelled = false, this.additionalInfo, this.messageTime}): super._();
   
 
 @override final  String id;
-@override final  MessageSender sender;
+@override final  MessageSender? sender;
 @override final  MessageReceiver receiver;
+@override final  DateTime? timeOut;
 @override final  Message message;
+@override@JsonKey()  bool cancelled;
 @override final  String? additionalInfo;
 @override final  DateTime? messageTime;
 
-/// Create a copy of Telegram
+/// Create a copy of TelegramUnion
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$TelegramCopyWith<_Telegram> get copyWith => __$TelegramCopyWithImpl<_Telegram>(this, _$identity);
+_$TelegramUnionCopyWith<_TelegramUnion> get copyWith => __$TelegramUnionCopyWithImpl<_TelegramUnion>(this, _$identity);
 
 
 
@@ -225,11 +229,11 @@ _$TelegramCopyWith<_Telegram> get copyWith => __$TelegramCopyWithImpl<_Telegram>
 }
 
 /// @nodoc
-abstract mixin class _$TelegramCopyWith<$Res> implements $TelegramCopyWith<$Res> {
-  factory _$TelegramCopyWith(_Telegram value, $Res Function(_Telegram) _then) = __$TelegramCopyWithImpl;
+abstract mixin class _$TelegramUnionCopyWith<$Res> implements $TelegramUnionCopyWith<$Res> {
+  factory _$TelegramUnionCopyWith(_TelegramUnion value, $Res Function(_TelegramUnion) _then) = __$TelegramUnionCopyWithImpl;
 @override @useResult
 $Res call({
- String id, MessageSender sender, MessageReceiver receiver, Message message, String? additionalInfo, DateTime? messageTime
+ String id, MessageSender? sender, MessageReceiver receiver, DateTime? timeOut, Message message, bool cancelled, String? additionalInfo, DateTime? messageTime
 });
 
 
@@ -237,22 +241,24 @@ $Res call({
 
 }
 /// @nodoc
-class __$TelegramCopyWithImpl<$Res>
-    implements _$TelegramCopyWith<$Res> {
-  __$TelegramCopyWithImpl(this._self, this._then);
+class __$TelegramUnionCopyWithImpl<$Res>
+    implements _$TelegramUnionCopyWith<$Res> {
+  __$TelegramUnionCopyWithImpl(this._self, this._then);
 
-  final _Telegram _self;
-  final $Res Function(_Telegram) _then;
+  final _TelegramUnion _self;
+  final $Res Function(_TelegramUnion) _then;
 
-/// Create a copy of Telegram
+/// Create a copy of TelegramUnion
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? sender = null,Object? receiver = null,Object? message = null,Object? additionalInfo = freezed,Object? messageTime = freezed,}) {
-  return _then(_Telegram(
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? sender = freezed,Object? receiver = null,Object? timeOut = freezed,Object? message = null,Object? cancelled = null,Object? additionalInfo = freezed,Object? messageTime = freezed,}) {
+  return _then(_TelegramUnion(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,sender: null == sender ? _self.sender : sender // ignore: cast_nullable_to_non_nullable
-as MessageSender,receiver: null == receiver ? _self.receiver : receiver // ignore: cast_nullable_to_non_nullable
-as MessageReceiver,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
-as Message,additionalInfo: freezed == additionalInfo ? _self.additionalInfo : additionalInfo // ignore: cast_nullable_to_non_nullable
+as String,sender: freezed == sender ? _self.sender : sender // ignore: cast_nullable_to_non_nullable
+as MessageSender?,receiver: null == receiver ? _self.receiver : receiver // ignore: cast_nullable_to_non_nullable
+as MessageReceiver,timeOut: freezed == timeOut ? _self.timeOut : timeOut // ignore: cast_nullable_to_non_nullable
+as DateTime?,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as Message,cancelled: null == cancelled ? _self.cancelled : cancelled // ignore: cast_nullable_to_non_nullable
+as bool,additionalInfo: freezed == additionalInfo ? _self.additionalInfo : additionalInfo // ignore: cast_nullable_to_non_nullable
 as String?,messageTime: freezed == messageTime ? _self.messageTime : messageTime // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));

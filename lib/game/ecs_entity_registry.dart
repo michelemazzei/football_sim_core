@@ -11,6 +11,7 @@ import 'package:football_sim_core/ecs/systems/ball_fsm_system.dart';
 import 'package:football_sim_core/ecs/systems/ball_proximity_system.dart';
 import 'package:football_sim_core/ecs/systems/ball_reception_system.dart';
 import 'package:football_sim_core/ecs/systems/match_start_system.dart';
+import 'package:football_sim_core/ecs/systems/message_dispatcher_system.dart';
 import 'package:football_sim_core/ecs/systems/movement_system.dart';
 import 'package:football_sim_core/ecs/systems/player_action_message_system.dart';
 import 'package:football_sim_core/ecs/systems/player_fsm_system.dart';
@@ -49,7 +50,9 @@ class EcsEntityRegistry {
     _registry.clear();
     _resources.clear();
     ecsWorld = EcsWorld();
-    ecsWorld.addResource(MessageSenderComponent(world: ecsWorld));
+    final dispatcherSystem = MessageDispatcherSystem(ecsWorld);
+    ecsWorld.addSystem(dispatcherSystem);
+    ecsWorld.addResource<MessageDispatcherSystem>(dispatcherSystem);
 
     _systemsAdded = false;
     teamRed = Team(id: TeamId.red, color: TeamId.red.color);
@@ -72,7 +75,6 @@ class EcsEntityRegistry {
     ecsWorld.addSystem(BallProximitySystem());
     ecsWorld.addSystem(ResizeSystem(game));
     ecsWorld.addSystem(BallReceptionSystem(game));
-
     ecsWorld.addSystem(PossessionEventSystem());
     ecsWorld.addSystem(MatchStartSystem());
   }

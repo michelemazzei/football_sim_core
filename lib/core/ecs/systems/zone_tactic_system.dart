@@ -16,22 +16,22 @@ class ZoneTacticSystem extends EcsSystem {
 
   @override
   void update(EcsWorld world, double dt) {
-    final sender = world.getResource<MessageSenderComponent>();
-    if (sender == null) return;
-    for (final entity in world.entitiesWith<TacticalRoleComponent>()) {
-      final role = entity.getComponent<TacticalRoleComponent>()?.role;
-      if (role == null) continue;
-      var zone = zoneMap.getZoneFor(role, currentPhase);
-      if (zone != null && isTeamOnRight) {
-        zone = FieldGrid().mirrorZone(zone);
-      }
-      if (zone != null) {
-        sender.sendMessage(
-          sender: entity,
-          receiver: entity,
-          message: TacticalMoveToZone(receiver: entity, targetZone: zone),
-        );
-      }
-    }
+    // final sender = world.getResource<MessageSenderComponent>();
+    // if (sender == null) return;
+    // for (final entity in world.entitiesWith<TacticalRoleComponent>()) {
+    //   final role = entity.getComponent<TacticalRoleComponent>()?.role;
+    //   if (role == null) continue;
+    //   var zone = zoneMap.getZoneFor(role, currentPhase);
+    //   if (zone != null && isTeamOnRight) {
+    //     zone = FieldGrid().mirrorZone(zone);
+    //   }
+    //   if (zone != null) {
+    //     sender.sendMessage(
+    //       sender: entity,
+    //       receiver: entity,
+    //       message: TacticalMoveToZone(receiver: entity, targetZone: zone),
+    //     );
+    //   }
+    // }
   }
 }

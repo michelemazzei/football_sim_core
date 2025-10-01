@@ -6,6 +6,10 @@ extension PlayerMessageTelegram on PlayerMessage {
     required EcsEntity sender,
     required EcsEntity receiver,
   }) {
-    return Telegram(sender: sender, receiver: receiver, message: this);
+    return TelegramUnion.immediate(
+      sender: sender,
+      receiver: receiver,
+      message: this,
+    );
   }
 }

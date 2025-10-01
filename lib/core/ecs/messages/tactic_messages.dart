@@ -6,14 +6,14 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'tactic_messages.freezed.dart';
 
-@unfreezed
-sealed class TacticUnion with _$TacticUnion implements PlayerMessage {
-  TacticUnion._();
-  factory TacticUnion.moveToZone({
-    required final EcsEntity receiver,
+@freezed
+sealed class TacticMessage with _$TacticMessage implements PlayerMessage {
+  TacticMessage._();
+  factory TacticMessage.moveToZone({
+    required EcsEntity receiver,
     @Default(false) bool cancelled,
-    @Default(false) final bool requiresAck,
-    final OnAck? onAck,
+    @Default(false) bool requiresAck,
+    OnAck? onAck,
     required Zone targetZone,
   }) = TacticalMoveToZone;
 }

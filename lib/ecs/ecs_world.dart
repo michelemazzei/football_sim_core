@@ -5,19 +5,19 @@ import 'package:football_sim_core/ecs/systems/ecs_system.dart';
 
 class EcsWorld {
   final List<EcsEntity> _entities = [];
-  final List<EcsSystem> _systems = [];
+  final Map<Type, EcsSystem> _systems = {};
 
-  final Map<Type, EcsComponent> _resources = {};
+  final Map<Type, dynamic> _resources = {};
 
-  void addResource(EcsComponent resource) {
+  void addResource<T>(T resource) {
     _resources[resource.runtimeType] = resource;
   }
 
-  T? getResource<T extends EcsComponent>() {
+  T? getResource<T>() {
     return _resources[T] as T?;
   }
 
-  void removeResource<T extends EcsComponent>() {
+  void removeResource<T>() {
     _resources.remove(T);
   }
 
@@ -33,10 +33,10 @@ class EcsWorld {
     return _lastDt * (_clockComponent?.speedFactor ?? 1.0);
   }
 
-  final List<EcsSystem> _pendingRemovals = [];
+  final List<Type> _pendingRemovals = [];
 
-  void removeSystemLater(EcsSystem system) {
-    _pendingRemovals.add(system);
+  void removeSystemLater<T>(T system) {
+    _pendingRemovals.add(system.runtimeType);
   }
 
   void addEntity(EcsEntity entity) {
@@ -48,16 +48,16 @@ class EcsWorld {
   }
 
   void addSystem(EcsSystem system) {
-    _systems.add(system);
+    _systems.putIfAbsent(system.runtimeType, () => system);
   }
 
   void update(double dt) {
     _lastDt = dt;
-    for (final system in _systems) {
+    for (final system in _systems.values) {
       system.update(this, dt);
     }
     // Rimuovi dopo l’update
-    _systems.removeWhere((s) => _pendingRemovals.contains(s));
+    _systems.removeWhere((key, value) => _pendingRemovals.contains(key));
     _pendingRemovals.clear();
   }
 

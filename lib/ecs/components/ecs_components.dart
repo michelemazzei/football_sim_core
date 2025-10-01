@@ -8,7 +8,6 @@ export 'group_component.dart';
 export 'is_fsm_component.dart';
 export 'match_component.dart';
 export 'match_state_component.dart';
-export 'message_sender_component.dart';
 export 'movement_config_component.dart';
 export 'moving_component.dart';
 export 'possession_component.dart';

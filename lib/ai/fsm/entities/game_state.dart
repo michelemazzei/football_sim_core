@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:football_sim_core/ai/fsm/messaging/message_dispatcher.dart';
 import 'package:football_sim_core/ai/fsm/messaging/telegram.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
@@ -7,8 +6,7 @@ import 'package:logging/logging.dart';
 
 abstract class GameState<EntityType extends EcsEntity> {
   final _logger = Logger('GameState');
-  final MessageDispatcher dispatcher;
-  GameState() : dispatcher = MessageDispatcher();
+  GameState();
 
   @nonVirtual
   void enter(EntityType entity, EcsWorld world) {

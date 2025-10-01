@@ -9,6 +9,7 @@ import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
 import 'package:football_sim_core/ecs/entities/referee_entity.dart';
+import 'package:football_sim_core/ecs/systems/message_dispatcher_system.dart';
 import 'package:football_sim_core/model/team.dart';
 import 'package:logging/logging.dart';
 
@@ -65,6 +66,7 @@ class KickoffState extends RefereeBaseState {
 
     closestPlayers.first.addOrReplaceComponent(
       ActionQueueComponent(
+        entity: entity,
         canInterrupt: false,
         userAction: [
           MoveToBall(receiver: entity, intent: MovePlayerIntent.prepareKick()),
@@ -99,7 +101,7 @@ class KickoffState extends RefereeBaseState {
     if (clock != null && clock.elapsedTime >= kickoffDelay) {
       logger.info('[KickoffState] Tempo scaduto. Inizio partita!');
 
-      world.getResource<MessageSenderComponent>()?.broadcast(
+      world.getResource<MessageDispatcherSystem>()?.broadcast(
         message: MatchMessage.started(),
         sender: entity,
       );

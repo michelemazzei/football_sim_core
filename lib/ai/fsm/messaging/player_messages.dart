@@ -13,52 +13,44 @@ abstract class PlayerMessage extends Message {
   OnAck? get onAck;
   bool get requiresAck;
   EcsEntity get receiver;
-  bool get cancelled => false; // default: non cancellato
-  set cancelled(bool isCancelled); // default: non cancellato
 }
 
-@unfreezed
+@freezed
 sealed class PlayerUnion with _$PlayerUnion implements PlayerMessage {
   PlayerUnion._();
   factory PlayerUnion.receiveBallIntent({
     OnAck? onAck,
-    @Default(false) bool cancelled,
-    @Default(false) final bool requiresAck,
-    required final EcsEntity receiver,
-    required final Vector2 targetPosition,
+    @Default(false) bool requiresAck,
+    required EcsEntity receiver,
+    required Vector2 targetPosition,
   }) = ReceiveBallIntent;
 
   factory PlayerUnion.passToNearestTeammate({
-    @Default(false) bool cancelled,
-    @Default(false) final bool requiresAck,
-    required final EcsEntity receiver,
-    final OnAck? onAck,
+    @Default(false) bool requiresAck,
+    required EcsEntity receiver,
+    OnAck? onAck,
   }) = PassToNearestTeammate;
   factory PlayerUnion.moveToPosition({
-    @Default(false) bool cancelled,
-    required final Vector2 target,
-    required final EcsEntity receiver,
-    @Default(false) final bool requiresAck,
-    final OnAck? onAck,
+    required Vector2 target,
+    required EcsEntity receiver,
+    @Default(false) bool requiresAck,
+    OnAck? onAck,
   }) = MoveToPosition;
   factory PlayerUnion.moveToBall({
-    @Default(false) bool cancelled,
-    required final EcsEntity receiver,
-    required final MovePlayerIntent intent,
-    @Default(false) final bool requiresAck,
-    final OnAck? onAck,
+    required EcsEntity receiver,
+    required MovePlayerIntent intent,
+    @Default(false) bool requiresAck,
+    OnAck? onAck,
   }) = MoveToBall;
 
   factory PlayerUnion.placeToKickOff({
-    required final EcsEntity receiver,
-    @Default(false) bool cancelled,
-    @Default(false) final bool requiresAck,
-    final OnAck? onAck,
+    required EcsEntity receiver,
+    @Default(false) bool requiresAck,
+    OnAck? onAck,
   }) = PlaceToKickOff;
   factory PlayerUnion.receiveBall({
-    required final EcsEntity receiver,
-    @Default(false) bool cancelled,
-    @Default(false) final bool requiresAck,
-    final OnAck? onAck,
+    required EcsEntity receiver,
+    @Default(false) bool requiresAck,
+    OnAck? onAck,
   }) = ReceiveBall;
 }

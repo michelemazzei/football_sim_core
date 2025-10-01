@@ -5,6 +5,7 @@ import 'package:football_sim_core/ecs/components/game_reference_component.dart';
 import 'package:football_sim_core/ecs/components/match_lifecycle_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/referee_entity.dart';
+import 'package:football_sim_core/ecs/systems/message_dispatcher_system.dart';
 import 'package:logging/logging.dart';
 
 class EndMatchState extends RefereeBaseState {
@@ -13,15 +14,14 @@ class EndMatchState extends RefereeBaseState {
   void doEnter(RefereeEntity entity, EcsWorld world) {
     final world = entity.getComponent<GameReferenceComponent>()!.game.ecsWorld;
     final lifeCycle = entity.getComponent<MatchLifecycleComponent>();
-
+    final dispatcher = world.getResource<MessageDispatcherSystem>();
+    if (dispatcher == null) return;
     // Broadcast a 'matchEnded' message to all players
-    for (final player in world.entitiesWith<EcsPlayerComponent>()) {
-      MessageDispatcher.instance.dispatchMessage(
-        sender: entity,
-        receiver: player,
-        message: MatchMessage.ended(),
-      );
-    }
+    dispatcher.broadcast<EcsPlayerComponent>(
+      sender: entity,
+      message: MatchMessage.ended(),
+    );
+
     lifeCycle?.matchEnded = true;
     lifeCycle?.kickoffStarted = false;
   }
