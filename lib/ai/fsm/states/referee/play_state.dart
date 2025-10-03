@@ -13,12 +13,11 @@ class PlayState extends RefereeBaseState {
   @override
   void doEnter(RefereeEntity entity, EcsWorld world) {
     world.getResource<GameClockComponent>()?.reset();
-    entity.getComponent<GameClockComponent>()?.reset();
   }
 
   @override
   void doExecute(RefereeEntity entity, double dt, EcsWorld world) {
-    final clock = entity.getComponent<GameClockComponent>();
+    final clock = world.getResource<GameClockComponent>();
     if (clock == null) {
       logger.warning("⚠️ GameClockComponent not found on referee");
       return;

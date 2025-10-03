@@ -25,9 +25,7 @@ class KickoffState extends RefereeBaseState {
     final team = _selectKickoffTeam(entity, world);
     if (team == null) return;
     logger.info('[KickoffState] La squadra che effettua il kickoff è: $team');
-    world.getResource<GameClockComponent>();
-
-    entity.getComponent<GameClockComponent>()?.reset();
+    world.getResource<GameClockComponent>()?.reset();
     final game = entity.getComponent<GameReferenceComponent>()!.game;
     // Recupera la palla
     final ball = game.ecsWorld.entitiesOf<BallEntity>().firstOrNull;
@@ -96,7 +94,7 @@ class KickoffState extends RefereeBaseState {
       return;
     }
     logger.fine('[KickoffState] Esecuzione del kickoff in corso...');
-    final clock = entity.getComponent<GameClockComponent>();
+    final clock = world.getResource<GameClockComponent>();
     clock?.update(dt);
     if (clock != null && clock.elapsedTime >= kickoffDelay) {
       logger.info('[KickoffState] Tempo scaduto. Inizio partita!');

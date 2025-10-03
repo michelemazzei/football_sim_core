@@ -1,6 +1,7 @@
 import 'package:football_sim_core/ai/fsm/messaging/telegram.dart';
 import 'package:football_sim_core/core/ecs/components/tactical_priorities.dart';
 import 'package:football_sim_core/core/ecs/components/tactical_role_component.dart';
+import 'package:football_sim_core/core/ecs/components/tactical_setup_component.dart';
 import 'package:football_sim_core/core/ecs/components/team_phase_component.dart';
 import 'package:football_sim_core/core/ecs/components/zone_position_component.dart';
 import 'package:football_sim_core/core/ecs/messages/tactic_messages.dart';
@@ -8,7 +9,6 @@ import 'package:football_sim_core/core/field/field_grid.dart';
 import 'package:football_sim_core/core/tactics/game_phases.dart';
 import 'package:football_sim_core/core/tactics/tactical_action_translator.dart';
 import 'package:football_sim_core/core/tactics/tactical_intent_manager.dart';
-import 'package:football_sim_core/core/tactics/tactical_zone_map.dart';
 import 'package:football_sim_core/ecs/components/action_queue_component.dart';
 import 'package:football_sim_core/ecs/components/team_reference_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
@@ -19,9 +19,7 @@ import 'package:logging/logging.dart';
 class ZoneTacticSystem extends EcsSystem {
   final logger = Logger('core.ecs.systems.ZoneTacticSystem');
 
-  final TacticalZoneMap zoneMap;
   FieldGrid? fieldGrid;
-  ZoneTacticSystem({required this.zoneMap});
 
   @override
   void update(EcsWorld world, double dt) {
@@ -46,8 +44,10 @@ class ZoneTacticSystem extends EcsSystem {
       if (!TacticalIntentManager.canOverride(player, TacticalPriority.low())) {
         continue;
       }
+      final setup = team.getComponent<TacticalSetupComponent>();
+      if (setup == null) return;
       // Ottieni la zona tattica corretta
-      var zone = zoneMap.getZoneFor(
+      var zone = setup.setup.map.getZoneFor(
         tacticalRoleComp.role,
         currentPhase!.current,
       );
@@ -64,7 +64,7 @@ class ZoneTacticSystem extends EcsSystem {
       final queue = player.getComponent<ActionQueueComponent>(
         ifAbsent: () => ActionQueueComponent(entity: player),
       );
-      queue!.actions.clear();
+      queue!.actions.removeWhere((a) => a.message is TacticalMoveToZone);
       final telegram = TacticalActionTranslator.translate(
         TelegramUnion.create(
           sender: player,

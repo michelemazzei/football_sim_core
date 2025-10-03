@@ -21,7 +21,7 @@ class EcsWorld {
         addResource<T>(item);
       }
     }
-    return null;
+    return item;
   }
 
   void removeResource<T>() {
