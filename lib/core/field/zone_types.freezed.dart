@@ -55,10 +55,11 @@ extension ZoneTypePatterns on ZoneType {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( DefensiveZone value)?  defensive,TResult Function( MildfieldZone value)?  mildfield,TResult Function( AttackingZone value)?  attacking,TResult Function( SpecialZone value)?  special,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( GoalLineZone value)?  goalLine,TResult Function( DefensiveZone value)?  defensive,TResult Function( MildfieldZone value)?  mildfield,TResult Function( AttackingZone value)?  attacking,TResult Function( SpecialZone value)?  special,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case DefensiveZone() when defensive != null:
+case GoalLineZone() when goalLine != null:
+return goalLine(_that);case DefensiveZone() when defensive != null:
 return defensive(_that);case MildfieldZone() when mildfield != null:
 return mildfield(_that);case AttackingZone() when attacking != null:
 return attacking(_that);case SpecialZone() when special != null:
@@ -80,10 +81,11 @@ return special(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( DefensiveZone value)  defensive,required TResult Function( MildfieldZone value)  mildfield,required TResult Function( AttackingZone value)  attacking,required TResult Function( SpecialZone value)  special,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( GoalLineZone value)  goalLine,required TResult Function( DefensiveZone value)  defensive,required TResult Function( MildfieldZone value)  mildfield,required TResult Function( AttackingZone value)  attacking,required TResult Function( SpecialZone value)  special,}){
 final _that = this;
 switch (_that) {
-case DefensiveZone():
+case GoalLineZone():
+return goalLine(_that);case DefensiveZone():
 return defensive(_that);case MildfieldZone():
 return mildfield(_that);case AttackingZone():
 return attacking(_that);case SpecialZone():
@@ -104,10 +106,11 @@ return special(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( DefensiveZone value)?  defensive,TResult? Function( MildfieldZone value)?  mildfield,TResult? Function( AttackingZone value)?  attacking,TResult? Function( SpecialZone value)?  special,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( GoalLineZone value)?  goalLine,TResult? Function( DefensiveZone value)?  defensive,TResult? Function( MildfieldZone value)?  mildfield,TResult? Function( AttackingZone value)?  attacking,TResult? Function( SpecialZone value)?  special,}){
 final _that = this;
 switch (_that) {
-case DefensiveZone() when defensive != null:
+case GoalLineZone() when goalLine != null:
+return goalLine(_that);case DefensiveZone() when defensive != null:
 return defensive(_that);case MildfieldZone() when mildfield != null:
 return mildfield(_that);case AttackingZone() when attacking != null:
 return attacking(_that);case SpecialZone() when special != null:
@@ -128,9 +131,10 @@ return special(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  defensive,TResult Function()?  mildfield,TResult Function()?  attacking,TResult Function()?  special,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  goalLine,TResult Function()?  defensive,TResult Function()?  mildfield,TResult Function()?  attacking,TResult Function()?  special,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case DefensiveZone() when defensive != null:
+case GoalLineZone() when goalLine != null:
+return goalLine();case DefensiveZone() when defensive != null:
 return defensive();case MildfieldZone() when mildfield != null:
 return mildfield();case AttackingZone() when attacking != null:
 return attacking();case SpecialZone() when special != null:
@@ -152,9 +156,10 @@ return special();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  defensive,required TResult Function()  mildfield,required TResult Function()  attacking,required TResult Function()  special,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  goalLine,required TResult Function()  defensive,required TResult Function()  mildfield,required TResult Function()  attacking,required TResult Function()  special,}) {final _that = this;
 switch (_that) {
-case DefensiveZone():
+case GoalLineZone():
+return goalLine();case DefensiveZone():
 return defensive();case MildfieldZone():
 return mildfield();case AttackingZone():
 return attacking();case SpecialZone():
@@ -175,9 +180,10 @@ return special();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  defensive,TResult? Function()?  mildfield,TResult? Function()?  attacking,TResult? Function()?  special,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  goalLine,TResult? Function()?  defensive,TResult? Function()?  mildfield,TResult? Function()?  attacking,TResult? Function()?  special,}) {final _that = this;
 switch (_that) {
-case DefensiveZone() when defensive != null:
+case GoalLineZone() when goalLine != null:
+return goalLine();case DefensiveZone() when defensive != null:
 return defensive();case MildfieldZone() when mildfield != null:
 return mildfield();case AttackingZone() when attacking != null:
 return attacking();case SpecialZone() when special != null:
@@ -188,6 +194,38 @@ return special();case _:
 }
 
 }
+
+/// @nodoc
+
+
+class GoalLineZone implements ZoneType {
+  const GoalLineZone();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GoalLineZone);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'ZoneType.goalLine()';
+}
+
+
+}
+
+
+
 
 /// @nodoc
 

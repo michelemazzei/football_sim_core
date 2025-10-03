@@ -5,7 +5,7 @@ import 'package:football_sim_core/ecs/components/render_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/game/ecs_entity_registry.dart';
 import 'package:football_sim_core/game/setup/setup_registry.dart';
-import 'package:football_sim_core/model/formation.dart';
+import 'package:football_sim_core/model/tactical_setup.dart';
 import 'package:football_sim_core/utils/coordinate_mapper.dart';
 import 'package:football_sim_core/utils/player_utils.dart';
 import 'package:logging/logging.dart';
@@ -61,7 +61,7 @@ class FootballGame extends FlameGame {
     //3 - Crea i Componenti ECS
     //.1 - ⚽ Crea la palla
     //.2 - ⚽ Crea e registra il componente ECS della palla
-    final ballEntity = registry.getBallEntity();
+    final ballEntity = registry.getOrAddBallEntity();
     //.3 - ⚽ Crea e registra il componente grafico della palla
     ballComponent = BallComponent();
     ballEntity.addOrReplaceComponent(
@@ -79,14 +79,14 @@ class FootballGame extends FlameGame {
     final teamBlue = registry.teamBlue;
     // 🔵 Giocatori
     await createTeamFromFormation(
-      formation: formation442,
+      tacticalSetup: tacticalSetup442(),
       isLeftSide: true,
       team: teamRed,
       game: this,
       ecsWorld: ecsWorld,
     );
     await createTeamFromFormation(
-      formation: formation442,
+      tacticalSetup: tacticalSetup442(),
       isLeftSide: false,
       team: teamBlue,
       game: this,
@@ -94,10 +94,7 @@ class FootballGame extends FlameGame {
     );
 
     // 2. Crea l'entità
-    registry.getRefereeEntity(this);
-
-    // 3. Registra nel mondo
-    registry.getStatsEntity(this);
+    registry.getOrAddRefereeEntity(this);
 
     //4. inizializza il clock di gioco
     registry.getClock(duration: 90.0, speedFactor: 1.0);

@@ -4,6 +4,7 @@ import 'package:football_sim_core/ai/config/soccer_parameters.dart';
 import 'package:football_sim_core/ai/steering/player_utils.dart';
 import 'package:football_sim_core/ecs/components/ball_possession_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
+import 'package:football_sim_core/ecs/components/team_reference_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
@@ -37,13 +38,13 @@ class BallInteractSystem extends EcsSystem {
         .distanceTo(ballPos);
 
     if (distance <= SoccerParameters.possessionRadius) {
-      final teamComp = closest.getComponent<TeamComponent>();
+      final teamComp = closest.getComponent<TeamReferenceComponent>();
       if (teamComp != null) {
         referee
           ..removeComponent<BallPossessionComponent>()
           ..addComponent(
             BallPossessionComponent(
-              teamId: teamComp.team,
+              teamId: teamComp.teamId,
               playerId: closest.id,
             ),
           );

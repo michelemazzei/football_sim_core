@@ -55,14 +55,14 @@ extension GamePhasePatterns on GamePhase {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( BuildUpPhase value)?  buildUp,TResult Function( PossessionPhase value)?  possession,TResult Function( TrasitionPhase value)?  transition,TResult Function( DefensePhase value)?  defense,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( BuildUpPhase value)?  buildUp,TResult Function( TrasitionPhase value)?  transition,TResult Function( DefensePhase value)?  defense,TResult Function( AttackPhase value)?  attack,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case BuildUpPhase() when buildUp != null:
-return buildUp(_that);case PossessionPhase() when possession != null:
-return possession(_that);case TrasitionPhase() when transition != null:
+return buildUp(_that);case TrasitionPhase() when transition != null:
 return transition(_that);case DefensePhase() when defense != null:
-return defense(_that);case _:
+return defense(_that);case AttackPhase() when attack != null:
+return attack(_that);case _:
   return orElse();
 
 }
@@ -80,14 +80,14 @@ return defense(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( BuildUpPhase value)  buildUp,required TResult Function( PossessionPhase value)  possession,required TResult Function( TrasitionPhase value)  transition,required TResult Function( DefensePhase value)  defense,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( BuildUpPhase value)  buildUp,required TResult Function( TrasitionPhase value)  transition,required TResult Function( DefensePhase value)  defense,required TResult Function( AttackPhase value)  attack,}){
 final _that = this;
 switch (_that) {
 case BuildUpPhase():
-return buildUp(_that);case PossessionPhase():
-return possession(_that);case TrasitionPhase():
+return buildUp(_that);case TrasitionPhase():
 return transition(_that);case DefensePhase():
-return defense(_that);case _:
+return defense(_that);case AttackPhase():
+return attack(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -104,14 +104,14 @@ return defense(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( BuildUpPhase value)?  buildUp,TResult? Function( PossessionPhase value)?  possession,TResult? Function( TrasitionPhase value)?  transition,TResult? Function( DefensePhase value)?  defense,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( BuildUpPhase value)?  buildUp,TResult? Function( TrasitionPhase value)?  transition,TResult? Function( DefensePhase value)?  defense,TResult? Function( AttackPhase value)?  attack,}){
 final _that = this;
 switch (_that) {
 case BuildUpPhase() when buildUp != null:
-return buildUp(_that);case PossessionPhase() when possession != null:
-return possession(_that);case TrasitionPhase() when transition != null:
+return buildUp(_that);case TrasitionPhase() when transition != null:
 return transition(_that);case DefensePhase() when defense != null:
-return defense(_that);case _:
+return defense(_that);case AttackPhase() when attack != null:
+return attack(_that);case _:
   return null;
 
 }
@@ -128,13 +128,13 @@ return defense(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  buildUp,TResult Function()?  possession,TResult Function()?  transition,TResult Function()?  defense,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  buildUp,TResult Function()?  transition,TResult Function()?  defense,TResult Function()?  attack,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case BuildUpPhase() when buildUp != null:
-return buildUp();case PossessionPhase() when possession != null:
-return possession();case TrasitionPhase() when transition != null:
+return buildUp();case TrasitionPhase() when transition != null:
 return transition();case DefensePhase() when defense != null:
-return defense();case _:
+return defense();case AttackPhase() when attack != null:
+return attack();case _:
   return orElse();
 
 }
@@ -152,13 +152,13 @@ return defense();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  buildUp,required TResult Function()  possession,required TResult Function()  transition,required TResult Function()  defense,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  buildUp,required TResult Function()  transition,required TResult Function()  defense,required TResult Function()  attack,}) {final _that = this;
 switch (_that) {
 case BuildUpPhase():
-return buildUp();case PossessionPhase():
-return possession();case TrasitionPhase():
+return buildUp();case TrasitionPhase():
 return transition();case DefensePhase():
-return defense();case _:
+return defense();case AttackPhase():
+return attack();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -175,13 +175,13 @@ return defense();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  buildUp,TResult? Function()?  possession,TResult? Function()?  transition,TResult? Function()?  defense,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  buildUp,TResult? Function()?  transition,TResult? Function()?  defense,TResult? Function()?  attack,}) {final _that = this;
 switch (_that) {
 case BuildUpPhase() when buildUp != null:
-return buildUp();case PossessionPhase() when possession != null:
-return possession();case TrasitionPhase() when transition != null:
+return buildUp();case TrasitionPhase() when transition != null:
 return transition();case DefensePhase() when defense != null:
-return defense();case _:
+return defense();case AttackPhase() when attack != null:
+return attack();case _:
   return null;
 
 }
@@ -213,38 +213,6 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'GamePhase.buildUp()';
-}
-
-
-}
-
-
-
-
-/// @nodoc
-
-
-class PossessionPhase implements GamePhase {
-  const PossessionPhase();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PossessionPhase);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'GamePhase.possession()';
 }
 
 
@@ -309,6 +277,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'GamePhase.defense()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class AttackPhase implements GamePhase {
+  const AttackPhase();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AttackPhase);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'GamePhase.attack()';
 }
 
 

@@ -13,8 +13,15 @@ class EcsWorld {
     _resources[resource.runtimeType] = resource;
   }
 
-  T? getResource<T>() {
-    return _resources[T] as T?;
+  T? getResource<T>({T Function()? ifAbsent}) {
+    T? item = _resources[T] as T?;
+    if (item == null && ifAbsent != null) {
+      item = ifAbsent();
+      if (item != null) {
+        addResource<T>(item);
+      }
+    }
+    return null;
   }
 
   void removeResource<T>() {

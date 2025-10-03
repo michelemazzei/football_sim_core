@@ -25,7 +25,7 @@ class Formation {
 
 final formation442 = Formation(
   [
-    Vector2(0.05, 0.5), // Portiere
+    Vector2(0.02, 0.5), // Portiere
     Vector2(0.2, 0.2),
     Vector2(0.2, 0.4),
     Vector2(0.2, 0.6),

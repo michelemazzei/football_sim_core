@@ -1,12 +1,14 @@
 import 'package:flame/game.dart';
+import 'package:flutter/material.dart';
+import 'package:football_sim_core/core/field/field_grid.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
+import 'package:football_sim_core/ecs/components/team_side_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
 import 'package:football_sim_core/ecs/entities/referee_entity.dart';
-import 'package:football_sim_core/ecs/entities/stats_entity.dart';
-import 'package:football_sim_core/ecs/entities/team_id.dart';
+import 'package:football_sim_core/ecs/entities/team_entity.dart';
 import 'package:football_sim_core/ecs/systems/ball_fsm_system.dart';
 import 'package:football_sim_core/ecs/systems/ball_proximity_system.dart';
 import 'package:football_sim_core/ecs/systems/ball_reception_system.dart';
@@ -19,21 +21,22 @@ import 'package:football_sim_core/ecs/systems/possession_event_system.dart';
 import 'package:football_sim_core/ecs/systems/referee_fsm_system.dart';
 import 'package:football_sim_core/ecs/systems/resize_system.dart';
 import 'package:football_sim_core/game/football_game.dart';
-import 'package:football_sim_core/match/ecs_match.dart';
+import 'package:football_sim_core/model/tactical_setup.dart';
 import 'package:football_sim_core/model/team.dart';
+import 'package:football_sim_core/model/team_id.dart';
 
 class EcsEntityRegistry {
   static const String ball = 'Ball';
   static const String player = 'Player';
   static const String stats = 'Stats';
   static const String referee = 'Referee';
+  static const String theMatch = 'Match';
   static const String clock = 'Clock';
   bool _systemsAdded = false;
 
   // 🔵 Squadre
   late final Team teamRed;
   late final Team teamBlue;
-  late final EcsMatch match;
 
   late EcsWorld ecsWorld;
 
@@ -53,11 +56,14 @@ class EcsEntityRegistry {
     final dispatcherSystem = MessageDispatcherSystem(ecsWorld);
     ecsWorld.addSystem(dispatcherSystem);
     ecsWorld.addResource<MessageDispatcherSystem>(dispatcherSystem);
+    ecsWorld.addResource<FieldGrid>(FieldGrid());
 
     _systemsAdded = false;
-    teamRed = Team(id: TeamId.red, color: TeamId.red.color);
-    teamBlue = Team(id: TeamId.blue, color: TeamId.blue.color);
-    match = EcsMatch(teamA: teamRed, teamB: teamBlue);
+    teamRed = Team(id: TeamId.home(), name: 'Red Team', color: Colors.red);
+    teamBlue = Team(id: TeamId.away(), name: 'Blue Team', color: Colors.blue);
+    ecsWorld.addResource<MatchComponent>(
+      MatchComponent(home: teamRed.id, away: teamBlue.id),
+    );
   }
 
   EcsComponent? getResource<T extends EcsComponent>() {
@@ -81,13 +87,11 @@ class EcsEntityRegistry {
 
   EcsEntity? getEntity(String type) => _registry[type];
 
-  EcsEntity getBallEntity() =>
+  EcsEntity getOrAddBallEntity() =>
       _getOrAddEntity(ball, (int id) => BallEntity(id, ecsWorld));
 
-  EcsEntity getRefereeEntity(FootballGame game) =>
-      _getOrAddEntity(referee, (int id) => RefereeEntity(id, game, match));
-  EcsEntity getStatsEntity(FootballGame game) =>
-      _getOrAddEntity(stats, (int id) => StatsEntity(id, game, match));
+  EcsEntity getOrAddRefereeEntity(FootballGame game) =>
+      _getOrAddEntity(referee, (int id) => RefereeEntity(id, game));
 
   GameClockComponent getClock({
     double duration = 90.0,
@@ -101,12 +105,11 @@ class EcsEntityRegistry {
         as GameClockComponent;
   }
 
-  EcsEntity getPlayerEntity(
+  EcsEntity getOrAddPlayerEntity(
     Vector2 position,
     Team team,
     FootballGame game,
     int number,
-    role,
   ) {
     return _getOrAddEntity(
       '${player}_${team.id}_$number',
@@ -114,13 +117,23 @@ class EcsEntityRegistry {
         id,
         ecsWorld,
         initialPosition: position,
-        team: team.id,
+        team: team,
         game: game,
         number: number,
         color: team.color,
-        role: role,
       ),
     );
+  }
+
+  EcsEntity getOrAddTeamEntity({
+    required Team team,
+    required bool isLeftSide,
+    required TacticalSetup tacticalSetup,
+  }) {
+    return _getOrAddEntity(
+      '${Team}_${team.id}',
+      (int id) => TeamEntity(id, team: team, tacticalSetup: tacticalSetup),
+    )..addOrReplaceComponent(TeamSideComponent(isLeftSide));
   }
 
   EcsEntity _getOrAddEntity(

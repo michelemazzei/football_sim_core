@@ -5,12 +5,13 @@ import 'package:football_sim_core/ai/intents/move_player_intent.dart';
 import 'package:football_sim_core/ai/steering/player_utils.dart';
 import 'package:football_sim_core/ecs/components/action_queue_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
+import 'package:football_sim_core/ecs/components/team_reference_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
 import 'package:football_sim_core/ecs/entities/referee_entity.dart';
 import 'package:football_sim_core/ecs/systems/message_dispatcher_system.dart';
-import 'package:football_sim_core/model/team.dart';
+import 'package:football_sim_core/model/team_id.dart';
 import 'package:logging/logging.dart';
 
 class KickoffState extends RefereeBaseState {
@@ -21,11 +22,9 @@ class KickoffState extends RefereeBaseState {
   @override
   void doEnter(RefereeEntity entity, EcsWorld world) {
     // Reset del tempo
-    final team = _selectKickoffTeam(entity);
+    final team = _selectKickoffTeam(entity, world);
     if (team == null) return;
-    logger.info(
-      '[KickoffState] La squadra che effettua il kickoff è: ${team.id}',
-    );
+    logger.info('[KickoffState] La squadra che effettua il kickoff è: $team');
     world.getResource<GameClockComponent>();
 
     entity.getComponent<GameClockComponent>()?.reset();
@@ -36,7 +35,8 @@ class KickoffState extends RefereeBaseState {
     final players = game.ecsWorld
         .entitiesOf<PlayerEntity>()
         .where(
-          (player) => player.getComponent<TeamComponent>()?.team.id == team.id,
+          (player) =>
+              player.getComponent<TeamReferenceComponent>()?.teamId == team,
         )
         .toList();
     logger.info('players nel team: ${players.length}');
@@ -111,12 +111,12 @@ class KickoffState extends RefereeBaseState {
     }
   }
 
-  Team? _selectKickoffTeam(RefereeEntity referee) {
+  TeamId? _selectKickoffTeam(RefereeEntity referee, EcsWorld world) {
     final teamPossession = referee.getComponent<TeamPossessionComponent>();
-    final match = referee.getComponent<MatchComponent>()?.match;
+    final match = world.getResource<MatchComponent>()?.home;
 
     // In futuro potresti usare sorteggio, ranking, ecc.
-    teamPossession?.team = match?.teamA;
-    return teamPossession?.team;
+    teamPossession?.teamId = match;
+    return match;
   }
 }

@@ -10,22 +10,8 @@ class PositionUtils {
     required Anchor anchor,
   }) {
     final offset = relative.clone()..multiply(fieldSize);
-
-    Vector2 anchorOffset;
-    switch (anchor) {
-      case Anchor.topLeft:
-        anchorOffset = Vector2.zero();
-        break;
-      case Anchor.center:
-        anchorOffset = Vector2(radius, radius);
-        break;
-      case Anchor.bottomRight:
-        anchorOffset = Vector2(radius * 2, radius * 2);
-        break;
-      default:
-        anchorOffset = Vector2(radius, radius);
-    }
-
+    final size = Vector2.all(radius * 2);
+    final anchorOffset = size.clone()..multiply(anchor.toVector2());
     return fieldPosition + offset - anchorOffset;
   }
 }

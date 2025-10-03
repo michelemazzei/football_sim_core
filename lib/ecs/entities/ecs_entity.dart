@@ -26,7 +26,12 @@ abstract class EcsEntity implements MessageReceiver, MessageSender {
     addComponent(component);
   }
 
-  T? getComponent<T extends EcsComponent>() => _components[T] as T?;
+  T? getComponent<T extends EcsComponent>({T Function()? ifAbsent}) {
+    if (!hasComponent<T>() && ifAbsent != null) {
+      addComponent(ifAbsent());
+    }
+    return _components[T] as T?;
+  }
 
   IsFsmComponent? getFsmComponent() {
     for (final comp in _components.values) {

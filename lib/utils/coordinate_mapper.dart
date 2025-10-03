@@ -31,6 +31,8 @@ class CoordinateMapper {
         return Vector2(size.x, 0);
       case Anchor.centerLeft:
         return Vector2(0, size.y / 2);
+      case Anchor.center:
+        return Vector2(size.x / 2, size.y / 2);
       case Anchor.centerRight:
         return Vector2(size.x, size.y / 2);
       case Anchor.bottomLeft:

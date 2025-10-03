@@ -1,6 +1,6 @@
 import 'package:football_sim_core/ecs/components/ball_possession_component.dart';
 import 'package:football_sim_core/ecs/components/ball_touch_event_component.dart';
-import 'package:football_sim_core/ecs/components/ecs_components.dart';
+import 'package:football_sim_core/ecs/components/team_reference_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
 import 'package:football_sim_core/ecs/entities/referee_entity.dart';
@@ -23,12 +23,15 @@ class PossessionEventSystem extends EcsSystem {
           .entitiesOf<PlayerEntity>()
           .where((player) => player.id == playerId)
           .firstOrNull;
-      final teamComp = player?.getComponent<TeamComponent>();
+      final teamComp = player?.getComponent<TeamReferenceComponent>();
       if (teamComp != null) {
         referee
           ..removeComponent<BallPossessionComponent>()
           ..addComponent(
-            BallPossessionComponent(teamId: teamComp.team, playerId: playerId),
+            BallPossessionComponent(
+              teamId: teamComp.teamId,
+              playerId: playerId,
+            ),
           );
       }
       break; // solo il primo evento per frame

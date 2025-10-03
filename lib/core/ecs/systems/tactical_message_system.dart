@@ -21,7 +21,7 @@ class TacticalMessageSystem extends EcsSystem {
     //       ?.telegram;
     //   if (telegram == null) continue;
     //   Message message = telegram.message;
-    //   final translator = TacticMessageTranslator();
+    //   final translator = TacticMessageTranslator(world);
     //   final translated = translator.translate(message as TacticMessage);
     //   _enqueueTranslatedMessages(
     //     receiver: telegram.receiver,

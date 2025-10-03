@@ -1,10 +1,11 @@
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
+import 'package:football_sim_core/ecs/components/team_reference_component.dart';
 import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
 
 class PlayerUtils {
   static List<PlayerEntity> getTeammates(PlayerEntity entity) {
-    final teamId = entity.getComponent<TeamComponent>()?.team.id;
+    final teamId = entity.getComponent<TeamReferenceComponent>()?.teamId;
     if (teamId == null) return [];
     final game = entity.getComponent<GameReferenceComponent>()?.game;
     if (game == null) return [];
@@ -13,7 +14,7 @@ class PlayerUtils {
         .entitiesOf<PlayerEntity>()
         .where(
           (p) =>
-              p.getComponent<TeamComponent>()?.team.id == teamId &&
+              p.getComponent<TeamReferenceComponent>()?.teamId == teamId &&
               p.id != entity.id,
         )
         .toList();

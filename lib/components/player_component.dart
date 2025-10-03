@@ -38,7 +38,7 @@ class PlayerComponent extends PositionComponent
     Color color,
     String name,
   ) {
-    final center = Offset(size.x / 2, size.y / 2);
+    final center = Offset(size.x, size.y);
     final radius = size.x / 2;
 
     final Paint shadowPaint = Paint()..color = Colors.black.withAlpha(80);

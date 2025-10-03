@@ -1,6 +1,6 @@
 import 'package:football_sim_core/ecs/components/ecs_component.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
-import 'package:football_sim_core/ecs/entities/team_id.dart';
+import 'package:football_sim_core/model/team_id.dart';
 
 class BallProximityComponent extends EcsComponent {
   PlayerEntity? playerEntity;

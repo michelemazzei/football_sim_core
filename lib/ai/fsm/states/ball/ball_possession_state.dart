@@ -18,7 +18,7 @@ class BallPossessionState extends BallBaseState {
     var possession = entity.getComponent<BallPossessionComponent>();
     if (possession == null) {
       possession = BallPossessionComponent(
-        teamId: owner.team,
+        teamId: owner.teamId,
         playerId: owner.id,
       );
       entity.addOrReplaceComponent(possession);
@@ -29,7 +29,7 @@ class BallPossessionState extends BallBaseState {
     );
 
     if (_lastOwner?.id != player.id) {
-      logger.info('Ball possessed by Player ${player.number}-${player.team}');
+      logger.info('Ball possessed by Player ${player.number}-${player.teamId}');
       _lastOwner = player;
     }
     return player;

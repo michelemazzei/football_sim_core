@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:football_sim_core/ai/steering/player_utils.dart';
 import 'package:football_sim_core/ecs/components/ball_proximity_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
+import 'package:football_sim_core/ecs/components/team_reference_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
@@ -65,7 +66,7 @@ class BallProximitySystem extends EcsSystem {
       ball.addOrReplaceComponent<BallProximityComponent>(
         BallProximityComponent(
           playerEntity: closestPlayer,
-          teamId: closestPlayer.getComponent<TeamComponent>()?.team.id,
+          teamId: closestPlayer.getComponent<TeamReferenceComponent>()?.teamId,
           distance: closestPlayer.position.distanceTo(ball.position),
         ),
       );

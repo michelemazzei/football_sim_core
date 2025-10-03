@@ -2,6 +2,7 @@ import 'package:football_sim_core/ai/config/soccer_parameters.dart';
 import 'package:football_sim_core/ai/fsm/states/ball/ball_possession_state.dart';
 import 'package:football_sim_core/ecs/components/ball_possession_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
+import 'package:football_sim_core/ecs/components/team_reference_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
@@ -37,7 +38,7 @@ class BallReceptionSystem extends EcsSystem {
         // Intercettazione riuscita
         ball.addOrReplaceComponent(
           BallPossessionComponent(
-            teamId: player.getComponent<TeamComponent>()!.team,
+            teamId: player.getComponent<TeamReferenceComponent>()!.teamId,
 
             playerId: player.id,
           ),
