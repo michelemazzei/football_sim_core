@@ -40,18 +40,11 @@ class BallInteractSystem extends EcsSystem {
     if (distance <= SoccerParameters.possessionRadius) {
       final teamComp = closest.getComponent<TeamReferenceComponent>();
       if (teamComp != null) {
-        referee
-          ..removeComponent<BallPossessionComponent>()
-          ..addComponent(
-            BallPossessionComponent(
-              teamId: teamComp.teamId,
-              playerId: closest.id,
-            ),
-          );
-
-        log(
-          '👟 Ball touched by player ${closest.id} at distance $distance',
-          name: 'BallInteractSystem',
+        referee.addOrReplaceComponent(
+          BallPossessionComponent(
+            teamId: teamComp.teamId,
+            playerId: closest.id,
+          ),
         );
       }
     }

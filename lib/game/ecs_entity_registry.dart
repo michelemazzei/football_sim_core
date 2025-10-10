@@ -1,5 +1,6 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:football_sim_core/core/ecs/systems/game_phase_system.dart';
 import 'package:football_sim_core/core/ecs/systems/zone_tactic_system.dart';
 import 'package:football_sim_core/core/field/field_grid.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
@@ -11,6 +12,7 @@ import 'package:football_sim_core/ecs/entities/player_entity.dart';
 import 'package:football_sim_core/ecs/entities/referee_entity.dart';
 import 'package:football_sim_core/ecs/entities/team_entity.dart';
 import 'package:football_sim_core/ecs/systems/ball_fsm_system.dart';
+import 'package:football_sim_core/ecs/systems/ball_interact_system.dart';
 import 'package:football_sim_core/ecs/systems/ball_proximity_system.dart';
 import 'package:football_sim_core/ecs/systems/ball_reception_system.dart';
 import 'package:football_sim_core/ecs/systems/match_start_system.dart';
@@ -78,6 +80,7 @@ class EcsEntityRegistry {
     ecsWorld.addSystem(PlayerActionHandlerSystem());
     ecsWorld.addSystem(BallFsmSystem());
     ecsWorld.addSystem(PlayerFsmSystem());
+    ecsWorld.addSystem(BallInteractSystem());
     ecsWorld.addSystem(RefereeFsmSystem());
     ecsWorld.addSystem(BallProximitySystem());
     ecsWorld.addSystem(ResizeSystem(game));
@@ -85,6 +88,7 @@ class EcsEntityRegistry {
     ecsWorld.addSystem(PossessionEventSystem());
     ecsWorld.addSystem(MatchStartSystem());
     ecsWorld.addSystem(ZoneTacticSystem());
+    ecsWorld.addSystem(GamePhaseSystem());
   }
 
   EcsEntity? getEntity(String type) => _registry[type];

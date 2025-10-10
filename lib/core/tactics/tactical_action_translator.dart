@@ -8,19 +8,17 @@ class TacticalActionTranslator {
     final message = telegram.message;
 
     if (message is TacticMessage) {
-      message.when(
-        moveToZone: (receiver, cancelled, requiresAck, onAck, targetZone) {
-          final target = fieldGrid.centerOfZone(targetZone);
-          return TelegramUnion.create(
-            receiver: receiver,
-            message: PlayerUnion.moveToPosition(
+      return message.whenOrNull(
+        moveToZone: (receiver, cancelled, requiresAck, onAck, targetZone) =>
+            TelegramUnion.create(
               receiver: receiver,
-              target: target,
-              onAck: onAck,
-              requiresAck: requiresAck,
+              message: PlayerUnion.moveToPosition(
+                receiver: receiver,
+                target: fieldGrid.centerOfZone(targetZone),
+                onAck: onAck,
+                requiresAck: requiresAck,
+              ),
             ),
-          );
-        },
       );
     }
     return null;

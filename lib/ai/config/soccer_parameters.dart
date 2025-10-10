@@ -3,7 +3,7 @@ class SoccerParameters {
   //
   //Players Constants
   //
-  static const double possessionRadius = 0.02;
+  static const double possessionRadius = 0.025;
   static const playerMass = 3.0;
   static const playerMaxForce = 0.3;
   static const playerMaxSpeed = 0.5;

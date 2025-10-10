@@ -80,9 +80,6 @@ class PlayerActionHandlerSystem extends EcsSystem {
     EcsWorld world,
     Fsm fsm,
   ) {
-    logger.info(
-      '📨 Processing ${telegram.message.toShortString()}  for Player: ${entity.id}',
-    );
     if (entity.id != telegram.receiver.id) {
       return false;
     }
@@ -90,6 +87,9 @@ class PlayerActionHandlerSystem extends EcsSystem {
     final msg = telegram.message;
     if (msg is! PlayerMessage) return false;
 
+    logger.info(
+      '📨 Processing ${telegram.message.toShortString()}  for Player: ${entity.id}',
+    );
     final wrapper = world.getResource<PlayerMessageRegistryComponent>();
     final registry = wrapper?.registry;
     final handler = registry?.getHandler(msg);

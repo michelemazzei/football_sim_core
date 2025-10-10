@@ -1,9 +1,9 @@
 import 'package:football_sim_core/ai/fsm/messaging/telegram.dart';
+import 'package:football_sim_core/core/ecs/components/tactical_intents.dart';
 import 'package:football_sim_core/core/ecs/components/tactical_priorities.dart';
 import 'package:football_sim_core/core/ecs/components/tactical_role_component.dart';
 import 'package:football_sim_core/core/ecs/components/tactical_setup_component.dart';
 import 'package:football_sim_core/core/ecs/components/team_phase_component.dart';
-import 'package:football_sim_core/core/ecs/components/zone_position_component.dart';
 import 'package:football_sim_core/core/ecs/messages/tactic_messages.dart';
 import 'package:football_sim_core/core/field/field_grid.dart';
 import 'package:football_sim_core/core/tactics/game_phases.dart';
@@ -56,9 +56,6 @@ class ZoneTacticSystem extends EcsSystem {
       if (team.isRightSide) {
         zone = fieldGrid!.mirrorZone(zone);
       }
-      player.addOrReplaceComponent<ZonePositionComponent>(
-        ZonePositionComponent(zone),
-      );
 
       // Cancella eventuali messaggi MoveToZone già presenti
       final queue = player.getComponent<ActionQueueComponent>(
@@ -73,7 +70,14 @@ class ZoneTacticSystem extends EcsSystem {
         ),
         fieldGrid!,
       );
-      if (telegram != null) queue.actions.add(telegram);
+      if (telegram != null) {
+        TacticalIntentManager.assignIntent(
+          player: player,
+          intent: TacticalIntent.coveringZone(),
+          priority: TacticalPriority.low(),
+        );
+        queue.actions.add(telegram);
+      }
     }
   }
 }

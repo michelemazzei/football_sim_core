@@ -98,8 +98,6 @@ Buona pausa, e quando sei pronto… si torna in campo ⚽
 
 Buona serata Michele, e a domani per il prossimo passo. Il campo ti aspetta ⚽
 
-
-
 Ottima scelta partire dalle  **zone del campo** : è la base per qualsiasi comportamento tattico intelligente. Se hai già una suddivisione in zone e assegnazioni per fase di gioco, allora sei già a metà dell’opera. Partiamo da lì e costruiamo sopra.
 
 Ma prima, ecco una panoramica delle **tattiche manageriali** che potremmo implementare nel tuo simulatore. Le divido in **modelli tattici** e  **sistemi decisionali** , così hai una visione chiara:
@@ -171,6 +169,11 @@ Ti propongo questo ordine:
 3. Poi integriamo `RoleTactic` per dare comportamenti specifici.
 4. E infine espandiamo con `PhaseTactic` e `BallTactic`.
 
-Vuoi che iniziamo subito con la definizione delle zone e la mappa tattica per un modulo 4-3-3? Posso aiutarti a disegnare la griglia e assegnare le zone per ogni ruolo e fase. Il campo è tuo, mister.
+
+Quando torni, possiamo:
+
+* Rifinire il `ZoneTacticSystem` con la nuova struttura
+* Scrivere un `TeamMatchStateComponent` per gestire lato campo e stato runtime
+* Espandere la strategia con `PhaseTactic`, `BallTactic`, `OpponentTactic`
 
 link dei sorgenti [michelemazzei/football_sim_core](https://github.com/michelemazzei/football_sim_core)

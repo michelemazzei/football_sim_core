@@ -6,13 +6,12 @@ import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 class TacticalIntentManager {
   static bool canOverride(EcsEntity player, TacticalPriority newPriority) {
     final current = player.getComponent<TacticalIntentComponent>();
-    if (current == null) return true;
-    return newPriority >= current.priority;
+    return (current == null) || newPriority >= current.priority;
   }
 
-  static void assignIntent(
-    EcsEntity player,
-    TacticalIntent intent, {
+  static void assignIntent({
+    required EcsEntity player,
+    required TacticalIntent intent,
     TacticalPriority priority = const TacticalPriority.low(),
   }) {
     if (!canOverride(player, priority)) return;

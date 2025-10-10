@@ -1,68 +1,85 @@
-import 'package:football_sim_core/ai/fsm/messaging/messaging.dart';
-import 'package:football_sim_core/core/ecs/messages/tactic_message_translator.dart';
+import 'package:football_sim_core/ai/fsm/messaging/telegram.dart';
+import 'package:football_sim_core/core/ecs/components/tactical_intent_component.dart';
+import 'package:football_sim_core/core/ecs/components/tactical_intents.dart';
+import 'package:football_sim_core/core/ecs/components/tactical_priorities.dart';
+import 'package:football_sim_core/core/ecs/components/tactical_role_component.dart';
+import 'package:football_sim_core/core/ecs/components/tactical_setup_component.dart';
+import 'package:football_sim_core/core/ecs/components/team_phase_component.dart';
 import 'package:football_sim_core/core/ecs/messages/tactic_messages.dart';
+import 'package:football_sim_core/core/field/field_grid.dart';
+import 'package:football_sim_core/core/tactics/game_phases.dart';
+import 'package:football_sim_core/core/tactics/tactical_action_translator.dart';
+import 'package:football_sim_core/core/tactics/tactical_intent_manager.dart';
 import 'package:football_sim_core/ecs/components/action_queue_component.dart';
+import 'package:football_sim_core/ecs/components/team_reference_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
-import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
+import 'package:football_sim_core/ecs/entities/player_entity.dart';
 import 'package:football_sim_core/ecs/systems/ecs_system.dart';
-import 'package:football_sim_core/ecs/systems/message_dispatcher_system.dart';
 import 'package:logging/logging.dart';
 
 class TacticalMessageSystem extends EcsSystem {
   final logger = Logger('core.ecs.systems.TacticalMessageSystem');
+
+  FieldGrid? fieldGrid;
+
   @override
   void update(EcsWorld world, double dt) {
-    // final dispatcher = world.getResource<MessageDispatcherSystem>();
+    fieldGrid ??= world.getResource<FieldGrid>();
+    if (fieldGrid == null) return;
 
-    // if (dispatcher == null) return;
-    // for (final entity in world.entitiesWith<TacticalMessageComponent>()) {
-    //   final telegram = entity
-    //       .getComponent<TacticalMessageComponent>()
-    //       ?.telegram;
-    //   if (telegram == null) continue;
-    //   Message message = telegram.message;
-    //   final translator = TacticMessageTranslator(world);
-    //   final translated = translator.translate(message as TacticMessage);
-    //   _enqueueTranslatedMessages(
-    //     receiver: telegram.receiver,
-    //     messages: translated,
-    //     cancelPending: true,
-    //     dispatcher: dispatcher,
-    //   );
-    //   message.onAck?.call();
-    //   dispatcher.sendMessage(
-    //     sender: entity,
-    //     receiver: entity,
-    //     message: tacticMessage,
-    //   );
-    //   entity.removeComponent<TacticalMessageComponent>();
-    // }
-  }
+    for (final player in world.entitiesOf<PlayerEntity>()) {
+      TacticalRoleComponent? tacticalRoleComp = player
+          .getComponent<TacticalRoleComponent>();
+      TeamReferenceComponent? teamComp = player
+          .getComponent<TeamReferenceComponent>();
+      if (tacticalRoleComp == null || teamComp == null) {
+        continue;
+      }
+      final team = player.getTeam();
+      if (team == null) continue;
+      final currentPhase = team.getComponent<TeamPhaseComponent>(
+        ifAbsent: () => TeamPhaseComponent(GamePhase.buildUp()),
+      );
+      final tacticalIntent = player.getComponent<TacticalIntentComponent>();
 
-  void _enqueueTranslatedMessages({
-    required EcsEntity receiver,
-    required List<PlayerMessage> messages,
-    required bool cancelPending,
-    required MessageDispatcherSystem dispatcher,
-  }) {
-    // var queue = receiver.getComponent<ActionQueueComponent>();
-    // if (queue == null) {
-    //   receiver.addComponent(ActionQueueComponent());
-    //   queue = receiver.getComponent<ActionQueueComponent>();
-    //   return;
-    // }
-    // for (final message in queue.actions) {
-    //   message.message.cancelled = cancelPending;
-    // }
+      // Salta se il giocatore ha già un intento tattico attivo
+      if (!TacticalIntentManager.canOverride(player, TacticalPriority.low())) {
+        continue;
+      }
+      final setup = team.getComponent<TacticalSetupComponent>();
+      if (setup == null) return;
+      // Ottieni la zona tattica corretta
+      var zone = setup.setup.map.getZoneFor(
+        tacticalRoleComp.role,
+        currentPhase!.current,
+      );
+      if (zone == null) continue;
+      // Inverti la zona se la squadra è sul lato destro
+      if (team.isRightSide) {
+        zone = fieldGrid!.mirrorZone(zone);
+      }
 
-    // for (final msg in messages) {
-    //   _enqueue(queue, msg);
-    //   logger.fine('📥 Enqueued ${msg.runtimeType} for ${receiver.id}');
-    // }
-  }
-
-  Message? _logUnhandled(Message message) {
-    logger.warning('⚠️ Unhandled TacticMessage: ${message.toShortString()}');
-    return null;
+      // Cancella eventuali messaggi MoveToZone già presenti
+      final queue = player.getComponent<ActionQueueComponent>(
+        ifAbsent: () => ActionQueueComponent(entity: player),
+      );
+      queue!.actions.removeWhere((a) => a.message is TacticalMoveToZone);
+      final telegram = TacticalActionTranslator.translate(
+        TelegramUnion.create(
+          sender: player,
+          receiver: player,
+          message: TacticalMoveToZone(receiver: player, targetZone: zone),
+        ),
+        fieldGrid!,
+      );
+      if (telegram != null) {
+        TacticalIntentManager.assignIntent(
+          player: player,
+          intent: TacticalIntent.coveringZone(),
+          priority: TacticalPriority.low(),
+        );
+        queue.actions.add(telegram);
+      }
+    }
   }
 }
