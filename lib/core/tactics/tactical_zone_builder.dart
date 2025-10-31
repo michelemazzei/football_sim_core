@@ -10,8 +10,12 @@ class TacticalZoneBuilder {
   static const int fieldHeight = FieldGrid.rows;
 
   static final Map<GamePhase, Map<TacticalRole, Zone>> _phaseZones442 = {};
+  static final Map<GamePhase, Map<TacticalRole, Zone>> _phaseZones433 = {};
 
   TacticalZoneBuilder._();
+
+  static final tacticalZoneMap442 = TacticalZoneBuilder.build442();
+  static final tacticalZoneMap433 = TacticalZoneBuilder.build433();
 
   static TacticalZoneMap build442() {
     final builder = TacticalZoneBuilder._();
@@ -19,6 +23,14 @@ class TacticalZoneBuilder {
     builder._addAttackPhase(_phaseZones442);
     builder._addDefensePhase(_phaseZones442);
     return TacticalZoneMap(_phaseZones442);
+  }
+
+  static TacticalZoneMap build433() {
+    final builder = TacticalZoneBuilder._();
+    builder._addBuildUpPhase(_phaseZones433);
+    builder._addAttackPhase(_phaseZones433);
+    builder._addDefensePhase(_phaseZones433);
+    return TacticalZoneMap(_phaseZones433);
   }
 
   void _addBuildUpPhase(Map<GamePhase, Map<TacticalRole, Zone>> phaseZones) {

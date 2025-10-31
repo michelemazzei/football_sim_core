@@ -6,4 +6,7 @@ class BallPossessionComponent extends EcsComponent {
   final TeamId? teamId;
 
   BallPossessionComponent({this.playerId, this.teamId});
+
+  bool isTeamInPossession(TeamId team) => team == teamId;
+  bool isPlayerInPossession(int player) => player == playerId;
 }

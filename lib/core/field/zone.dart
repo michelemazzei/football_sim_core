@@ -34,5 +34,8 @@ extension ZoneX on Zone {
     return x >= 0 && x <= maxX && y >= 0 && y <= maxY;
   }
 
+  bool isSameAs(Zone other) =>
+      x == other.x && y == other.y && type == other.type;
+
   bool hasTag(String tagName) => tags.any((tag) => tag.name == tagName);
 }

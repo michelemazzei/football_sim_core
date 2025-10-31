@@ -109,10 +109,7 @@ return wideMidfielderRight(_that);case LeftWinger():
 return leftWinger(_that);case RightWinger():
 return rightWinger(_that);case CenterForward():
 return centerForward(_that);case SecondStriker():
-return secondStriker(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return secondStriker(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -213,10 +210,7 @@ return wideMidfielderRight();case LeftWinger():
 return leftWinger();case RightWinger():
 return rightWinger();case CenterForward():
 return centerForward();case SecondStriker():
-return secondStriker();case _:
-  throw StateError('Unexpected subclass');
-
-}
+return secondStriker();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///

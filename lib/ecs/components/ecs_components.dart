@@ -13,7 +13,7 @@ export 'possession_component.dart';
 export 'possession_timer_component.dart';
 export 'game_clock_component.dart';
 export 'render_component.dart';
-export 'role_component.dart';
+
 export 'size_component.dart';
 export 'size_ratio_component.dart';
 export 'team_component.dart';

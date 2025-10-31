@@ -1,6 +1,7 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:football_sim_core/components/spalti_component.dart';
+import 'package:football_sim_core/core/bootstrap/tactical_bootstrap.dart';
 import 'package:football_sim_core/ecs/components/render_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/game/ecs_entity_registry.dart';
@@ -73,6 +74,8 @@ class FootballGame extends FlameGame {
     logger.info(
       '📦 PlayerMessageRegistry initialized with ${messageRegistry.count} handlers',
     );
+    //.4.1 registra le tattiche
+    TacticalBootstrap.registerAllTacticalBricks();
 
     // 🔵 Squadre
     final teamRed = registry.teamRed;

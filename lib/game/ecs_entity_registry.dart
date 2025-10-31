@@ -1,7 +1,6 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:football_sim_core/core/ecs/systems/game_phase_system.dart';
-import 'package:football_sim_core/core/ecs/systems/zone_tactic_system.dart';
 import 'package:football_sim_core/core/field/field_grid.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/components/team_side_component.dart';
@@ -87,7 +86,6 @@ class EcsEntityRegistry {
     ecsWorld.addSystem(BallReceptionSystem(game));
     ecsWorld.addSystem(PossessionEventSystem());
     ecsWorld.addSystem(MatchStartSystem());
-    ecsWorld.addSystem(ZoneTacticSystem());
     ecsWorld.addSystem(GamePhaseSystem());
   }
 

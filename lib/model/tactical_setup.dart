@@ -1,5 +1,6 @@
 // lib/messages/match_messages.dart
-import 'package:football_sim_core/core/tactics/build_up_tactics.dart';
+
+import 'package:football_sim_core/core/tactics/tactical_zone_builder.dart';
 import 'package:football_sim_core/core/tactics/tactical_zone_map.dart';
 import 'package:football_sim_core/model/formation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -20,5 +21,9 @@ sealed class TacticalSetup with _$TacticalSetup {
 
 TacticalSetup tacticalSetup442() => TacticalSetup.formation442(
   formation: formation442,
-  map: tacticalZoneMap442,
+  map: TacticalZoneBuilder.tacticalZoneMap442,
+);
+TacticalSetup tacticalSetup433() => TacticalSetup.formation433(
+  formation: formation433,
+  map: TacticalZoneBuilder.tacticalZoneMap433,
 );

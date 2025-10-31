@@ -69,10 +69,8 @@ extension CreateTeamFromFormation on FootballGame {
       // 2. Crea componente grafico
       final playerComponent = PlayerComponent('P${i + 1}', i + 1, team.color);
       // 3. Collega ECS → Flame
-      playerEntity.addOrReplaceComponent(RoleComponent(role));
-      playerEntity.addOrReplaceComponent(
-        TacticalRoleComponent(role: mapToTacticalRole(role, i)),
-      );
+
+      playerEntity.addOrReplaceComponent(TacticalRoleComponent(role: role));
       playerEntity.addOrReplaceComponent(
         RenderComponent(entityId: playerEntity.id, component: playerComponent),
       );
