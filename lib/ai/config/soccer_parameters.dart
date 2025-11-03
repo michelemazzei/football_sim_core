@@ -32,10 +32,6 @@ class SoccerParameters {
   //
   //Spots
   //
-  static const numOfSpotsX = 26;
+  static const numOfSpotsX = 11;
   static const numOfSpotsY = 6;
-  static const nearOpponentWeight = 1;
-  static const nearTeammateWeight = 1;
-  static const nearGoalWeight = 2;
-  static const nearBallWeight = 2;
 }

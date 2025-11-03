@@ -2,6 +2,7 @@ import 'package:football_sim_core/core/ecs/components/applied_tactic_component.d
 import 'package:football_sim_core/core/ecs/components/player_tactic_brain_component.dart';
 import 'package:football_sim_core/core/ecs/components/team_tactic_queue_component.dart';
 import 'package:football_sim_core/core/field/field_grid.dart';
+import 'package:football_sim_core/core/tactics/game_phases.dart';
 import 'package:football_sim_core/core/tactics/tactical_registry.dart';
 import 'package:football_sim_core/ecs/components/action_queue_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
@@ -17,13 +18,20 @@ class PlayerTacticDecisionSystem extends EcsSystem {
 
     for (final player in world.entitiesOf<PlayerEntity>()) {
       final team = player.getTeam();
+      final gamePhase = team?.gamePhase;
       final brain = player.getComponent<PlayerTacticBrainComponent>();
       final queue = player.getComponent<ActionQueueComponent>(
         ifAbsent: () => ActionQueueComponent(entity: player),
       );
 
-      if (team == null || brain == null || queue == null) continue;
-
+      if (team == null ||
+          brain == null ||
+          queue == null ||
+          gamePhase == null ||
+          gamePhase == GamePhase.buildUp()) {
+        //salta le tattiche se stiamo ancora nel build up
+        continue;
+      }
       final tacticQueue = team.getComponent<TeamTacticQueueComponent>();
       tacticQueue?.removeExpired(now);
       final tactic = tacticQueue?.highestPriority;

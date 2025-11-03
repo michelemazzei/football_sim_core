@@ -4,6 +4,8 @@ import 'package:football_sim_core/ai/fsm/messaging/player_messages.dart';
 import 'package:football_sim_core/ai/fsm/states/player/move_to_ball_state.dart';
 import 'package:football_sim_core/ai/fsm/states/player/receive_ball_state.dart';
 import 'package:football_sim_core/ai/steering/player_utils.dart';
+import 'package:football_sim_core/core/ecs/messages/tactic_messages.dart';
+import 'package:football_sim_core/core/fsm/state/move_to_zone_state.dart';
 import 'package:football_sim_core/ecs/components/ball_intent_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/components/receive_ball_intent_component.dart';
@@ -67,5 +69,14 @@ void registerPlayerMessageHandlers(PlayerMessageRegistry registry) {
         force: force,
       ),
     );
+  });
+
+  registry.register<TacticalMoveToZone>((
+    TacticalMoveToZone message,
+    PlayerEntity player,
+    EcsWorld world,
+    Fsm<EcsEntity> fsm,
+  ) {
+    fsm.changeState(MoveToZoneState(targetZone: message.targetZone));
   });
 }

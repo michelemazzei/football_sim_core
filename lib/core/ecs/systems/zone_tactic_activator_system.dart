@@ -3,6 +3,7 @@ import 'package:football_sim_core/core/ecs/components/tactical_priorities.dart';
 import 'package:football_sim_core/core/ecs/components/tactical_setup_component.dart';
 import 'package:football_sim_core/core/ecs/components/team_phase_component.dart';
 import 'package:football_sim_core/core/ecs/components/team_tactic_queue_component.dart';
+import 'package:football_sim_core/core/tactics/game_phases.dart';
 import 'package:football_sim_core/core/tactics/tactics.dart';
 import 'package:football_sim_core/core/tactics/tactics_names.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
@@ -17,10 +18,14 @@ class ZoneTacticActivatorSystem extends EcsSystem {
       final setup = team.getComponent<TacticalSetupComponent>()?.setup;
       final tacticQueue = team.getComponent<TeamTacticQueueComponent>();
 
-      if (phase == null || setup == null || tacticQueue == null) continue;
-
-      // Se la fase non è cambiata, non aggiornare la tattica
-      if (tacticQueue.lastZonePhase == phase) continue;
+      if (phase == null ||
+          setup == null ||
+          tacticQueue == null ||
+          phase == GamePhase.buildUp() || // da attivare solo dopo il buildUp
+          tacticQueue.lastZonePhase == phase) {
+        // Se la fase non è cambiata, non aggiornare la tattica
+        continue;
+      }
 
       final tactic = Tactic(
         name: TacticsName.zoneTactics(),

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:football_sim_core/ai/config/soccer_parameters.dart';
 import 'package:football_sim_core/ai/steering/player_utils.dart';
 import 'package:football_sim_core/ecs/components/ball_possession_component.dart';

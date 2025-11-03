@@ -94,6 +94,9 @@ class PlayerActionHandlerSystem extends EcsSystem {
     final registry = wrapper?.registry;
     final handler = registry?.getHandler(msg);
     handler?.call(msg, entity, world, fsm);
+    if (handler == null) {
+      logger.warning('⚠️ Messaggio ${msg.runtimeType} non registrato');
+    }
 
     return true;
   }

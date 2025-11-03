@@ -1,11 +1,14 @@
 import 'dart:ui';
 
 import 'package:flame/game.dart';
+import 'package:football_sim_core/ai/config/soccer_parameters.dart';
 import 'package:football_sim_core/core/field/zone.dart';
 
 class FieldGrid {
-  static const int columns = 11; // X: lunghezza del campo
-  static const int rows = 6; // Y: larghezza del campo
+  static const int columns =
+      SoccerParameters.numOfSpotsX; // X: lunghezza del campo
+  static const int rows =
+      SoccerParameters.numOfSpotsY; // Y: larghezza del campo
   static const double fieldWidth =
       1.0; // lunghezza e larghezza del campo in unità normalizzate
   static const double fieldHeight = 1.0;

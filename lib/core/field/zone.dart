@@ -1,3 +1,4 @@
+import 'package:flame/game.dart';
 import 'package:football_sim_core/core/field/zone_tag.dart';
 import 'package:football_sim_core/core/field/zone_types.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -38,4 +39,19 @@ extension ZoneX on Zone {
       x == other.x && y == other.y && type == other.type;
 
   bool hasTag(String tagName) => tags.any((tag) => tag.name == tagName);
+
+  Vector2 centerPosition({
+    required double fieldWidth,
+    required double fieldHeight,
+    required int maxX,
+    required int maxY,
+  }) {
+    final zoneWidth = fieldWidth / (maxX + 1);
+    final zoneHeight = fieldHeight / (maxY + 1);
+
+    final centerX = (x + 0.5) * zoneWidth;
+    final centerY = (y + 0.5) * zoneHeight;
+
+    return Vector2(centerX, centerY);
+  }
 }

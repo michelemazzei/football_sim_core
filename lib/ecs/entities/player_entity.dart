@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:football_sim_core/ai/config/soccer_parameters.dart';
 import 'package:football_sim_core/ai/fsm/components/fsm.dart';
 import 'package:football_sim_core/ai/fsm/components/player_fsm.dart';
+import 'package:football_sim_core/core/ecs/components/player_tactic_brain_component.dart';
 import 'package:football_sim_core/ecs/components/cool_down_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/components/team_reference_component.dart';
@@ -27,9 +28,8 @@ class PlayerEntity extends EcsEntity {
     required Team team,
     required Vector2 initialPosition,
   }) {
-    addComponent(EcsPlayerComponent())
+    addComponent(EcsPlayerComponent());
     // Imposta il rapporto dimensionale (es. 5% della larghezza del campo)
-    ;
     addComponent(const SizeRatioComponent(0.03));
     addComponent(PlayerColorComponent(color));
     addComponent(SizeComponent(height: 10.0, width: 10.0));
@@ -39,6 +39,8 @@ class PlayerEntity extends EcsEntity {
     addComponent(TeamReferenceComponent(team.id));
     addComponent(PossessionComponent());
     addComponent(CooldownComponent());
+    addComponent(PlayerTacticBrainComponent());
+
     addComponent(
       MovingComponent(
         maxSpeed: SoccerParameters.playerMaxSpeed,
