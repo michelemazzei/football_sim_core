@@ -43,7 +43,7 @@ class PlayerActionHandlerSystem extends EcsSystem {
 
       final nextAction = _dequeueValid(comp);
       if (nextAction != null) {
-        cooldown?.start(0.5); // blocca per 0.5s dopo l’azione
+        cooldown?.start(0.1); // blocca per 0.1s dopo l’azione
         logger.info('✉️ Received $nextAction  for player: ${player.number}');
 
         logger.info('📨 Processing $nextAction');

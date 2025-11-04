@@ -15,7 +15,7 @@ import 'package:football_sim_core/model/team_id.dart';
 import 'package:logging/logging.dart';
 
 class KickoffState extends RefereeBaseState {
-  static const double kickoffDelay = 1.0; // secondi simulati
+  static const double kickoffDelay = 0.5; // secondi simulati
   final logger = Logger('KickoffState');
   var _executed = false;
 

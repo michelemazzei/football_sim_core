@@ -45,11 +45,13 @@ class BallReceptionSystem extends EcsSystem {
         );
         ball.getComponent<MovingComponent>()?.velocity.setZero();
         ball.getComponent<MovingComponent>()?.targetPosition = null;
-        ball.fsm.changeState(BallPossessionState(owner: player));
 
         if (lastInterceptingPlayer?.id != player.id) {
+          ball.fsm.changeState(BallPossessionState(owner: player));
           lastInterceptingPlayer = player;
-          logger.info('Player ${player.id} has intercepted the ball!');
+          logger.info(
+            'Player #${player.number}_${player.teamId} has intercepted the ball!',
+          );
         }
       }
     }

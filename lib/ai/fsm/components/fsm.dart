@@ -23,8 +23,8 @@ abstract class Fsm<T extends EcsEntity> {
     return _fsm.handleMessage(telegram);
   }
 
-  void changeState(GameState<T> newState) {
-    _fsm.changeState(newState);
+  void changeState(GameState<T> newState, {bool forceToChange = false}) {
+    _fsm.changeState(newState, forceToChange: forceToChange);
   }
 
   GameState<T>? get currentState => _fsm.currentState;

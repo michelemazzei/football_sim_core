@@ -77,6 +77,9 @@ void registerPlayerMessageHandlers(PlayerMessageRegistry registry) {
     EcsWorld world,
     Fsm<EcsEntity> fsm,
   ) {
-    fsm.changeState(MoveToZoneState(targetZone: message.targetZone));
+    fsm.changeState(
+      MoveToZoneState(targetZone: message.targetZone),
+      forceToChange: true,
+    );
   });
 }

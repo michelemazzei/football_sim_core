@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:football_sim_core/core/ecs/components/applied_tactic_component.dart';
 import 'package:football_sim_core/core/ecs/components/player_tactic_brain_component.dart';
 import 'package:football_sim_core/core/ecs/components/team_tactic_queue_component.dart';
@@ -39,7 +41,6 @@ class PlayerTacticDecisionSystem extends EcsSystem {
 
       final applied = player.getComponent<AppliedTacticComponent>();
       final alreadyApplied = applied != null && applied.tacticId == tactic.name;
-
       if (alreadyApplied) continue;
 
       final brick = TacticalRegistry.get(tactic.name);

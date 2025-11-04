@@ -12,7 +12,7 @@ class GamePhaseSystem extends EcsSystem {
   final logger = Logger('core.ecs.systems.GamePhaseSystem');
   TeamId? previousPossession;
   double transitionTimer = 0.0;
-  static const transitionDuration = 1.5; // secondi
+  static const transitionDuration = 0.2; // secondi
 
   @override
   void update(EcsWorld world, double dt) {

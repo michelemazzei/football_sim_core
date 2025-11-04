@@ -20,9 +20,17 @@ class StateMachine<EntityType extends EcsEntity> {
       (currentState?.onMessage(owner, telegram, world) ?? false) ||
       (globalState?.onMessage(owner, telegram, world) ?? false);
 
-  void changeState(GameState<EntityType>? newState) {
+  void changeState(
+    GameState<EntityType>? newState, {
+    bool forceToChange = false,
+  }) {
     // Evita transizioni ridondanti verso lo stesso tipo di stato
-    if (newState.runtimeType == currentState.runtimeType) return;
+    // Se il tipo è lo stesso e non vogliamo forzare, salta
+    if (!forceToChange &&
+        newState.runtimeType == currentState?.runtimeType &&
+        newState == currentState) {
+      return;
+    }
     previousState = currentState;
     currentState?.exit(owner, world);
     currentState = newState;

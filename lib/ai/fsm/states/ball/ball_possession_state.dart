@@ -14,6 +14,13 @@ class BallPossessionState extends BallBaseState {
 
   BallPossessionState({required this.owner});
 
+  @override
+  bool operator ==(Object other) =>
+      other is BallPossessionState && other.owner.id == owner.id;
+
+  @override
+  int get hashCode => owner.id.hashCode;
+
   PlayerEntity _getOwner(BallEntity entity, EcsWorld world) {
     var possession = entity.getComponent<BallPossessionComponent>();
     if (possession == null) {

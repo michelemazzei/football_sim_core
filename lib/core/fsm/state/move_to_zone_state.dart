@@ -17,6 +17,13 @@ class MoveToZoneState extends GameState<PlayerEntity> {
   MoveToZoneState({required this.targetZone});
 
   @override
+  bool operator ==(Object other) =>
+      other is MoveToZoneState && other.targetZone == targetZone;
+
+  @override
+  int get hashCode => targetZone.hashCode;
+
+  @override
   void doEnter(PlayerEntity entity, EcsWorld world) {
     final fieldGrid = world.getResource<FieldGrid>();
     if (fieldGrid == null) {

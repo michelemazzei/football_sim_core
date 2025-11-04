@@ -63,20 +63,9 @@ class MovementSystem extends EcsSystem {
       }
 
       moving.currentPosition += moving.velocity * scaledDt;
-      assert(() {
-        if (moving.currentPosition.x < 0 || moving.currentPosition.x > 1) {
-          logger.warning(
-            'Entity ${entity.id} out of bounds x: ${moving.currentPosition.x}',
-          );
-        }
-        if (moving.currentPosition.y < 0 || moving.currentPosition.y > 1) {
-          logger.warning(
-            'Entity ${entity.id} out of bounds y: ${moving.currentPosition.y}',
-          );
-        }
+      moving.currentPosition.x = moving.currentPosition.x.clamp(0.0, 1.0);
+      moving.currentPosition.y = moving.currentPosition.y.clamp(0.0, 1.0);
 
-        return true;
-      }());
       final mapper = game.mapper;
       if (mapper == null) continue;
       render.component.position = mapper.toScreen(
