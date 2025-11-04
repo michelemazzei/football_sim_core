@@ -35,7 +35,7 @@ class TacticalZoneBuilder {
 
   void _addBuildUpPhase(Map<GamePhase, Map<TacticalRole, Zone>> phaseZones) {
     final buildUp = <TacticalRole, Zone>{
-      TacticalRole.goalkeeper(): Zone(x: 1, y: 3, type: ZoneType.goalLine()),
+      TacticalRole.goalkeeper(): Zone(x: 0, y: 3, type: ZoneType.goalLine()),
       TacticalRole.leftBack(): Zone(x: 2, y: 1, type: ZoneType.defensive()),
       TacticalRole.centerBackLeft(): Zone(
         x: 2,
@@ -54,9 +54,31 @@ class TacticalZoneBuilder {
         y: 2,
         type: ZoneType.mildfield(),
       ),
+      TacticalRole.wideMidfielderLeft(): Zone(
+        x: 4,
+        y: 1,
+        type: ZoneType.mildfield(),
+      ),
+
+      TacticalRole.attackingMidfielderCenter(): Zone(
+        x: 7,
+        y: 2,
+        type: ZoneType.mildfield(),
+      ),
+
+      TacticalRole.wideMidfielderLeft(): Zone(
+        x: 6,
+        y: 1,
+        type: ZoneType.mildfield(),
+      ),
+      TacticalRole.wideMidfielderRight(): Zone(
+        x: 6,
+        y: 4,
+        type: ZoneType.mildfield(),
+      ),
       TacticalRole.centralMidfielderRight(): Zone(
-        x: 3,
-        y: 3,
+        x: 4,
+        y: 4,
         type: ZoneType.mildfield(),
       ),
       TacticalRole.rightWinger(): Zone(x: 3, y: 4, type: ZoneType.mildfield()),

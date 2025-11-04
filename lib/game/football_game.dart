@@ -1,7 +1,11 @@
+import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:football_sim_core/ai/config/soccer_parameters.dart';
 import 'package:football_sim_core/components/spalti_component.dart';
 import 'package:football_sim_core/core/bootstrap/tactical_bootstrap.dart';
+import 'package:football_sim_core/core/field/field_grid.dart';
+import 'package:football_sim_core/core/field/zone.dart';
 import 'package:football_sim_core/ecs/components/render_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/game/ecs_entity_registry.dart';
@@ -52,6 +56,7 @@ class FootballGame extends FlameGame {
     fieldComponent = FieldComponent();
     await add(fieldComponent);
     mapper = CoordinateMapper(fieldComponent.position, fieldComponent.size);
+    registry.ecsWorld.addResource(mapper);
 
     // 🏟️ Spalti
     spaltiComponent = SpaltiComponent.make(size: size, type: StadiumType.medium)
@@ -103,6 +108,52 @@ class FootballGame extends FlameGame {
     registry.getOrAddClock(duration: 90.0, speedFactor: 1.0);
     //2 - Registra sistemi
     registry.addSystems(this);
+
+    final grid = FieldGrid();
+    final fieldSize = mapper!.fieldSize;
+
+    for (int x = 0; x < SoccerParameters.numOfSpotsX; x++) {
+      for (int y = 0; y < SoccerParameters.numOfSpotsY; y++) {
+        final zone = Zone(x: x, y: y);
+        final rect = grid.rectOfZone(zone);
+
+        final position = mapper!.toScreen(Vector2(rect.left, rect.top));
+        final size = Vector2(
+          rect.width * fieldSize.x,
+          rect.height * fieldSize.y,
+        );
+
+        final center = mapper!.toScreen(grid.centerOfZone(zone));
+
+        // Rettangolo con bordo
+
+        add(
+          RectangleComponent(
+            position: position,
+            size: size,
+            paint: Paint()
+              ..color = Colors.black.withAlpha(50)
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 1.0,
+          ),
+        );
+
+        // Testo centrato
+        add(
+          TextComponent(
+            text: '(${zone.x},${zone.y})',
+            position: center,
+            anchor: Anchor.center,
+            textRenderer: TextPaint(
+              style: TextStyle(
+                color: Colors.black.withAlpha(130),
+                fontSize: 12,
+              ),
+            ),
+          ),
+        );
+      }
+    }
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'package:flame/game.dart';
+import 'package:football_sim_core/ai/config/soccer_parameters.dart';
 import 'package:football_sim_core/core/field/zone_tag.dart';
 import 'package:football_sim_core/core/field/zone_types.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -40,18 +41,22 @@ extension ZoneX on Zone {
 
   bool hasTag(String tagName) => tags.any((tag) => tag.name == tagName);
 
-  Vector2 centerPosition({
-    required double fieldWidth,
-    required double fieldHeight,
-    required int maxX,
-    required int maxY,
+  Vector2 getZoneCenterNormalized({required double x, required double y}) {
+    final double zoneWidth = 1.0 / SoccerParameters.numOfSpotsX;
+    final double zoneHeight = 1.0 / SoccerParameters.numOfSpotsY;
+
+    final double normalizedX = x * zoneWidth + zoneWidth / 2;
+    final double normalizedY = y * zoneHeight + zoneHeight / 2;
+
+    return Vector2(normalizedX, normalizedY);
+  }
+
+  Vector2 getZoneCenterReal({
+    required double x,
+    required double y,
+    required Vector2 fieldSize,
   }) {
-    final zoneWidth = fieldWidth / (maxX + 1);
-    final zoneHeight = fieldHeight / (maxY + 1);
-
-    final centerX = (x + 0.5) * zoneWidth;
-    final centerY = (y + 0.5) * zoneHeight;
-
-    return Vector2(centerX, centerY);
+    final normalized = getZoneCenterNormalized(x: x, y: y);
+    return Vector2(normalized.x * fieldSize.x, normalized.y * fieldSize.y);
   }
 }

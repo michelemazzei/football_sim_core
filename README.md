@@ -26,29 +26,6 @@ Simulatore manageriale di calcio 2D sviluppato con Flutter + Flame.
 | `BallIncoming``PhaseChanged`        | `FSM.onMessage()`           | Reazione locale, ignorato se non compatibile |
 | `changeState()` diretto             | Qualunque punto               | Cambio immediato, non tattico                |
 
-🔜 Prossimo step: Strategia calcistica
-
-Scenario proposto: **Costruzione dal basso in 4-3-3**
-
-* Portiere → centrale → regista si abbassa
-* Terzini larghi, mezzali tra le linee
-* Attaccanti pronti a ricevere o pressare
-
-Componenti da introdurre
-
-* `TacticalRoleComponent` → ruolo tattico del giocatore
-* `GamePhaseComponent` → fase corrente del gioco
-* `TacticalDecisionSystem` → decide cosa fare in base a ruolo, fase, zona
-* Messaggi come `MoveToZone`, `PrepareToReceive` → gestiti via `PlayerMessageHandler`
-
-🧩 Quando torni
-
-Ti preparo:
-
-* Scheletro completo di `TacticalRoleComponent`, `GamePhaseComponent`, `TacticalDecisionSystem`
-* Esempio di strategia reale: costruzione dal basso
-* Routing tattico con messaggi e intenti
-
 Buon rientro Michele — appena torni, ripartiamo da dove ci siamo lasciati. Il campo è pronto, la squadra è schierata, manca solo il mister
 
 ✅ **Sistema FSM funzionante**
@@ -169,7 +146,6 @@ Ti propongo questo ordine:
 3. Poi integriamo `RoleTactic` per dare comportamenti specifici.
 4. E infine espandiamo con `PhaseTactic` e `BallTactic`.
 
-
 Quando torni, possiamo:
 
 * Rifinire il `ZoneTacticSystem` con la nuova struttura
@@ -177,3 +153,63 @@ Quando torni, possiamo:
 * Espandere la strategia con `PhaseTactic`, `BallTactic`, `OpponentTactic`
 
 link dei sorgenti [michelemazzei/football_sim_core](https://github.com/michelemazzei/football_sim_core)
+
+🧠 Recap sessione 3 novembre — Strategia e visualizzazione tattica
+
+✅ Obiettivo raggiunto
+
+Abbiamo visualizzato correttamente la griglia del campo con:
+
+* Rettangoli perfettamente dimensionati per ogni zona
+* Etichette centrate con coordinate `(x, y)`
+* Conversione corretta da coordinate normalizzate a coordinate schermo
+* Overlay visivo utile per debug e assegnazione tattica
+
+🧩 Problemi identificati
+
+1. **Coordinate virtuali errate** : alcuni giocatori ricevono destinazioni non coerenti (es. portiere verso `(0.05, 0.11)`).
+2. **Movimento ritardato** : i giocatori si muovono troppo tardi dopo il kickoff.
+3. **Zone duplicate per squadra away** : serve applicare `mirrorZone()` per assegnare correttamente le zone.
+4. **Giocatori #6 e #9 fermi** : probabilmente non ricevono `MovingComponent` o ignorano il messaggio.
+
+✅ Prossimi passi
+
+* Usare `grid.centerOfZone(zone)` per assegnare destinazioni ai giocatori
+* Applicare `mirrorZone()` per la squadra away
+* Verificare che tutti i giocatori ricevano correttamente `MoveToZoneState`
+* Aggiungere log nel `PlayerFsmSystem` per tracciare transizioni FSM
+* Eventualmente visualizzare le destinazioni con frecce o cerchi
+
+Domani possiamo ripartire da:
+
+* Correzione assegnazione zone per squadra away
+* Debug FSM per i giocatori fermi
+* Integrazione con `TacticalDecisionSystem` per movimenti intelligenti
+
+Buona serata michele! Il campo è pronto, la tattica prende forma ⚽
+
+🧠 Recap sessione 3 novembre — Strategia e visualizzazione tattica
+
+✅ Obiettivo raggiunto
+
+Abbiamo visualizzato correttamente la griglia del campo con:
+
+* Rettangoli perfettamente dimensionati per ogni zona
+* Etichette centrate con coordinate `(x, y)`
+* Conversione corretta da coordinate normalizzate a coordinate schermo
+* Overlay visivo utile per debug e assegnazione tattica
+
+
+✅ Prossimi passi
+
+* Usare `grid.centerOfZone(zone)` per assegnare destinazioni ai giocatori
+* Applicare `mirrorZone()` per la squadra away
+* Verificare che tutti i giocatori ricevano correttamente `MoveToZoneState`
+* Aggiungere log nel `PlayerFsmSystem` per tracciare transizioni FSM
+* Eventualmente visualizzare le destinazioni con frecce o cerchi
+
+Domani possiamo ripartire da:
+
+* Correzione assegnazione zone per squadra away
+* Debug FSM per i giocatori fermi
+* Integrazione con `TacticalDecisionSystem` per movimenti intelligenti
