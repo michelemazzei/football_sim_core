@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:collection/collection.dart';
 import 'package:flame/game.dart';
 import 'package:football_sim_core/ai/config/soccer_parameters.dart';
 import 'package:football_sim_core/core/field/zone.dart';
@@ -18,8 +19,8 @@ class FieldGrid {
 
   /// Converte una posizione normalizzata (0..1) in una zona discreta
   Zone fromNormalized(Vector2 v) {
-    final x = (v.x * (columns - 1)).round();
-    final y = (v.y * (rows - 1)).round();
+    final x = (v.x * (columns - 1));
+    final y = (v.y * (rows - 1));
     return Zone(x: x, y: y);
   }
 
@@ -30,11 +31,26 @@ class FieldGrid {
     return Vector2(cx, cy);
   }
 
+  Vector2 centerOfZones(List<Zone> zones) {
+    final centers = zones.map((zone) => centerOfZone(zone));
+    final sum = centers.reduce((a, b) => a + b);
+    return sum / centers.length.toDouble();
+  }
+
   /// Bounding box fisico della zona
   Rect rectOfZone(Zone zone) {
     final left = zone.x * zoneWidth;
     final top = zone.y * zoneHeight;
     return Rect.fromLTWH(left, top, zoneWidth, zoneHeight);
+  }
+
+  /// Bounding box fisico della zona
+  Rect rectOfZones(List<Zone> zones) {
+    final left = zones.map((zone) => zone.x * zoneWidth).min;
+    final top = zones.map((zone) => zone.y * zoneHeight).min;
+    final right = zones.map((zone) => zone.x * (1 + zoneWidth)).max;
+    final bottom = zones.map((zone) => zone.y * (1 + zoneHeight)).max;
+    return Rect.fromLTRB(left, top, right, bottom);
   }
 
   /// Zona speculare rispetto all'asse X (per cambio lato)

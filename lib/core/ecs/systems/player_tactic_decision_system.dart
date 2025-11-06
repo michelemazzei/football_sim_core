@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:football_sim_core/core/ecs/components/applied_tactic_component.dart';
 import 'package:football_sim_core/core/ecs/components/player_tactic_brain_component.dart';
 import 'package:football_sim_core/core/ecs/components/team_tactic_queue_component.dart';

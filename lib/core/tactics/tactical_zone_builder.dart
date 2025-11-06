@@ -35,7 +35,7 @@ class TacticalZoneBuilder {
 
   void _addBuildUpPhase(Map<GamePhase, Map<TacticalRole, Zone>> phaseZones) {
     final buildUp = <TacticalRole, Zone>{
-      TacticalRole.goalkeeper(): Zone(x: 0, y: 3, type: ZoneType.goalLine()),
+      TacticalRole.goalkeeper(): Zone(x: 0, y: 2.35, type: ZoneType.goalLine()),
       TacticalRole.leftBack(): Zone(x: 2, y: 1, type: ZoneType.defensive()),
       TacticalRole.centerBackLeft(): Zone(
         x: 2,
@@ -61,24 +61,24 @@ class TacticalZoneBuilder {
       ),
 
       TacticalRole.attackingMidfielderCenter(): Zone(
-        x: 7,
+        x: 5,
         y: 2,
         type: ZoneType.mildfield(),
       ),
 
       TacticalRole.wideMidfielderLeft(): Zone(
-        x: 6,
+        x: 3,
         y: 1,
         type: ZoneType.mildfield(),
       ),
       TacticalRole.wideMidfielderRight(): Zone(
-        x: 6,
+        x: 3,
         y: 4,
         type: ZoneType.mildfield(),
       ),
       TacticalRole.centralMidfielderRight(): Zone(
-        x: 4,
-        y: 4,
+        x: 3,
+        y: 3,
         type: ZoneType.mildfield(),
       ),
       TacticalRole.rightWinger(): Zone(x: 3, y: 4, type: ZoneType.mildfield()),
@@ -98,6 +98,30 @@ class TacticalZoneBuilder {
   }
 
   void _addAttackPhase(Map<GamePhase, Map<TacticalRole, Zone>> phaseZones) {
+    _addAlternativePhase(GamePhase.attack(), phaseZones, {
+      ZoneType.goalLine(): 0,
+      ZoneType.defensive(): 2,
+      ZoneType.mildfield(): 3,
+      ZoneType.attacking(): 3,
+      ZoneType.special(): 0,
+    });
+  }
+
+  void _addDefensePhase(Map<GamePhase, Map<TacticalRole, Zone>> phaseZones) {
+    _addAlternativePhase(GamePhase.defense(), phaseZones, {
+      ZoneType.goalLine(): 0,
+      ZoneType.defensive(): -1,
+      ZoneType.mildfield(): -1,
+      ZoneType.attacking(): -1,
+      ZoneType.special(): 0,
+    });
+  }
+
+  void _addAlternativePhase(
+    GamePhase thePhase,
+    Map<GamePhase, Map<TacticalRole, Zone>> phaseZones,
+    Map<ZoneType, int> mapByType,
+  ) {
     final buildUp = phaseZones[GamePhase.buildUp()];
     if (buildUp == null) return;
 
@@ -106,50 +130,17 @@ class TacticalZoneBuilder {
     for (final entry in buildUp.entries) {
       final role = entry.key;
       final zone = entry.value;
-      final shiftedZone = _shiftZone(
-        zone,
-        byType: {
-          ZoneType.goalLine(): 0,
-          ZoneType.defensive(): 2,
-          ZoneType.mildfield(): 3,
-          ZoneType.attacking(): 4,
-          ZoneType.special(): 0,
-        },
-      );
+      final shiftedZone = _shiftZone(zone, byType: mapByType);
       attack[role] = shiftedZone;
     }
 
-    phaseZones[GamePhase.attack()] = attack;
-  }
-
-  void _addDefensePhase(Map<GamePhase, Map<TacticalRole, Zone>> phaseZones) {
-    final buildUp = phaseZones[GamePhase.buildUp()];
-    if (buildUp == null) return;
-
-    final defense = <TacticalRole, Zone>{};
-
-    for (final entry in buildUp.entries) {
-      final role = entry.key;
-      final zone = entry.value;
-      final shiftedZone = _shiftZone(
-        zone,
-        byType: {
-          ZoneType.goalLine(): 0,
-          ZoneType.defensive(): -1,
-          ZoneType.mildfield(): -2,
-          ZoneType.attacking(): -3,
-          ZoneType.special(): 0,
-        },
-      );
-      defense[role] = shiftedZone;
-    }
-
-    phaseZones[GamePhase.defense()] = defense;
+    phaseZones[thePhase] = attack;
   }
 
   Zone _shiftZone(Zone zone, {required Map<ZoneType, int> byType}) {
     final dx = byType[zone.type] ?? 0;
-    final newX = (zone.x + dx).clamp(0, fieldWidth - 1);
+    final double newX = (zone.x + dx).clamp(0, fieldWidth - 1);
+
     return zone.copyWith(x: newX);
   }
 }

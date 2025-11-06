@@ -37,15 +37,19 @@ class ZoneTacticBrick extends TacticalBrick {
 
     var zone = tactic.zoneAssignments[roleComp.role];
     if (zone == null) return [];
+    var preferredAverageZone = zone;
 
     if (team.isRightSide) {
-      zone = grid.mirrorZone(zone);
+      preferredAverageZone = grid.mirrorZone(preferredAverageZone);
     }
 
     final telegram = TelegramUnion.create(
       sender: player,
       receiver: player,
-      message: TacticalMoveToZone(receiver: player, targetZone: zone),
+      message: TacticalMoveToZone(
+        receiver: player,
+        targetZone: preferredAverageZone,
+      ),
     );
 
     return [telegram];

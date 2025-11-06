@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Zone {
 
- int get x; int get y; ZoneType? get type; double get weight; List<ZoneTag> get tags;
+ double get x; double get y; ZoneType? get type; double get weight; List<ZoneTag> get tags;
 /// Create a copy of Zone
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $ZoneCopyWith<$Res>  {
   factory $ZoneCopyWith(Zone value, $Res Function(Zone) _then) = _$ZoneCopyWithImpl;
 @useResult
 $Res call({
- int x, int y, ZoneType? type, double weight, List<ZoneTag> tags
+ double x, double y, ZoneType? type, double weight, List<ZoneTag> tags
 });
 
 
@@ -65,8 +65,8 @@ class _$ZoneCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? x = null,Object? y = null,Object? type = freezed,Object? weight = null,Object? tags = null,}) {
   return _then(_self.copyWith(
 x: null == x ? _self.x : x // ignore: cast_nullable_to_non_nullable
-as int,y: null == y ? _self.y : y // ignore: cast_nullable_to_non_nullable
-as int,type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as double,y: null == y ? _self.y : y // ignore: cast_nullable_to_non_nullable
+as double,type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as ZoneType?,weight: null == weight ? _self.weight : weight // ignore: cast_nullable_to_non_nullable
 as double,tags: null == tags ? _self.tags : tags // ignore: cast_nullable_to_non_nullable
 as List<ZoneTag>,
@@ -166,7 +166,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int x,  int y,  ZoneType? type,  double weight,  List<ZoneTag> tags)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( double x,  double y,  ZoneType? type,  double weight,  List<ZoneTag> tags)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Zone() when $default != null:
 return $default(_that.x,_that.y,_that.type,_that.weight,_that.tags);case _:
@@ -187,7 +187,7 @@ return $default(_that.x,_that.y,_that.type,_that.weight,_that.tags);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int x,  int y,  ZoneType? type,  double weight,  List<ZoneTag> tags)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( double x,  double y,  ZoneType? type,  double weight,  List<ZoneTag> tags)  $default,) {final _that = this;
 switch (_that) {
 case _Zone():
 return $default(_that.x,_that.y,_that.type,_that.weight,_that.tags);case _:
@@ -207,7 +207,7 @@ return $default(_that.x,_that.y,_that.type,_that.weight,_that.tags);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int x,  int y,  ZoneType? type,  double weight,  List<ZoneTag> tags)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( double x,  double y,  ZoneType? type,  double weight,  List<ZoneTag> tags)?  $default,) {final _that = this;
 switch (_that) {
 case _Zone() when $default != null:
 return $default(_that.x,_that.y,_that.type,_that.weight,_that.tags);case _:
@@ -225,8 +225,8 @@ class _Zone extends Zone {
    _Zone({required this.x, required this.y, this.type = const ZoneType.mildfield(), this.weight = 1.0, final  List<ZoneTag> tags = const []}): _tags = tags,super._();
   
 
-@override final  int x;
-@override final  int y;
+@override final  double x;
+@override final  double y;
 @override@JsonKey() final  ZoneType? type;
 @override@JsonKey() final  double weight;
  final  List<ZoneTag> _tags;
@@ -267,7 +267,7 @@ abstract mixin class _$ZoneCopyWith<$Res> implements $ZoneCopyWith<$Res> {
   factory _$ZoneCopyWith(_Zone value, $Res Function(_Zone) _then) = __$ZoneCopyWithImpl;
 @override @useResult
 $Res call({
- int x, int y, ZoneType? type, double weight, List<ZoneTag> tags
+ double x, double y, ZoneType? type, double weight, List<ZoneTag> tags
 });
 
 
@@ -287,8 +287,8 @@ class __$ZoneCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? x = null,Object? y = null,Object? type = freezed,Object? weight = null,Object? tags = null,}) {
   return _then(_Zone(
 x: null == x ? _self.x : x // ignore: cast_nullable_to_non_nullable
-as int,y: null == y ? _self.y : y // ignore: cast_nullable_to_non_nullable
-as int,type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as double,y: null == y ? _self.y : y // ignore: cast_nullable_to_non_nullable
+as double,type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as ZoneType?,weight: null == weight ? _self.weight : weight // ignore: cast_nullable_to_non_nullable
 as double,tags: null == tags ? _self._tags : tags // ignore: cast_nullable_to_non_nullable
 as List<ZoneTag>,

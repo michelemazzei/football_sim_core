@@ -10,8 +10,8 @@ part 'zone.freezed.dart';
 abstract class Zone with _$Zone {
   Zone._();
   factory Zone({
-    required int x,
-    required int y,
+    required double x,
+    required double y,
     @Default(ZoneType.mildfield()) ZoneType? type,
     @Default(1.0) double weight,
     @Default([]) List<ZoneTag> tags,
@@ -24,7 +24,7 @@ extension ZoneX on Zone {
   bool get isAttacking => type is AttackingZone;
   bool get isSpecial => type is SpecialZone;
 
-  int distanceTo(Zone other) => (x - other.x).abs() + (y - other.y).abs();
+  double distanceTo(Zone other) => (x - other.x).abs() + (y - other.y).abs();
 
   bool isAdjacentTo(Zone other) {
     final dx = (x - other.x).abs();
@@ -41,7 +41,7 @@ extension ZoneX on Zone {
 
   bool hasTag(String tagName) => tags.any((tag) => tag.name == tagName);
 
-  Vector2 getZoneCenterNormalized({required double x, required double y}) {
+  Vector2 getZoneCenterNormalized() {
     final double zoneWidth = 1.0 / SoccerParameters.numOfSpotsX;
     final double zoneHeight = 1.0 / SoccerParameters.numOfSpotsY;
 
@@ -49,14 +49,5 @@ extension ZoneX on Zone {
     final double normalizedY = y * zoneHeight + zoneHeight / 2;
 
     return Vector2(normalizedX, normalizedY);
-  }
-
-  Vector2 getZoneCenterReal({
-    required double x,
-    required double y,
-    required Vector2 fieldSize,
-  }) {
-    final normalized = getZoneCenterNormalized(x: x, y: y);
-    return Vector2(normalized.x * fieldSize.x, normalized.y * fieldSize.y);
   }
 }

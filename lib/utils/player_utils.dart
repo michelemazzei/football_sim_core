@@ -52,16 +52,14 @@ extension CreateTeamFromFormation on FootballGame {
 
     for (int i = 0; i < 11; i++) {
       // Posizione normalizzata dalla formazione
-      final position = tacticalSetup.formation.getPosition(i, isLeftSide);
-      final role = tacticalSetup.formation.getRole(i);
-      logger.fine('Creating player $i at position $position with role $role');
       // 1. Crea entità ECS
 
       final playerEntity = registry.getOrAddPlayerEntity(
-        position,
         team,
         game,
         i + 1,
+        tacticalSetup,
+        isLeftSide,
       );
 
       logger.fine('Player entity created: ${playerEntity.id}');
@@ -70,7 +68,6 @@ extension CreateTeamFromFormation on FootballGame {
       final playerComponent = PlayerComponent('P${i + 1}', i + 1, team.color);
       // 3. Collega ECS → Flame
 
-      playerEntity.addOrReplaceComponent(TacticalRoleComponent(role: role));
       playerEntity.addOrReplaceComponent(
         RenderComponent(entityId: playerEntity.id, component: playerComponent),
       );

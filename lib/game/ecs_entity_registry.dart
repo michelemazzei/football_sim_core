@@ -1,5 +1,5 @@
-import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:football_sim_core/core/ecs/components/tactical_role_component.dart';
 import 'package:football_sim_core/core/ecs/systems/game_phase_system.dart';
 import 'package:football_sim_core/core/ecs/systems/player_tactic_decision_system.dart';
 import 'package:football_sim_core/core/ecs/systems/zone_tactic_activator_system.dart';
@@ -114,12 +114,19 @@ class EcsEntityRegistry {
   }
 
   EcsEntity getOrAddPlayerEntity(
-    Vector2 position,
     Team team,
     FootballGame game,
     int number,
+    TacticalSetup tacticalSetup,
+    bool isLeftSide,
   ) {
-    return _getOrAddEntity(
+    final position = tacticalSetup.formation.getPosition(
+      number - 1,
+      isLeftSide,
+    );
+    final role = tacticalSetup.formation.getRole(number - 1);
+
+    final ecsPlayer = _getOrAddEntity(
       '${player}_${team.id}_$number',
       (int id) => PlayerEntity(
         id,
@@ -131,6 +138,9 @@ class EcsEntityRegistry {
         color: team.color,
       ),
     );
+
+    ecsPlayer.addOrReplaceComponent(TacticalRoleComponent(role: role));
+    return ecsPlayer;
   }
 
   EcsEntity getOrAddTeamEntity({

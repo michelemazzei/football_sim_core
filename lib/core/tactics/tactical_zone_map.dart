@@ -8,7 +8,10 @@ class TacticalZoneMap {
 
   TacticalZoneMap(this._map);
 
-  Zone? getZoneFor(TacticalRole role, GamePhase phase) {
+  Zone? getZoneFor(
+    TacticalRole role, [
+    GamePhase phase = const GamePhase.buildUp(),
+  ]) {
     return _map[phase]?[role];
   }
 

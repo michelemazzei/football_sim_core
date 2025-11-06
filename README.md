@@ -199,7 +199,6 @@ Abbiamo visualizzato correttamente la griglia del campo con:
 * Conversione corretta da coordinate normalizzate a coordinate schermo
 * Overlay visivo utile per debug e assegnazione tattica
 
-
 ✅ Prossimi passi
 
 * Usare `grid.centerOfZone(zone)` per assegnare destinazioni ai giocatori
@@ -208,8 +207,49 @@ Abbiamo visualizzato correttamente la griglia del campo con:
 * Aggiungere log nel `PlayerFsmSystem` per tracciare transizioni FSM
 * Eventualmente visualizzare le destinazioni con frecce o cerchi
 
-Domani possiamo ripartire da:
 
-* Correzione assegnazione zone per squadra away
-* Debug FSM per i giocatori fermi
-* Integrazione con `TacticalDecisionSystem` per movimenti intelligenti
+ Recap sessione — Ottimizzazione FSM e transizioni tattiche
+
+✅ 1. **Transizioni FSM migliorate**
+
+* Aggiunto parametro `forceToChange` in `changeState()` per forzare transizioni anche tra stati dello stesso tipo.
+* Implementato confronto semantico in `MoveToZoneState` per evitare transizioni ridondanti.
+* Risolto loop di stato su `BallPossessionState` grazie al confronto tra `possessor`.
+
+✅ 2. **Gestione zone e override**
+
+* Creato `ZoneOverrideComponent` con:
+  * `overrideZone` per singola zona
+  * `overrideZones` per ruoli come il portiere
+  * `overridePosition` per coordinate assolute
+* Introdotto `MovementZoneComponent` per definire le zone percorribili per ruolo.
+
+✅ 3. **FSM e messaggi tattici**
+
+* `PlayerActionHandlerSystem` ora processa solo se:
+  * Stato corrente è tra quelli validi (`Idle`, `PrepareKick`, `ReceiveBall`)
+  * Cooldown pronto
+* Cooldown di 0.1s tra un’azione e l’altra
+* Log dettagliato per ogni `Telegram` ricevuto, processato e completato
+
+✅ 4. **Kickoff e ritardo iniziale**
+
+* Identificato ritardo dovuto a `GamePhaseSystem` che imposta `GamePhase.transition()` per 1.5s
+* Ridotto `transitionDuration` a `0.2` secondi → ora il gioco parte fluido e reattivo
+* Verificato che `GameClockComponent` aggiorna correttamente `elapsedTime` con `speedFactor`
+
+✅ 5. **Clamping posizione giocatori**
+
+* Aggiunto controllo in `MovementSystem` per evitare che i giocatori escano dai limiti normalizzati:
+
+position.x = position.x.clamp(0.0, 1.0);
+position.y = position.y.clamp(0.0, 1.0);
+
+🔜 Prossimi passi suggeriti
+
+* Integrare `TacticalDecisionSystem` per far reagire i giocatori in base a zona, fase e ruolo
+* Visualizzare destinazioni e zone di movimento per debug
+* Simulare una fase completa (es. costruzione dal basso o pressing alto)
+* Aggiungere `ZoneArrivalSystem` per rilevare quando un giocatore ha raggiunto la sua zona
+
+Se vuoi, posso salvarti questo recap in un formato pronto da incollare nel tuo repo o nel tuo README. Fammi sapere, mister ⚽

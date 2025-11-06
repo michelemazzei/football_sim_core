@@ -114,7 +114,7 @@ class FootballGame extends FlameGame {
 
     for (int x = 0; x < SoccerParameters.numOfSpotsX; x++) {
       for (int y = 0; y < SoccerParameters.numOfSpotsY; y++) {
-        final zone = Zone(x: x, y: y);
+        final zone = Zone(x: x.toDouble(), y: y.toDouble());
         final rect = grid.rectOfZone(zone);
 
         final position = mapper!.toScreen(Vector2(rect.left, rect.top));

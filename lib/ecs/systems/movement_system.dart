@@ -63,8 +63,10 @@ class MovementSystem extends EcsSystem {
       }
 
       moving.currentPosition += moving.velocity * scaledDt;
-      moving.currentPosition.x = moving.currentPosition.x.clamp(0.0, 1.0);
-      moving.currentPosition.y = moving.currentPosition.y.clamp(0.0, 1.0);
+      moving.currentPosition = Vector2(
+        moving.currentPosition.x.clamp(0.0, 1.0),
+        moving.currentPosition.y.clamp(0.0, 1.0),
+      );
 
       final mapper = game.mapper;
       if (mapper == null) continue;
