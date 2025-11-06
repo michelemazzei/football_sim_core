@@ -30,7 +30,8 @@ class MovingComponent extends EcsComponent {
     targetPosition = target;
   }
 
-  void clearTarget() {
+  void stopMoving() {
     targetPosition = null;
+    velocity = Vector2.zero();
   }
 }

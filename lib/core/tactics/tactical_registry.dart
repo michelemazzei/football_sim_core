@@ -1,4 +1,4 @@
-import 'package:football_sim_core/core/bricks/tactical_brick.dart';
+import 'package:football_sim_core/core/tactics/bricks/tactical_brick.dart';
 import 'package:football_sim_core/core/tactics/tactics_names.dart';
 
 class TacticalRegistry {

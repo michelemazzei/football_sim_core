@@ -55,11 +55,12 @@ extension TacticsNamePatterns on TacticsName {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ZoneTactic value)?  zoneTactics,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ZoneTactic value)?  zoneTactics,TResult Function( BallFollowTactic value)?  ballFollowTactic,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case ZoneTactic() when zoneTactics != null:
-return zoneTactics(_that);case _:
+return zoneTactics(_that);case BallFollowTactic() when ballFollowTactic != null:
+return ballFollowTactic(_that);case _:
   return orElse();
 
 }
@@ -77,11 +78,12 @@ return zoneTactics(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ZoneTactic value)  zoneTactics,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ZoneTactic value)  zoneTactics,required TResult Function( BallFollowTactic value)  ballFollowTactic,}){
 final _that = this;
 switch (_that) {
 case ZoneTactic():
-return zoneTactics(_that);}
+return zoneTactics(_that);case BallFollowTactic():
+return ballFollowTactic(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -95,11 +97,12 @@ return zoneTactics(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ZoneTactic value)?  zoneTactics,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ZoneTactic value)?  zoneTactics,TResult? Function( BallFollowTactic value)?  ballFollowTactic,}){
 final _that = this;
 switch (_that) {
 case ZoneTactic() when zoneTactics != null:
-return zoneTactics(_that);case _:
+return zoneTactics(_that);case BallFollowTactic() when ballFollowTactic != null:
+return ballFollowTactic(_that);case _:
   return null;
 
 }
@@ -116,10 +119,11 @@ return zoneTactics(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  zoneTactics,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  zoneTactics,TResult Function()?  ballFollowTactic,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case ZoneTactic() when zoneTactics != null:
-return zoneTactics();case _:
+return zoneTactics();case BallFollowTactic() when ballFollowTactic != null:
+return ballFollowTactic();case _:
   return orElse();
 
 }
@@ -137,10 +141,11 @@ return zoneTactics();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  zoneTactics,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  zoneTactics,required TResult Function()  ballFollowTactic,}) {final _that = this;
 switch (_that) {
 case ZoneTactic():
-return zoneTactics();}
+return zoneTactics();case BallFollowTactic():
+return ballFollowTactic();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -154,10 +159,11 @@ return zoneTactics();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  zoneTactics,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  zoneTactics,TResult? Function()?  ballFollowTactic,}) {final _that = this;
 switch (_that) {
 case ZoneTactic() when zoneTactics != null:
-return zoneTactics();case _:
+return zoneTactics();case BallFollowTactic() when ballFollowTactic != null:
+return ballFollowTactic();case _:
   return null;
 
 }
@@ -189,6 +195,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'TacticsName.zoneTactics()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class BallFollowTactic implements TacticsName {
+  const BallFollowTactic();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BallFollowTactic);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'TacticsName.ballFollowTactic()';
 }
 
 

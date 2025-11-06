@@ -1,8 +1,8 @@
 import 'package:football_sim_core/ai/fsm/messaging/telegram.dart';
-import 'package:football_sim_core/core/bricks/tactical_brick.dart';
 import 'package:football_sim_core/core/ecs/components/tactical_role_component.dart';
 import 'package:football_sim_core/core/ecs/messages/tactic_messages.dart';
 import 'package:football_sim_core/core/field/field_grid.dart';
+import 'package:football_sim_core/core/tactics/bricks/tactical_brick.dart';
 import 'package:football_sim_core/core/tactics/tactics.dart';
 import 'package:football_sim_core/core/tactics/tactics_names.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
