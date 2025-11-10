@@ -28,7 +28,7 @@ class ZoneTacticActivatorSystem extends EcsSystem {
       }
 
       final tactic = Tactic(
-        name: TacticsName.zoneTactics(),
+        name: TacticsName.zoneTactic(),
         activatedAt: DateTime.now(),
         priority: TacticalPriority.low(),
         intent: TacticalIntent.coveringZone(),

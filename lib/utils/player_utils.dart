@@ -1,5 +1,4 @@
 import 'package:football_sim_core/components/player_component.dart';
-import 'package:football_sim_core/core/ecs/components/tactical_role_component.dart';
 import 'package:football_sim_core/core/tactics/tactical_roles.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';

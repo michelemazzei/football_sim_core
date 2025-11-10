@@ -6,6 +6,8 @@ import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
 
 abstract class TacticalBrick {
+  bool get ignoresOverride => false;
+
   TacticsName get id;
   int get priority;
 

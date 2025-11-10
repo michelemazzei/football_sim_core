@@ -32,7 +32,7 @@ class FollowBallState extends GameState<PlayerEntity> {
       maxSpeed: moving.maxSpeed,
       maxForce: SoccerParameters.playerMaxForce,
     );
-    moving.velocity += steering;
+    moving.velocity = steering;
     moving.heading = (ballPos - moving.currentPosition).normalized();
     moving.targetPosition = ballPos;
     if (distance < SoccerParameters.possessionRadius) {}

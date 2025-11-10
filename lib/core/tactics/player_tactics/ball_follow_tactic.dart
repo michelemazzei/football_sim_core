@@ -1,5 +1,3 @@
-// lib/core/tactics/player_tactics/ball_follow_tactic.dart
-
 import 'package:football_sim_core/ai/fsm/entities/game_state.dart';
 import 'package:football_sim_core/core/fsm/state/follow_the_ball_state.dart';
 import 'package:football_sim_core/core/tactics/player_tactics/player_tactic.dart';

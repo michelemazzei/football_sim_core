@@ -1,32 +1,45 @@
+import 'package:football_sim_core/core/tactics/player_tactic_registry.dart';
 import 'package:football_sim_core/core/tactics/player_tactics/player_tactic.dart';
 import 'package:football_sim_core/core/tactics/tactics_names.dart';
 import 'package:football_sim_core/ecs/components/ecs_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
+import 'package:logging/logging.dart';
 
 class PlayerTacticBrainComponent extends EcsComponent {
-  late final Set<TacticsName> acceptedTactics;
-  final List<PlayerTactic> activeTactics;
+  final logger = Logger('PlayerTacticBrainComponent');
+  final Map<TacticsName, PlayerTactic> acceptedTactics =
+      PlayerTacticRegistry.getDefaultTactics();
+  bool overrideByBrick = true;
 
-  PlayerTacticBrainComponent({
-    Set<TacticsName>? tactics,
-    this.activeTactics = const <PlayerTactic>[],
-  }) {
-    acceptedTactics = <TacticsName>{};
-    tactics ??= {};
-    acceptedTactics.addAll(tactics);
-    acceptedTactics.add(
-      TacticsName.zoneTactics(),
-    ); // la zone Tactics deve essere sempre presente.
+  PlayerTactic? currentTactic;
+
+  bool accepts(TacticsName name) => acceptedTactics.keys.contains(name);
+
+  PlayerTactic? getByName(TacticsName name) {
+    return acceptedTactics[name];
   }
 
-  bool accepts(TacticsName name) => acceptedTactics.contains(name);
-
   void update(PlayerEntity player, EcsWorld world) {
-    final best = activeTactics
-        .map((t) => MapEntry(t, t.computeUtility(player, world)))
-        .reduce((a, b) => a.value > b.value ? a : b);
+    if (acceptedTactics.isEmpty) return;
+    if (overrideByBrick) return;
 
-    player.fsm.changeState(best.key.createState(player, world));
+    final scores = <PlayerTactic, double>{};
+    for (final entry in acceptedTactics.entries) {
+      final tactic = entry.value;
+      final score = tactic.computeUtility(player, world);
+      scores[tactic] = score;
+
+      logger.info(
+        '[${player.toString()}] ${tactic.name} → ${score.toStringAsFixed(2)}',
+      );
+    }
+
+    final best = scores.entries.reduce((a, b) => a.value > b.value ? a : b);
+
+    if (best.key != currentTactic) {
+      currentTactic = best.key;
+      player.fsm.changeState(best.key.createState(player, world));
+    }
   }
 }

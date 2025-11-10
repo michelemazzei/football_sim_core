@@ -4,6 +4,7 @@ import 'package:football_sim_core/core/ecs/components/team_tactic_queue_componen
 import 'package:football_sim_core/core/field/field_grid.dart';
 import 'package:football_sim_core/core/tactics/game_phases.dart';
 import 'package:football_sim_core/core/tactics/tactical_registry.dart';
+import 'package:football_sim_core/core/tactics/tactics_names.dart';
 import 'package:football_sim_core/ecs/components/action_queue_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
@@ -20,6 +21,7 @@ class PlayerTacticDecisionSystem extends EcsSystem {
       final team = player.getTeam();
       final gamePhase = team?.gamePhase;
       final brain = player.getComponent<PlayerTacticBrainComponent>();
+
       final queue = player.getComponent<ActionQueueComponent>(
         ifAbsent: () => ActionQueueComponent(entity: player),
       );
@@ -42,6 +44,13 @@ class PlayerTacticDecisionSystem extends EcsSystem {
       if (alreadyApplied) continue;
 
       final brick = TacticalRegistry.get(tactic.name);
+      final brickCanBypass = brick?.ignoresOverride ?? false;
+      final brainIsLocked = brain.overrideByBrick;
+
+      if (!brickCanBypass && !brainIsLocked) {
+        continue;
+      }
+
       if (brick == null || !brick.isApplicable(player, world, tactic)) continue;
 
       // Nuova tattica → svuota la coda e applica
@@ -53,6 +62,10 @@ class PlayerTacticDecisionSystem extends EcsSystem {
       player.addOrReplaceComponent(
         AppliedTacticComponent(tacticId: tactic.name, appliedAt: now),
       );
+      // Sblocca il cervello se la tattica è quella di zona
+      if (tactic.name == TacticsName.zoneTactic()) {
+        brain.overrideByBrick = false;
+      }
     }
   }
 }
