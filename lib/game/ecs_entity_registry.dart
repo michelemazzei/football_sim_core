@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:football_sim_core/core/ecs/components/tactical_role_component.dart';
 import 'package:football_sim_core/core/ecs/systems/game_phase_system.dart';
 import 'package:football_sim_core/core/ecs/systems/player_brain_system.dart';
-import 'package:football_sim_core/core/ecs/systems/player_tactic_decision_system.dart';
 import 'package:football_sim_core/core/ecs/systems/zone_tactic_activator_system.dart';
 import 'package:football_sim_core/core/field/field_grid.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
@@ -94,7 +93,7 @@ class EcsEntityRegistry {
     ecsWorld.addSystem(MatchStartSystem());
     ecsWorld.addSystem(GamePhaseSystem());
     ecsWorld.addSystem(ZoneTacticActivatorSystem());
-    ecsWorld.addSystem(PlayerTacticDecisionSystem());
+    // ecsWorld.addSystem(PlayerTacticDecisionSystem());
     ecsWorld.addSystem(PlayerBrainSystem());
   }
 
