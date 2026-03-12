@@ -1,32 +1,79 @@
-// lib/messages/match_messages.dart
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'message.dart';
 
-part 'match_messages.freezed.dart';
+sealed class MatchMessage implements Message {
+  const MatchMessage();
+}
 
-@freezed
-sealed class MatchMessage with _$MatchMessage implements Message {
-  const factory MatchMessage.kickoffStarted() = KickoffStarted;
-  const factory MatchMessage.ballKicked({
-    required int fromPlayerId,
-    required int toPlayerId,
-  }) = BallKicked;
-  const factory MatchMessage.passCompleted({required int receiverId}) =
-      PassCompleted;
-  const factory MatchMessage.playStarted() = PlayStarted;
-  const factory MatchMessage.started() = MatchStarted;
-  const factory MatchMessage.firstHalfStarted() = MatchFirstHalfStarted;
-  const factory MatchMessage.firstHalfEnded() = MatchFirstHalfEnded;
-  const factory MatchMessage.secondHalfStarted() = MatchSecondHalfStarted;
-  const factory MatchMessage.secondHalfEnded() = MatchSecondHalfEnded;
-  const factory MatchMessage.firstExtraTimeStarted() =
-      MatchFirstExtraTimeStarted;
-  const factory MatchMessage.firstExtraTimeEnded() = MatchFirstExtraTimeEnded;
-  const factory MatchMessage.secondExtraTimeStarted() =
-      MatchSecondExtraTimeStarted;
-  const factory MatchMessage.secondExtraTimeEnded() = MatchSecondExtraTimeEnded;
-  const factory MatchMessage.shootOutStarted() = MatchShootOutStarted;
-  const factory MatchMessage.shootOutEnded() = MatchShootOutEnded;
-  const factory MatchMessage.ended() = MatchEnded;
-  const factory MatchMessage.goalScored({required int teamId}) = GoalScored;
+// Messaggi con dati
+class BallKicked extends MatchMessage {
+  final int fromPlayerId;
+  final int toPlayerId;
+  const BallKicked({required this.fromPlayerId, required this.toPlayerId});
+}
+
+class PassCompleted extends MatchMessage {
+  final int receiverId;
+  const PassCompleted({required this.receiverId});
+}
+
+class GoalScored extends MatchMessage {
+  final int teamId;
+  const GoalScored({required this.teamId});
+}
+
+// Messaggi di stato (costanti per risparmiare memoria)
+class KickoffStarted extends MatchMessage {
+  const KickoffStarted();
+}
+
+class PlayStarted extends MatchMessage {
+  const PlayStarted();
+}
+
+class MatchStarted extends MatchMessage {
+  const MatchStarted();
+}
+
+class MatchFirstHalfStarted extends MatchMessage {
+  const MatchFirstHalfStarted();
+}
+
+class MatchFirstHalfEnded extends MatchMessage {
+  const MatchFirstHalfEnded();
+}
+
+class MatchSecondHalfStarted extends MatchMessage {
+  const MatchSecondHalfStarted();
+}
+
+class MatchSecondHalfEnded extends MatchMessage {
+  const MatchSecondHalfEnded();
+}
+
+class MatchFirstExtraTimeStarted extends MatchMessage {
+  const MatchFirstExtraTimeStarted();
+}
+
+class MatchFirstExtraTimeEnded extends MatchMessage {
+  const MatchFirstExtraTimeEnded();
+}
+
+class MatchSecondExtraTimeStarted extends MatchMessage {
+  const MatchSecondExtraTimeStarted();
+}
+
+class MatchSecondExtraTimeEnded extends MatchMessage {
+  const MatchSecondExtraTimeEnded();
+}
+
+class MatchShootOutStarted extends MatchMessage {
+  const MatchShootOutStarted();
+}
+
+class MatchShootOutEnded extends MatchMessage {
+  const MatchShootOutEnded();
+}
+
+class MatchEnded extends MatchMessage {
+  const MatchEnded();
 }

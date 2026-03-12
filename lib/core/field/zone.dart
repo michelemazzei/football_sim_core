@@ -1,28 +1,52 @@
 import 'package:flame/game.dart';
 import 'package:football_sim_core/ai/config/soccer_parameters.dart';
+import 'package:football_sim_core/core/field/field_grid.dart';
 import 'package:football_sim_core/core/field/zone_tag.dart';
 import 'package:football_sim_core/core/field/zone_types.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'zone.freezed.dart';
+class Zone {
+  final double x;
+  final double y;
+  final ZoneType type;
+  final double weight;
+  final List<ZoneTag> tags;
 
-@freezed
-abstract class Zone with _$Zone {
-  Zone._();
-  factory Zone({
-    required double x,
-    required double y,
-    @Default(ZoneType.mildfield()) ZoneType? type,
-    @Default(1.0) double weight,
-    @Default([]) List<ZoneTag> tags,
-  }) = _Zone;
+  const Zone({
+    required this.x,
+    required this.y,
+    this.type = ZoneType.midfield, // Usiamo l'enum corretta (senza parentesi)
+    this.weight = 1.0,
+    this.tags = const [],
+  });
+
+  // Uguaglianza manuale (essenziale per l'ECS)
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Zone &&
+          runtimeType == other.runtimeType &&
+          x == other.x &&
+          y == other.y &&
+          type == other.type;
+
+  @override
+  int get hashCode => x.hashCode ^ y.hashCode ^ type.hashCode;
 }
 
 extension ZoneX on Zone {
-  bool get isDefensive => type is DefensiveZone;
-  bool get isMildfield => type is MildfieldZone;
-  bool get isAttacking => type is AttackingZone;
-  bool get isSpecial => type is SpecialZone;
+  // Ora che ZoneType è una enum, i controlli sono semplicissimi
+  bool get isDefensive => type == ZoneType.defensive;
+  bool get isMidfield => type == ZoneType.midfield;
+  bool get isAttacking => type == ZoneType.attacking;
+  bool get isSpecial => type == ZoneType.special;
+
+  Zone mirrorZone() => Zone(
+    x: (FieldGrid.columns - 1 - x).toDouble(),
+    y: y,
+    type: type,
+    tags: tags,
+    weight: weight,
+  );
 
   double distanceTo(Zone other) => (x - other.x).abs() + (y - other.y).abs();
 
@@ -36,10 +60,10 @@ extension ZoneX on Zone {
     return x >= 0 && x <= maxX && y >= 0 && y <= maxY;
   }
 
-  bool isSameAs(Zone other) =>
-      x == other.x && y == other.y && type == other.type;
+  // Se usi le enum, basta l'operatore == che abbiamo definito sopra
+  bool isSameAs(Zone other) => this == other;
 
-  bool hasTag(String tagName) => tags.any((tag) => tag.name == tagName);
+  bool hasTag(ZoneTag tag) => tags.contains(tag);
 
   Vector2 getZoneCenterNormalized() {
     final double zoneWidth = 1.0 / SoccerParameters.numOfSpotsX;

@@ -10,16 +10,23 @@ import 'package:logging/logging.dart';
 
 class EndMatchState extends RefereeBaseState {
   final logger = Logger('EndMatchState');
+
   @override
   void doEnter(RefereeEntity entity, EcsWorld world) {
-    final world = entity.getComponent<GameReferenceComponent>()!.game.ecsWorld;
+    // Nota: stai prendendo il world due volte, una passata e una dal componente.
+    // Se entity.world è già quello corretto, usa quello.
+    final gameWorld =
+        entity.getComponent<GameReferenceComponent>()?.game.ecsWorld ?? world;
     final lifeCycle = entity.getComponent<MatchLifecycleComponent>();
-    final dispatcher = world.getResource<MessageDispatcherSystem>();
+    final dispatcher = gameWorld.getResource<MessageDispatcherSystem>();
+
     if (dispatcher == null) return;
-    // Broadcast a 'matchEnded' message to all players
+
+    // CORREZIONE: MatchMessage.ended() -> MatchEnded()
+    // Poiché è un messaggio di stato senza dati, lo inviamo come nuova istanza (o const)
     dispatcher.broadcast<EcsPlayerComponent>(
       sender: entity,
-      message: MatchMessage.ended(),
+      message: const MatchEnded(),
     );
 
     lifeCycle?.matchEnded = true;

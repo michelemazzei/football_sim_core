@@ -1,5 +1,5 @@
 import 'package:flame/game.dart';
-import 'package:football_sim_core/ai/fsm/messaging/player_messages.dart';
+import 'package:football_sim_core/ai/fsm/messaging/messaging.dart';
 import 'package:football_sim_core/core/ecs/messages/tactic_messages.dart';
 import 'package:football_sim_core/core/field/field_grid.dart';
 import 'package:football_sim_core/core/field/zone.dart';
@@ -19,17 +19,23 @@ class TacticMessageTranslator {
   List<PlayerMessage> translate(TacticMessage message) {
     _grid ??= world.getResource<FieldGrid>();
     if (_grid == null) return [];
-    return message.mapOrNull(
-          moveToZone: (TacticalMoveToZone m) => <PlayerMessage>[
-            MoveToPosition(
-              receiver: m.receiver,
-              target: _getGridCenter(_grid!, m.targetZone),
-            ),
-          ],
 
-          // altri casi tattici...
-        ) ??
-        _logUnhandled(message);
+    // Sostituiamo mapOrNull con lo switch di Dart 3
+    return switch (message) {
+      TacticalMoveToZone m => <PlayerMessage>[
+        MoveToPosition(
+          receiver: m.receiver,
+          target: _getGridCenter(_grid!, m.targetZone),
+          // Se serve passare anche ack/onAck, ora sono accessibili da m
+          requiresAck: m.requiresAck,
+          onAck: m.onAck,
+        ),
+      ],
+
+      // Qui aggiungerai gli altri casi man mano che implementi nuove tattiche
+      // Es: TacticalPressing m => ...
+      _ => _logUnhandled(message),
+    };
   }
 
   List<PlayerMessage> _logUnhandled(TacticMessage message) {

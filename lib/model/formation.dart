@@ -17,65 +17,70 @@ class Formation {
 
   Vector2 getPosition(int index, bool isLeftSide) {
     final pos = positions[index];
-    return isLeftSide ? pos : Vector2(1 - pos.x, pos.y); // Mirroring
+    // Mirroring basato sull'asse X (0.0 - 1.0)
+    return isLeftSide ? pos : Vector2(1 - pos.x, pos.y);
   }
 
   TacticalRole getRole(int index) => roles[index];
 }
 
+// 🔵 Formazione 4-4-2
 final formation442 = Formation(
   [
     Vector2(0.02, 0.5), // Portiere
-    Vector2(0.2, 0.2),
+    Vector2(0.2, 0.2), // Difesa
     Vector2(0.2, 0.4),
     Vector2(0.2, 0.6),
-    Vector2(0.2, 0.8), // Difensori
-    Vector2(0.3, 0.2),
+    Vector2(0.2, 0.8),
+    Vector2(0.3, 0.2), // Centrocampo
     Vector2(0.3, 0.4),
     Vector2(0.3, 0.6),
-    Vector2(0.3, 0.8), // Centrocampisti
-    Vector2(0.4, 0.4),
-    Vector2(0.4, 0.6), // Attaccanti
+    Vector2(0.3, 0.8),
+    Vector2(0.4, 0.4), // Attacco
+    Vector2(0.4, 0.6),
   ],
   [
-    TacticalRole.goalkeeper(),
-    TacticalRole.leftBack(),
-    TacticalRole.centerBackLeft(),
-    TacticalRole.centerBackRight(),
-    TacticalRole.rightBack(),
-    TacticalRole.wideMidfielderLeft(),
-    TacticalRole.centralMidfielderLeft(),
-    TacticalRole.centralMidfielderRight(),
-    TacticalRole.wideMidfielderRight(),
-    TacticalRole.centerForward(),
-    TacticalRole.secondStriker(),
+    // CORREZIONE: Niente parentesi per gli Enum
+    TacticalRole.goalkeeper,
+    TacticalRole.leftBack,
+    TacticalRole.centerBackLeft,
+    TacticalRole.centerBackRight,
+    TacticalRole.rightBack,
+    TacticalRole.wideMidfielderLeft,
+    TacticalRole.centralMidfielderLeft,
+    TacticalRole.centralMidfielderRight,
+    TacticalRole.wideMidfielderRight,
+    TacticalRole.centerForward,
+    TacticalRole.secondStriker,
   ],
 );
+
+// 🔵 Formazione 4-3-3
 final formation433 = Formation(
   [
-    Vector2(0.02, 0.5), // Portiere
-    Vector2(0.2, 0.15), // Terzino sinistro
-    Vector2(0.2, 0.35), // Difensore centrale sinistro
-    Vector2(0.2, 0.65), // Difensore centrale destro
-    Vector2(0.2, 0.85), // Terzino destro
-    Vector2(0.3, 0.25), // Centrocampista difensivo
-    Vector2(0.3, 0.45), // Centrocampista centrale sinistro
-    Vector2(0.3, 0.65), // Centrocampista centrale destro
-    Vector2(0.4, 0.15), // Ala sinistra
-    Vector2(0.4, 0.5), // Punta centrale
-    Vector2(0.4, 0.85), // Ala destra
+    Vector2(0.02, 0.5),
+    Vector2(0.2, 0.15),
+    Vector2(0.2, 0.35),
+    Vector2(0.2, 0.65),
+    Vector2(0.2, 0.85),
+    Vector2(0.3, 0.25),
+    Vector2(0.3, 0.45),
+    Vector2(0.3, 0.65),
+    Vector2(0.4, 0.15),
+    Vector2(0.4, 0.5),
+    Vector2(0.4, 0.85),
   ],
   [
-    TacticalRole.goalkeeper(),
-    TacticalRole.leftBack(),
-    TacticalRole.centerBackLeft(),
-    TacticalRole.centerBackRight(),
-    TacticalRole.rightBack(),
-    TacticalRole.defensiveMidfielder(),
-    TacticalRole.centralMidfielderLeft(),
-    TacticalRole.centralMidfielderRight(),
-    TacticalRole.leftWinger(),
-    TacticalRole.centerForward(),
-    TacticalRole.rightWinger(),
+    TacticalRole.goalkeeper,
+    TacticalRole.leftBack,
+    TacticalRole.centerBackLeft,
+    TacticalRole.centerBackRight,
+    TacticalRole.rightBack,
+    TacticalRole.defensiveMidfielder,
+    TacticalRole.centralMidfielderLeft,
+    TacticalRole.centralMidfielderRight,
+    TacticalRole.leftWinger,
+    TacticalRole.centerForward,
+    TacticalRole.rightWinger,
   ],
 );

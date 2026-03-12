@@ -1,11 +1,13 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+enum GamePhase {
+  buildUp(0),
+  transition(1),
+  defense(2),
+  attack(3),
+  kickoff(4);
 
-part 'game_phases.freezed.dart';
+  final int id;
+  const GamePhase(this.id);
 
-@freezed
-class GamePhase with _$GamePhase {
-  const factory GamePhase.buildUp() = BuildUpPhase;
-  const factory GamePhase.transition() = TrasitionPhase;
-  const factory GamePhase.defense() = DefensePhase;
-  const factory GamePhase.attack() = AttackPhase;
+  @override
+  String toString() => 'GamePhase.$name';
 }

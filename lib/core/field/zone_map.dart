@@ -6,50 +6,56 @@ class ZoneMap {
   static Zone goalArea = Zone(
     x: 0,
     y: 2,
-    type: ZoneType.special(),
-    tags: [ZoneTag.goal()],
+    type: ZoneType.special, // Sostituito SpecialZone() con il valore Enum
+    tags: [ZoneTag.goal],
   );
+
   static Zone penaltyArea = Zone(
     x: 1,
     y: 2,
-    type: ZoneType.defensive(),
-    tags: [ZoneTag.penalty()],
+    type: ZoneType.defensive, // Sostituito DefensiveZone() con il valore Enum
+    tags: [ZoneTag.penalty],
   );
+
   static Zone leftBack = Zone(
     x: 2,
     y: 0,
-    type: ZoneType.defensive(),
-    tags: [ZoneTag.left()],
+    type: ZoneType.defensive,
+    tags: [ZoneTag.left],
   );
+
   static Zone rightBack = Zone(
     x: 2,
     y: 4,
-    type: ZoneType.defensive(),
-    tags: [ZoneTag.right()],
+    type: ZoneType.defensive,
+    tags: [ZoneTag.right],
   );
+
   static Zone centerCircle = Zone(
     x: 5,
     y: 2,
-    type: ZoneType.mildfield(),
-    tags: [ZoneTag.center()],
+    type: ZoneType.midfield, // Coerente con la nuova Enum
+    tags: [ZoneTag.center],
   );
+
   static Zone leftWingAttack = Zone(
     x: 8,
     y: 0,
-    type: ZoneType.attacking(),
-    tags: [ZoneTag.left()],
+    type: ZoneType.attacking,
+    tags: [ZoneTag.left],
   );
+
   static Zone rightWingAttack = Zone(
     x: 8,
     y: 4,
-    type: ZoneType.attacking(),
-    tags: [ZoneTag.right()],
+    type: ZoneType.attacking,
+    tags: [ZoneTag.right],
   );
+
   static Zone centralAttack = Zone(
     x: 9,
     y: 2,
-    type: ZoneType.attacking(),
-    tags: [ZoneTag.center()],
+    type: ZoneType.attacking,
+    tags: [ZoneTag.center],
   );
-  // Aggiungi tutte le altre zone necessarie
 }

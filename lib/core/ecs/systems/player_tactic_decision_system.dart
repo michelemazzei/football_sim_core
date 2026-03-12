@@ -30,7 +30,7 @@ class PlayerTacticDecisionSystem extends EcsSystem {
           brain == null ||
           queue == null ||
           gamePhase == null ||
-          gamePhase == GamePhase.buildUp()) {
+          gamePhase == GamePhase.buildUp) {
         //salta le tattiche se stiamo ancora nel build up
         continue;
       }
@@ -63,7 +63,7 @@ class PlayerTacticDecisionSystem extends EcsSystem {
         AppliedTacticComponent(tacticId: tactic.name, appliedAt: now),
       );
       // Sblocca il cervello se la tattica è quella di zona
-      if (tactic.name == TacticsName.zoneTactic()) {
+      if (tactic.name == TacticsName.zoneTactic) {
         brain.overrideByBrick = false;
       }
     }

@@ -18,12 +18,14 @@ class TeamEntity extends EcsEntity {
     super.id, {
     required Team team,
     required TacticalSetup tacticalSetup,
-    TacticalIntent intent = const TacticalIntent.none(),
+    // CORREZIONE: TacticalIntent.none invece di TacticalIntent.none()
+    TacticalIntent intent = TacticalIntent.none,
     List<Tactic> initialTactics = const [],
   }) {
     addComponent(TeamComponent(team));
     addComponent(TacticalSetupComponent(setup: tacticalSetup));
-    addComponent(TeamPhaseComponent(GamePhase.buildUp()));
+    // CORREZIONE: GamePhase.buildUp invece di GamePhase.buildUp()
+    addComponent(TeamPhaseComponent(GamePhase.buildUp));
     addComponent(TacticalComponent());
     addComponent(TeamTacticQueueComponent());
   }
@@ -32,6 +34,8 @@ class TeamEntity extends EcsEntity {
   String toString() => 'Team($id, ${getComponent<TeamComponent>()?.team.id})';
 
   TeamId get teamId => getComponent<TeamComponent>()!.team.id;
+
+  // Assicurati che TeamSideComponent usi le property corrette
   bool get isLeftSide => getComponent<TeamSideComponent>()?.isLeftSide ?? true;
   bool get isRightSide =>
       getComponent<TeamSideComponent>()?.isRightSide ?? false;

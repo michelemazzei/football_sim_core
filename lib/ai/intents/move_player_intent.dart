@@ -1,24 +1,18 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+enum MovePlayerIntent {
+  receivePass(0.5),
+  intercept(1.2),
+  chaseBall(0.8),
+  pressOpponent(0.9),
+  idle(0.0),
+  prepareKick(0.4);
 
-part 'move_player_intent.freezed.dart';
+  final double speed;
+  const MovePlayerIntent(this.speed);
 
-@freezed
-sealed class MovePlayerIntent with _$MovePlayerIntent {
-  const factory MovePlayerIntent.receivePass() = ReceivePassIntent;
-  const factory MovePlayerIntent.intercept() = InterceptIntent;
-  const factory MovePlayerIntent.chaseBall() = ChaseBallIntent;
-  const factory MovePlayerIntent.pressOpponent() = PressOpponentIntent;
-  const factory MovePlayerIntent.idle() = IdleIntent;
-  const factory MovePlayerIntent.prepareKick() = PrepareKickIntent;
-}
+  // Helper rapidi per la logica del Brain
+  bool get isMoving => speed > 0;
+  bool get isUrgent => speed > 1.0;
 
-extension MovePlayerIntentSpeed on MovePlayerIntent {
-  double get speed => map(
-    receivePass: (_) => 0.5,
-    intercept: (_) => 1.2,
-    chaseBall: (_) => 0.8,
-    pressOpponent: (_) => 0.9,
-    idle: (_) => 0.0,
-    prepareKick: (_) => 0.4,
-  );
+  @override
+  String toString() => '$name(speed: $speed)';
 }

@@ -8,38 +8,58 @@ import 'package:football_sim_core/core/tactics/player_tactics/player_tactic.dart
 import 'package:football_sim_core/core/tactics/tactics_names.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
+import 'package:football_sim_core/ecs/entities/team_entity.dart';
 
 class CoverAssignedZoneTactic implements PlayerTactic {
   @override
-  TacticsName get name => TacticsName.coverZoneTactic();
+  TacticsName get name => TacticsName.coverZoneTactic;
 
   @override
   double computeUtility(PlayerEntity player, EcsWorld world) {
     final roleComponent = player.getComponent<TacticalRoleComponent>();
-    if (roleComponent == null || roleComponent.zones.isEmpty) return 0.0;
-
+    final team = player.getTeam();
+    if (roleComponent == null || roleComponent.zones.isEmpty || team == null) {
+      return 0.0;
+    }
     final pos = player.position;
-    final closestZone = _findClosestZone(pos, roleComponent.zones);
+    final zones = team.isLeftSide
+        ? roleComponent.zones
+        : roleComponent.zones.map((zone) => zone.mirrorZone());
+    final closestZone = _findClosestZone(pos, zones);
     final distance = pos.distanceTo(closestZone.getZoneCenterNormalized());
 
-    const idealRadius = 100.0;
+    const idealRadius = 10.0;
     return (1.0 - (distance / idealRadius)).clamp(0.0, 1.0);
   }
 
   @override
   GameState<PlayerEntity> createState(PlayerEntity player, EcsWorld world) {
     final roleComponent = player.getComponent<TacticalRoleComponent>();
-    if (roleComponent == null || roleComponent.zones.isEmpty) {
+    final team = player.getTeam();
+    if (roleComponent == null || roleComponent.zones.isEmpty || team == null) {
+      return PlayerIdleState();
+    }
+    if (roleComponent.zones.isEmpty) {
       return PlayerIdleState();
     }
 
     final pos = player.position;
-    final closestZone = _findClosestZone(pos, roleComponent.zones);
+    final zones = getZones(team, roleComponent);
+    final closestZone = _findClosestZone(pos, zones);
 
     return MoveToTargetState(closestZone.getZoneCenterNormalized());
   }
 
-  Zone _findClosestZone(Vector2 pos, List<Zone> zones) {
+  Iterable<Zone> getZones(
+    TeamEntity team,
+    TacticalRoleComponent roleComponent,
+  ) {
+    return team.isLeftSide
+        ? roleComponent.zones
+        : roleComponent.zones.map((zone) => zone.mirrorZone());
+  }
+
+  Zone _findClosestZone(Vector2 pos, Iterable<Zone> zones) {
     return zones.reduce(
       (a, b) =>
           pos.distanceTo(a.getZoneCenterNormalized()) <

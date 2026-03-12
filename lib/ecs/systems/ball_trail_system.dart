@@ -18,17 +18,21 @@ class BallTrailSystem extends EcsSystem {
     // Recupera il GameClockComponent come risorsa globale
     final scaledDt = world.scaledDt;
     for (final e in world.entitiesWith<EcsBallComponent>()) {
-      final ballComp = e.getComponent<EcsBallComponent>()!;
+      final ballComp = e.getComponent<EcsBallComponent>();
       final sizeComp = e.getComponent<SizeComponent>();
-      final velComp = e.getComponent<MovingComponent>()!;
-      final posComp = e.getComponent<MovingComponent>()?.currentPosition;
+      final velComp = e.getComponent<MovingComponent>();
+
+      if (ballComp == null || velComp == null) {
+        continue;
+      }
+      final posComp = velComp.currentPosition;
 
       if (velComp.velocity.length2 > 1) {
         ballComp.angle +=
             velComp.velocity.length * scaledDt * ballComp.angleSpin;
       }
 
-      if (velComp.velocity.length2 > 0.2 && posComp != null) {
+      if (velComp.velocity.length2 > 0.2) {
         // Calcolo posizione assoluta con PositionSystem
         final absPos = PositionUtils.getAbsolutePosition(
           relative: Vector2(posComp.x, posComp.y),

@@ -7,7 +7,7 @@ class TacticalComponent extends EcsComponent {
   final List<Tactic> tactics = [];
   Tactic? activeTactic;
   TacticalPriority get priority =>
-      activeTactic?.priority ?? TacticalPriority.low();
+      activeTactic?.priority ?? TacticalPriority.low;
 
   void activate(TacticsName name) {
     final tactic = tactics.firstWhere(

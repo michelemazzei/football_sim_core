@@ -1,10 +1,11 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+enum TacticsName {
+  coverZoneTactic('COVER_ZONE'),
+  zoneTactic('ZONE_TACTIC'),
+  ballFollowTactic('BALL_FOLLOW');
 
-part 'tactics_names.freezed.dart';
+  final String label;
+  const TacticsName(this.label);
 
-@freezed
-sealed class TacticsName with _$TacticsName {
-  const factory TacticsName.coverZoneTactic() = CoverZoneTacticName;
-  const factory TacticsName.zoneTactic() = ZoneTacticName;
-  const factory TacticsName.ballFollowTactic() = BallFollowTacticName;
+  @override
+  String toString() => label;
 }

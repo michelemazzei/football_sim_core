@@ -1,56 +1,78 @@
-// lib/messages/player_messages.dart
 import 'package:flame/game.dart';
 import 'package:football_sim_core/ai/intents/move_player_intent.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
-import 'message.dart';
 
-part 'player_messages.freezed.dart';
+import 'message.dart';
 
 typedef OnAck = void Function();
 
-abstract class PlayerMessage extends Message {
+abstract interface class PlayerMessage implements Message {
   OnAck? get onAck;
   bool get requiresAck;
   EcsEntity get receiver;
 }
 
-@freezed
-sealed class PlayerUnion with _$PlayerUnion implements PlayerMessage {
-  PlayerUnion._();
-  factory PlayerUnion.receiveBallIntent({
-    OnAck? onAck,
-    @Default(false) bool requiresAck,
-    required EcsEntity receiver,
-    required Vector2 targetPosition,
-  }) = ReceiveBallIntent;
+sealed class PlayerUnion implements PlayerMessage {
+  @override
+  final OnAck? onAck;
+  @override
+  final bool requiresAck;
+  @override
+  final EcsEntity receiver;
 
-  factory PlayerUnion.passToNearestTeammate({
-    @Default(false) bool requiresAck,
-    required EcsEntity receiver,
-    OnAck? onAck,
-  }) = PassToNearestTeammate;
-  factory PlayerUnion.moveToPosition({
-    required Vector2 target,
-    required EcsEntity receiver,
-    @Default(false) bool requiresAck,
-    OnAck? onAck,
-  }) = MoveToPosition;
-  factory PlayerUnion.moveToBall({
-    required EcsEntity receiver,
-    required MovePlayerIntent intent,
-    @Default(false) bool requiresAck,
-    OnAck? onAck,
-  }) = MoveToBall;
+  const PlayerUnion({
+    required this.receiver,
+    this.requiresAck = false,
+    this.onAck,
+  });
+}
 
-  factory PlayerUnion.placeToKickOff({
-    required EcsEntity receiver,
-    @Default(false) bool requiresAck,
-    OnAck? onAck,
-  }) = PlaceToKickOff;
-  factory PlayerUnion.receiveBall({
-    required EcsEntity receiver,
-    @Default(false) bool requiresAck,
-    OnAck? onAck,
-  }) = ReceiveBall;
+class ReceiveBallIntent extends PlayerUnion {
+  final Vector2 targetPosition;
+  const ReceiveBallIntent({
+    required super.receiver,
+    required this.targetPosition,
+    super.requiresAck,
+    super.onAck,
+  });
+}
+
+class PassToNearestTeammate extends PlayerUnion {
+  const PassToNearestTeammate({
+    required super.receiver,
+    super.requiresAck,
+    super.onAck,
+  });
+}
+
+class MoveToPosition extends PlayerUnion {
+  final Vector2 target;
+  const MoveToPosition({
+    required super.receiver,
+    required this.target,
+    super.requiresAck,
+    super.onAck,
+  });
+}
+
+class MoveToBall extends PlayerUnion {
+  final MovePlayerIntent intent;
+  const MoveToBall({
+    required super.receiver,
+    required this.intent,
+    super.requiresAck,
+    super.onAck,
+  });
+}
+
+class PlaceToKickOff extends PlayerUnion {
+  const PlaceToKickOff({
+    required super.receiver,
+    super.requiresAck,
+    super.onAck,
+  });
+}
+
+class ReceiveBall extends PlayerUnion {
+  const ReceiveBall({required super.receiver, super.requiresAck, super.onAck});
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:football_sim_core/core/ecs/components/tactical_role_component.dart';
 import 'package:football_sim_core/core/ecs/systems/game_phase_system.dart';
+import 'package:football_sim_core/core/ecs/systems/player_brain_system.dart';
 import 'package:football_sim_core/core/ecs/systems/player_tactic_decision_system.dart';
 import 'package:football_sim_core/core/ecs/systems/zone_tactic_activator_system.dart';
 import 'package:football_sim_core/core/field/field_grid.dart';
@@ -19,7 +20,7 @@ import 'package:football_sim_core/ecs/systems/ball_reception_system.dart';
 import 'package:football_sim_core/ecs/systems/match_start_system.dart';
 import 'package:football_sim_core/ecs/systems/message_dispatcher_system.dart';
 import 'package:football_sim_core/ecs/systems/movement_system.dart';
-import 'package:football_sim_core/ecs/systems/player_action_message_system.dart';
+import 'package:football_sim_core/ecs/systems/player_action_handler_system.dart';
 import 'package:football_sim_core/ecs/systems/player_fsm_system.dart';
 import 'package:football_sim_core/ecs/systems/possession_event_system.dart';
 import 'package:football_sim_core/ecs/systems/referee_fsm_system.dart';
@@ -38,10 +39,8 @@ class EcsEntityRegistry {
   static const String clock = 'Clock';
   bool _systemsAdded = false;
 
-  // 🔵 Squadre
   late final Team teamRed;
   late final Team teamBlue;
-
   late EcsWorld ecsWorld;
 
   final Map<String, EcsEntity> _registry = {};
@@ -53,18 +52,23 @@ class EcsEntityRegistry {
   EcsEntityRegistry._() {
     reset();
   }
+
   void reset() {
     _registry.clear();
     _resources.clear();
     ecsWorld = EcsWorld();
+
     final dispatcherSystem = MessageDispatcherSystem(ecsWorld);
     ecsWorld.addSystem(dispatcherSystem);
     ecsWorld.addResource<MessageDispatcherSystem>(dispatcherSystem);
     ecsWorld.addResource<FieldGrid>(FieldGrid());
 
     _systemsAdded = false;
-    teamRed = Team(id: TeamId.home(), name: 'Red Team', color: Colors.red);
-    teamBlue = Team(id: TeamId.away(), name: 'Blue Team', color: Colors.blue);
+
+    // CORREZIONE: TeamId.home e TeamId.away senza parentesi (Enum)
+    teamRed = Team(id: TeamId.home, name: 'Red Team', color: Colors.red);
+    teamBlue = Team(id: TeamId.away, name: 'Blue Team', color: Colors.blue);
+
     ecsWorld.addResource<MatchComponent>(
       MatchComponent(home: teamRed.id, away: teamBlue.id),
     );
@@ -91,6 +95,7 @@ class EcsEntityRegistry {
     ecsWorld.addSystem(GamePhaseSystem());
     ecsWorld.addSystem(ZoneTacticActivatorSystem());
     ecsWorld.addSystem(PlayerTacticDecisionSystem());
+    ecsWorld.addSystem(PlayerBrainSystem());
   }
 
   EcsEntity? getEntity(String type) => _registry[type];
@@ -120,14 +125,16 @@ class EcsEntityRegistry {
     TacticalSetup tacticalSetup,
     bool isLeftSide,
   ) {
+    // Nota: Assicurati che tacticalSetup.formation gestisca bene gli indici
     final position = tacticalSetup.formation.getPosition(
       number - 1,
       isLeftSide,
     );
     final role = tacticalSetup.formation.getRole(number - 1);
 
+    // CORREZIONE: team.id è un Enum, usiamo .name per la chiave stringa
     final ecsPlayer = _getOrAddEntity(
-      '${player}_${team.id}_$number',
+      '${player}_${team.id.name}_$number',
       (int id) => PlayerEntity(
         id,
         ecsWorld,
@@ -148,8 +155,9 @@ class EcsEntityRegistry {
     required bool isLeftSide,
     required TacticalSetup tacticalSetup,
   }) {
+    // CORREZIONE: Usiamo team.id.name per differenziare le squadre nel registro
     return _getOrAddEntity(
-      '${Team}_${team.id}',
+      'Team_${team.id.name}',
       (int id) => TeamEntity(id, team: team, tacticalSetup: tacticalSetup),
     )..addOrReplaceComponent(TeamSideComponent(isLeftSide));
   }

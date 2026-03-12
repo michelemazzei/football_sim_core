@@ -1,14 +1,15 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+enum TacticalIntent {
+  none('NONE'),
+  kickoff('KICKOFF'),
+  pressing('PRESSING'),
+  attacking('ATTACKING'),
+  defending('DEFENDING'),
+  coveringZone('COVERING_ZONE'),
+  supportingAttacker('SUPPORTING_ATTACKER');
 
-part 'tactical_intents.freezed.dart';
+  final String code;
+  const TacticalIntent(this.code);
 
-@freezed
-sealed class TacticalIntent with _$TacticalIntent {
-  const factory TacticalIntent.none() = _None;
-  const factory TacticalIntent.kickoff() = _Kickoff;
-  const factory TacticalIntent.pressing() = _Pressing;
-  const factory TacticalIntent.attacking() = _Attacking;
-  const factory TacticalIntent.defending() = _Defending;
-  const factory TacticalIntent.coveringZone() = _CoveringZone;
-  const factory TacticalIntent.supportingAttacker() = _SupportingAttacker;
+  @override
+  String toString() => code;
 }

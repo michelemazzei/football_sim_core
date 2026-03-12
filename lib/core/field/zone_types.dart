@@ -1,12 +1,13 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+enum ZoneType {
+  goalLine('GoalLine'),
+  defensive('Defensive'),
+  midfield('Midfield'),
+  attacking('Attacking'),
+  special('Special');
 
-part 'zone_types.freezed.dart';
+  final String name;
+  const ZoneType(this.name);
 
-@freezed
-class ZoneType with _$ZoneType {
-  const factory ZoneType.goalLine() = GoalLineZone;
-  const factory ZoneType.defensive() = DefensiveZone;
-  const factory ZoneType.mildfield() = MildfieldZone;
-  const factory ZoneType.attacking() = AttackingZone;
-  const factory ZoneType.special() = SpecialZone;
+  @override
+  String toString() => name;
 }

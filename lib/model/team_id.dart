@@ -1,16 +1,13 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+enum TeamId {
+  home,
+  away;
 
-part 'team_id.freezed.dart';
+  /// Restituisce la squadra avversaria in modo immediato
+  TeamId get opposite => this == TeamId.home ? TeamId.away : TeamId.home;
 
-@freezed
-sealed class TeamId with _$TeamId {
-  const factory TeamId.home() = _TeamIdHome;
-  const factory TeamId.away() = _TeamIdAway;
-}
+  bool get isHome => this == TeamId.home;
+  bool get isAway => this == TeamId.away;
 
-extension TeamIdX on TeamId {
-  TeamId get opposite =>
-      this is _TeamIdHome ? const TeamId.away() : const TeamId.home();
-  bool get isHome => this is _TeamIdHome;
-  bool get isAway => this is _TeamIdAway;
+  @override
+  String toString() => name.toUpperCase();
 }

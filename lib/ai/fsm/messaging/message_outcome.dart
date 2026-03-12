@@ -1,10 +1,13 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+enum MessageOutcome {
+  consumed,
+  ignored,
+  escalated;
 
-part 'message_outcome.freezed.dart';
+  // Utility rapide per la logica di gestione
+  bool get isHandled => this == MessageOutcome.consumed;
+  bool get isIgnored => this == MessageOutcome.ignored;
+  bool get isEscalated => this == MessageOutcome.escalated;
 
-@freezed
-sealed class MessageOutcome with _$MessageOutcome {
-  const factory MessageOutcome.consumed() = Consumed;
-  const factory MessageOutcome.ignored() = Ignored;
-  const factory MessageOutcome.escalated() = Escalated;
+  @override
+  String toString() => name.toUpperCase();
 }

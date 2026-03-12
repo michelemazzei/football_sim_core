@@ -1,40 +1,103 @@
 import 'package:football_sim_core/ai/fsm/messaging/message.dart';
 import 'package:football_sim_core/ai/fsm/messaging/message_receiver.dart';
 import 'package:football_sim_core/ai/fsm/messaging/message_sender.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:uuid/uuid.dart';
 
-part 'telegram.freezed.dart';
-
-abstract class Telegram implements Comparable<Telegram> {
+abstract interface class Telegram implements Comparable<Telegram> {
   String get id;
   MessageSender? get sender;
   MessageReceiver get receiver;
   Message get message;
   bool get cancelled;
-
   DateTime? get messageTime;
   DateTime? get timeOut;
+  String? get additionalInfo;
 }
 
-/// Rappresenta un messaggio tra agenti nel simulatore.
-@unfreezed
-abstract class TelegramUnion with _$TelegramUnion implements Telegram {
-  const TelegramUnion._(); // Costruttore privato per metodi personalizzati
-  factory TelegramUnion({
-    required final String id,
-    final MessageSender? sender,
-    required final MessageReceiver receiver,
-    final DateTime? timeOut,
-    required final Message message,
-    @Default(false) bool cancelled,
-    final String? additionalInfo,
-    final DateTime? messageTime,
-  }) = _TelegramUnion;
+class TelegramUnion implements Telegram {
+  @override
+  final String id;
+  @override
+  final MessageSender? sender;
+  @override
+  final MessageReceiver receiver;
+  @override
+  final Message message;
+  @override
+  final DateTime? messageTime;
+  @override
+  final DateTime? timeOut;
+  @override
+  final String? additionalInfo;
+
+  @override
+  bool cancelled; // Non final perché può essere annullato
+
+  TelegramUnion({
+    required this.id,
+    this.sender,
+    required this.receiver,
+    required this.message,
+    this.messageTime,
+    this.timeOut,
+    this.additionalInfo,
+    this.cancelled = false,
+  });
+
+  // Factory Method: Create
+  factory TelegramUnion.create({
+    MessageSender? sender,
+    required MessageReceiver receiver,
+    required Message message,
+    String? additionalInfo,
+    DateTime? timeOut,
+    DateTime? messageTime,
+  }) => TelegramUnion(
+    id: const Uuid().v4(),
+    sender: sender,
+    receiver: receiver,
+    message: message,
+    additionalInfo: additionalInfo,
+    timeOut: timeOut,
+    messageTime: messageTime,
+  );
+
+  // Factory Method: Immediate
+  factory TelegramUnion.immediate({
+    required MessageSender sender,
+    required MessageReceiver receiver,
+    required Message message,
+    String? additionalInfo,
+  }) => TelegramUnion(
+    id: const Uuid().v4(),
+    sender: sender,
+    receiver: receiver,
+    message: message,
+    additionalInfo: additionalInfo,
+  );
+
+  // Factory Method: Delayed
+  factory TelegramUnion.delayed({
+    required MessageSender sender,
+    required MessageReceiver receiver,
+    required Message message,
+    required DateTime messageTime,
+    String? additionalInfo,
+  }) => TelegramUnion(
+    id: const Uuid().v4(),
+    sender: sender,
+    receiver: receiver,
+    message: message,
+    messageTime: messageTime,
+    additionalInfo: additionalInfo,
+  );
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) || (other is Telegram && other.id == id);
+
+  @override
+  int get hashCode => id.hashCode;
 
   @override
   int compareTo(Telegram other) {
@@ -46,67 +109,12 @@ abstract class TelegramUnion with _$TelegramUnion implements Telegram {
   }
 
   @override
-  int get hashCode => id.hashCode;
-
-  factory TelegramUnion.create({
-    final MessageSender? sender,
-    required final MessageReceiver receiver,
-    required final Message message,
-    final String? additionalInfo,
-    final DateTime? timeOut,
-    final DateTime? messageTime,
-  }) => TelegramUnion(
-    id: Uuid().v4(),
-    sender: sender,
-    cancelled: false,
-    timeOut: timeOut,
-    receiver: receiver,
-    message: message,
-    additionalInfo: additionalInfo,
-    messageTime: messageTime,
-  );
-
-  factory TelegramUnion.delayed({
-    required final MessageSender sender,
-    required final MessageReceiver receiver,
-    required final Message message,
-    final String? additionalInfo,
-    required final DateTime messageTime,
-  }) => TelegramUnion(
-    id: Uuid().v4(),
-    sender: sender,
-    cancelled: false,
-    timeOut: null,
-    receiver: receiver,
-    message: message,
-    additionalInfo: additionalInfo,
-    messageTime: messageTime,
-  );
-
-  factory TelegramUnion.immediate({
-    required final MessageSender sender,
-    required final MessageReceiver receiver,
-    required final Message message,
-    final String? additionalInfo,
-  }) => TelegramUnion(
-    id: Uuid().v4(),
-    sender: sender,
-    cancelled: false,
-    timeOut: null,
-    receiver: receiver,
-    message: message,
-    additionalInfo: additionalInfo,
-    messageTime: null,
-  );
-
-  @override
   String toString() {
-    return 'Telegram(sender: ${sender?.id ?? -1}, receiver: ${receiver.id}, message: $message, messageTime: $messageTime)';
+    return 'Telegram(id: ${id.substring(0, 8)}, sender: ${sender?.id ?? "None"}, receiver: ${receiver.id}, message: $message)';
   }
 }
 
-extension TelegramExtension on Telegram {
-  /// Indica se il messaggio va gestito subito.
+extension TelegramX on Telegram {
   bool get immediate => messageTime == null;
 
   bool isReady([DateTime? now]) {
@@ -114,7 +122,5 @@ extension TelegramExtension on Telegram {
     return messageTime!.isBefore(now ?? DateTime.now());
   }
 
-  bool isExpired() {
-    return messageTime != null && messageTime!.isBefore(DateTime.now());
-  }
+  bool isExpired() => timeOut != null && timeOut!.isBefore(DateTime.now());
 }

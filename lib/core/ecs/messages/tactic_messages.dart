@@ -1,19 +1,45 @@
-// lib/messages/player_messages.dart
 import 'package:football_sim_core/ai/fsm/messaging/player_messages.dart';
 import 'package:football_sim_core/core/field/zone.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'tactic_messages.freezed.dart';
+sealed class TacticMessage implements PlayerMessage {
+  @override
+  final EcsEntity receiver;
+  final bool cancelled;
+  final bool requiresAck;
+  final OnAck? onAck;
 
-@freezed
-sealed class TacticMessage with _$TacticMessage implements PlayerMessage {
-  TacticMessage._();
-  factory TacticMessage.moveToZone({
-    required EcsEntity receiver,
-    @Default(false) bool cancelled,
-    @Default(false) bool requiresAck,
-    OnAck? onAck,
-    required Zone targetZone,
-  }) = TacticalMoveToZone;
+  const TacticMessage({
+    required this.receiver,
+    this.cancelled = false,
+    this.requiresAck = false,
+    this.onAck,
+  });
+}
+
+class TacticalMoveToZone extends TacticMessage {
+  final Zone targetZone;
+
+  const TacticalMoveToZone({
+    required super.receiver,
+    super.cancelled,
+    super.requiresAck,
+    super.onAck,
+    required this.targetZone,
+  });
+
+  // Se ti serve il copyWith per annullare il messaggio
+  TacticalMoveToZone copyWith({
+    bool? cancelled,
+    bool? requiresAck,
+    Zone? targetZone,
+  }) {
+    return TacticalMoveToZone(
+      receiver: receiver,
+      cancelled: cancelled ?? this.cancelled,
+      requiresAck: requiresAck ?? this.requiresAck,
+      onAck: onAck,
+      targetZone: targetZone ?? this.targetZone,
+    );
+  }
 }

@@ -25,7 +25,7 @@ class ReceiveBallState extends PlayerBaseState {
   void doExecute(PlayerEntity entity, double dt, EcsWorld world) {
     if (!_hasDispatchedMove) {
       entity.fsm.changeState(
-        MoveToBallState(intent: MovePlayerIntent.intercept()),
+        MoveToBallState(intent: MovePlayerIntent.intercept),
       );
 
       _hasDispatchedMove = true;

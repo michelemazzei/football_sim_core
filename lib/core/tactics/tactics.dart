@@ -8,41 +8,44 @@ import 'package:football_sim_core/core/tactics/tactical_roles.dart';
 import 'package:football_sim_core/core/tactics/tactics_names.dart';
 import 'package:football_sim_core/ecs/entities/team_entity.dart';
 import 'package:football_sim_core/model/tactical_setup.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'tactics.freezed.dart';
+class Tactic {
+  final TacticsName name;
+  TacticalPriority priority;
+  TacticalIntent intent;
+  Duration? expiration;
+  DateTime? activatedAt;
+  final Map<TacticalRole, Zone> zoneAssignments;
 
-@unfreezed
-abstract class Tactic with _$Tactic {
-  factory Tactic({
-    required final TacticsName name,
-    @Default(TacticalPriority.low()) TacticalPriority priority,
-    @Default(TacticalIntent.none()) TacticalIntent intent,
-    Duration? expiration,
-    DateTime? activatedAt,
-    required Map<TacticalRole, Zone> zoneAssignments,
-  }) = _Tactic;
-}
+  Tactic({
+    required this.name,
+    this.priority = TacticalPriority.low,
+    this.intent = TacticalIntent.none,
+    this.expiration,
+    this.activatedAt,
+    required this.zoneAssignments,
+  });
 
-extension TacticsX on Tactic {
   bool isExpired([DateTime? theTime]) {
     final now = theTime ?? DateTime.now();
     if (expiration == null || activatedAt == null) return false;
     return now.difference(activatedAt!) > expiration!;
   }
 
+  // Metodi statici portati dentro la classe per ordine
   static Map<TacticalRole, Zone> tacticFromTeam(TeamEntity team) {
-    final phase = team.getComponent<TeamPhaseComponent>(
-      ifAbsent: () => TeamPhaseComponent(GamePhase.buildUp()),
+    final phaseComponent = team.getComponent<TeamPhaseComponent>(
+      ifAbsent: () => TeamPhaseComponent(GamePhase.buildUp),
     );
+
+    final phase = phaseComponent?.current ?? GamePhase.buildUp;
     final assignment = <TacticalRole, Zone>{};
 
     final setup = team.getComponent<TacticalSetupComponent>()?.setup;
-    if (setup == null) {
-      return {};
-    }
+    if (setup == null) return {};
+
     for (final role in setup.formation.roles) {
-      final zone = setup.map.getZoneFor(role, phase!.current);
+      final zone = setup.map.getZoneFor(role, phase);
       if (zone != null) {
         assignment[role] = zone;
       }
@@ -53,15 +56,15 @@ extension TacticsX on Tactic {
   static Tactic tacticFromSetup({
     required TacticsName name,
     required TacticalSetup setup,
-    GamePhase gamePhase = const GamePhase.buildUp(),
-    TacticalPriority priority = const TacticalPriority.low(),
-    TacticalIntent intent = const TacticalIntent.coveringZone(),
+    GamePhase gamePhase = GamePhase.buildUp,
+    TacticalPriority priority = TacticalPriority.low,
+    TacticalIntent intent = TacticalIntent.coveringZone,
   }) {
     final map = setup.map;
     final zoneAssignments = <TacticalRole, Zone>{};
 
     for (final role in setup.formation.roles) {
-      final zone = map.getZoneFor(role, gamePhase); // o fase dinamica
+      final zone = map.getZoneFor(role, gamePhase);
       if (zone != null) {
         zoneAssignments[role] = zone;
       }

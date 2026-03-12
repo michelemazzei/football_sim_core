@@ -10,7 +10,7 @@ import 'package:football_sim_core/ecs/entities/player_entity.dart';
 
 class ZoneTacticBrick extends TacticalBrick {
   @override
-  TacticsName get id => TacticsName.zoneTactic();
+  TacticsName get id => TacticsName.zoneTactic;
 
   @override
   int get priority => 50;

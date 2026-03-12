@@ -29,14 +29,12 @@ class PlayerTacticBrainComponent extends EcsComponent {
       final tactic = entry.value;
       final score = tactic.computeUtility(player, world);
       scores[tactic] = score;
-
-      logger.info(
-        '[${player.toString()}] ${tactic.name} → ${score.toStringAsFixed(2)}',
-      );
     }
 
     final best = scores.entries.reduce((a, b) => a.value > b.value ? a : b);
-
+    logger.info(
+      '[${player.toString()}] ${best.key.name} → ${best.value.toStringAsFixed(2)}',
+    );
     if (best.key != currentTactic) {
       currentTactic = best.key;
       player.fsm.changeState(best.key.createState(player, world));

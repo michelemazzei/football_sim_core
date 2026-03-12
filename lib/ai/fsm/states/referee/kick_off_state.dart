@@ -67,7 +67,7 @@ class KickoffState extends RefereeBaseState {
         entity: entity,
         canInterrupt: false,
         userAction: [
-          MoveToBall(receiver: entity, intent: MovePlayerIntent.prepareKick()),
+          MoveToBall(receiver: entity, intent: MovePlayerIntent.prepareKick),
           PassToNearestTeammate(
             requiresAck: true,
             receiver: entity,
@@ -100,7 +100,7 @@ class KickoffState extends RefereeBaseState {
       logger.info('[KickoffState] Tempo scaduto. Inizio partita!');
 
       world.getResource<MessageDispatcherSystem>()?.broadcast(
-        message: MatchMessage.started(),
+        message: MatchStarted(),
         sender: entity,
       );
       entity.getComponent<FsmComponent<RefereeEntity>>()?.fsm.changeState(

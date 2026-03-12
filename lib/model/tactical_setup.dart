@@ -1,29 +1,29 @@
-// lib/messages/match_messages.dart
-
 import 'package:football_sim_core/core/tactics/tactical_zone_builder.dart';
 import 'package:football_sim_core/core/tactics/tactical_zone_map.dart';
 import 'package:football_sim_core/model/formation.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'tactical_setup.freezed.dart';
+sealed class TacticalSetup {
+  final Formation formation;
+  final TacticalZoneMap map;
 
-@freezed
-sealed class TacticalSetup with _$TacticalSetup {
-  const factory TacticalSetup.formation442({
-    required Formation formation,
-    required TacticalZoneMap map,
-  }) = _442;
-  const factory TacticalSetup.formation433({
-    required Formation formation,
-    required TacticalZoneMap map,
-  }) = _433;
+  const TacticalSetup({required this.formation, required this.map});
 }
 
-TacticalSetup tacticalSetup442() => TacticalSetup.formation442(
+class TacticalSetup442 extends TacticalSetup {
+  const TacticalSetup442({required super.formation, required super.map});
+}
+
+class TacticalSetup433 extends TacticalSetup {
+  const TacticalSetup433({required super.formation, required super.map});
+}
+
+// Factory statiche per comodità (sostituiscono le vecchie funzioni libere)
+TacticalSetup tacticalSetup442() => TacticalSetup442(
   formation: formation442,
   map: TacticalZoneBuilder.tacticalZoneMap442,
 );
-TacticalSetup tacticalSetup433() => TacticalSetup.formation433(
+
+TacticalSetup tacticalSetup433() => TacticalSetup433(
   formation: formation433,
   map: TacticalZoneBuilder.tacticalZoneMap433,
 );
