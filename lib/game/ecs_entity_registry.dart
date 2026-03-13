@@ -64,7 +64,6 @@ class EcsEntityRegistry {
 
     _systemsAdded = false;
 
-    // CORREZIONE: TeamId.home e TeamId.away senza parentesi (Enum)
     teamRed = Team(id: TeamId.home, name: 'Red Team', color: Colors.red);
     teamBlue = Team(id: TeamId.away, name: 'Blue Team', color: Colors.blue);
 
