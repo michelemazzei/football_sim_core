@@ -11,8 +11,9 @@ import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/game/ecs_entity_registry.dart';
 import 'package:football_sim_core/game/setup/setup_registry.dart';
 import 'package:football_sim_core/model/tactical_setup.dart';
+import 'package:football_sim_core/model/team.dart';
 import 'package:football_sim_core/utils/coordinate_mapper.dart';
-import 'package:football_sim_core/utils/player_utils.dart';
+import 'package:football_sim_core/game/creation_team_from_formation.dart';
 import 'package:logging/logging.dart';
 
 import '../components/ball_component.dart';
@@ -27,128 +28,104 @@ class FootballGame extends FlameGame {
   SpaltiComponent? spaltiComponent;
 
   final Vector2 padding = Vector2(40, 40);
-  EcsWorld get ecsWorld => registry.ecsWorld;
 
+  // Accesso rapido al mondo ECS
+  EcsWorld get ecsWorld => registry.ecsWorld;
   final EcsEntityRegistry registry = EcsEntityRegistry.instance();
 
   @override
   Color backgroundColor() => Colors.lightGreen.shade800;
 
-  @override
-  void onGameResize(Vector2 size) {
-    super.onGameResize(size);
-    if (spaltiComponent != null) {
-      spaltiComponent!
-        ..position = padding
-        ..size = size;
-    }
-    mapper?.update(fieldComponent.position, fieldComponent.size);
-  }
-
   bool _hasLoaded = false;
+
   @override
   Future<void> onLoad() async {
     if (_hasLoaded) return;
     _hasLoaded = true;
 
-    // Componenti grafici di gioco
-    // 🟩 Campo
+    // 1. Setup Infrastruttura Grafica
     fieldComponent = FieldComponent();
     await add(fieldComponent);
-    mapper = CoordinateMapper(fieldComponent.position, fieldComponent.size);
-    registry.ecsWorld.addResource(mapper);
 
-    // 🏟️ Spalti
+    // Il mapper serve all'ECS per sapere dove disegnare
+    mapper = CoordinateMapper(fieldComponent.position, fieldComponent.size);
+    ecsWorld.addResource<CoordinateMapper>(mapper!);
+
     spaltiComponent = SpaltiComponent.make(size: size, type: StadiumType.medium)
       ..position = padding;
     await add(spaltiComponent!);
 
-    // Registra  ECS Sybsystem
-    //3 - Crea i Componenti ECS
-    //.1 - ⚽ Crea la palla
-    //.2 - ⚽ Crea e registra il componente ECS della palla
+    // 2. Setup Logica ECS (Sistemi e Risorse base)
+    TacticalBootstrap.registerAllTacticalBricks();
+    setupPlayerMessageRegistry(ecsWorld);
+
+    registry.addSystems(this);
+    registry.getOrAddClock(duration: 90.0, speedFactor: 1.0);
+    ecsWorld.addResource<FieldGrid>(FieldGrid());
+
+    // 3. Creazione Entità (Idempotente tramite Registry)
+
+    // ⚽ Palla
     final ballEntity = registry.getOrAddBallEntity();
-    //.3 - ⚽ Crea e registra il componente grafico della palla
     ballComponent = BallComponent();
     ballEntity.addOrReplaceComponent(
       RenderComponent(entityId: ballEntity.id, component: ballComponent),
     );
-    //.4 - ⚽ aggiungi il componente grafico della palla a Flame
-    await add(ballComponent);
-    final messageRegistry = setupPlayerMessageRegistry(ecsWorld);
-    logger.info(
-      '📦 PlayerMessageRegistry initialized with ${messageRegistry.count} handlers',
-    );
-    //.4.1 registra le tattiche
-    TacticalBootstrap.registerAllTacticalBricks();
+    if (!ballComponent.isMounted) await add(ballComponent);
 
-    // 🔵 Squadre
-    final teamRed = registry.teamRed;
-    final teamBlue = registry.teamBlue;
-    // 🔵 Giocatori
-    await createTeamFromFormation(
-      tacticalSetup: tacticalSetup442(),
-      isLeftSide: true,
-      team: teamRed,
-      game: this,
-      ecsWorld: ecsWorld,
-    );
-    await createTeamFromFormation(
-      tacticalSetup: tacticalSetup442(),
-      isLeftSide: false,
-      team: teamBlue,
-      game: this,
-      ecsWorld: ecsWorld,
-    );
+    // 🔵 Squadre e Giocatori
+    // Usiamo il metodo che interroga il world per non duplicare i giocatori
+    await _initializeTeams();
 
-    // 2. Crea l'entità
+    // 🏁 Arbitro
     registry.getOrAddRefereeEntity(this);
 
-    //4. inizializza il clock di gioco
-    registry.getOrAddClock(duration: 90.0, speedFactor: 1.0);
-    //2 - Registra sistemi
-    registry.addSystems(this);
+    // 4. Debug: Visualizzazione Griglia (Solo se serve)
+    _renderDebugGrid();
+  }
 
+  Future<void> _initializeTeams() async {
+    final teams = [
+      {'data': registry.teamRed, 'side': true},
+      {'data': registry.teamBlue, 'side': false},
+    ];
+
+    for (var t in teams) {
+      await createTeamFromFormation(
+        tacticalSetup: tacticalSetup442(),
+        isLeftSide: t['side'] as bool,
+        team: t['data'] as Team,
+      );
+    }
+  }
+
+  void _renderDebugGrid() {
     final grid = FieldGrid();
     final fieldSize = mapper!.fieldSize;
 
     for (int x = 0; x < SoccerParameters.numOfSpotsX; x++) {
       for (int y = 0; y < SoccerParameters.numOfSpotsY; y++) {
         final zone = Zone(x: x.toDouble(), y: y.toDouble());
-        final rect = grid.rectOfZone(zone);
-
-        final position = mapper!.toScreen(Vector2(rect.left, rect.top));
-        final size = Vector2(
-          rect.width * fieldSize.x,
-          rect.height * fieldSize.y,
-        );
-
         final center = mapper!.toScreen(grid.centerOfZone(zone));
-
-        // Rettangolo con bordo
+        final rect = grid.rectOfZone(zone);
 
         add(
           RectangleComponent(
-            position: position,
-            size: size,
+            position: mapper!.toScreen(Vector2(rect.left, rect.top)),
+            size: Vector2(rect.width * fieldSize.x, rect.height * fieldSize.y),
             paint: Paint()
-              ..color = Colors.black.withAlpha(50)
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = 1.0,
+              ..color = Colors.black26
+              ..style = PaintingStyle.stroke,
           ),
         );
 
-        // Testo centrato
         add(
           TextComponent(
-            text: '(${zone.x},${zone.y})',
+            text: '(${zone.x.toInt()},${zone.y.toInt()})',
             position: center,
             anchor: Anchor.center,
             textRenderer: TextPaint(
-              style: TextStyle(
-                color: Colors.black.withAlpha(130),
-                fontSize: 12,
-              ),
+              style: const TextStyle(fontSize: 10, color: Colors.black54),
             ),
           ),
         );
@@ -159,6 +136,14 @@ class FootballGame extends FlameGame {
   @override
   void update(double dt) {
     super.update(dt);
+    // L'ECS World avanza seguendo il dt di Flame
     ecsWorld.update(dt);
+  }
+
+  @override
+  void onGameResize(Vector2 size) {
+    super.onGameResize(size);
+    spaltiComponent?.size = size;
+    mapper?.update(fieldComponent.position, fieldComponent.size);
   }
 }

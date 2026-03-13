@@ -1,5 +1,6 @@
 import 'package:football_sim_core/ai/fsm/messaging/messaging.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
+import 'package:football_sim_core/ecs/ecs_world.dart';
 
 abstract class EcsEntity implements MessageReceiver, MessageSender {
   @override
@@ -46,6 +47,11 @@ abstract class EcsEntity implements MessageReceiver, MessageSender {
 
   void removeComponent<T extends EcsComponent>() {
     _components.remove(T);
+  }
+
+  // Dentro EcsEntity o PlayerEntity
+  void addToWorld(EcsWorld world) {
+    world.addEntity(this);
   }
 
   @override

@@ -1,6 +1,7 @@
 import 'package:flame/components.dart';
-import 'package:football_sim_core/ai/decision/decision_module.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
+
+enum PlayerAction { shoot, pass, dribble, advance }
 
 class ActionIntent {
   final PlayerAction action;

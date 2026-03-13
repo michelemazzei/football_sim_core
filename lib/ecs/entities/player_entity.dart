@@ -58,7 +58,10 @@ class PlayerEntity extends EcsEntity {
   @override
   String toString() =>
       'Player($id,  ${getComponent<TeamReferenceComponent>()?.teamId}, #${getComponent<PlayerNumberComponent>()?.number})';
+}
 
+extension PlaterEntityX on PlayerEntity {
+  bool get hasBall => getComponent<PossessionComponent>()!.hasBall;
   Fsm<PlayerEntity> get fsm => getComponent<FsmComponent<PlayerEntity>>()!.fsm;
   int get number => getComponent<PlayerNumberComponent>()!.number;
   TeamId get teamId => getComponent<TeamReferenceComponent>()!.teamId;

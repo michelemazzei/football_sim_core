@@ -1,7 +1,11 @@
+import 'package:collection/collection.dart';
 import 'package:football_sim_core/ecs/components/ecs_component.dart';
 import 'package:football_sim_core/ecs/components/game_clock_component.dart';
+import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
+import 'package:football_sim_core/ecs/entities/player_entity.dart';
 import 'package:football_sim_core/ecs/systems/ecs_system.dart';
+import 'package:football_sim_core/model/team_id.dart';
 
 class EcsWorld {
   final List<EcsEntity> _entities = [];
@@ -84,5 +88,15 @@ class EcsWorld {
   Iterable<EcsEntity>
   entitiesWithAll<T1 extends EcsComponent, T2 extends EcsComponent>() {
     return entitiesWith<T1>().where((e) => e.hasComponent<T2>());
+  }
+}
+
+extension EcsWorldFinderX on EcsWorld {
+  BallEntity? get ball => entitiesOf<BallEntity>().firstOrNull;
+  // Ora puoi fare: world.player(TeamId.home, 10)
+  PlayerEntity? player(TeamId teamId, int number) {
+    return entitiesOf<PlayerEntity>().firstWhereOrNull(
+      (p) => p.teamId == teamId && p.number == number,
+    );
   }
 }
