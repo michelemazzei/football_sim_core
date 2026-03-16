@@ -36,7 +36,9 @@ class BallEntity extends EcsEntity {
     /// FSM del match
     addComponent(FsmComponent<BallEntity>(BallFSM(this, world)));
   }
+}
 
+extension BallEntityX on BallEntity {
   Fsm<BallEntity> get fsm => getComponent<FsmComponent<BallEntity>>()!.fsm;
   Vector2 get position =>
       getComponent<MovingComponent>()?.currentPosition ?? Vector2.zero();

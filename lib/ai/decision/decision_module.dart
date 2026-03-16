@@ -8,6 +8,7 @@ import 'package:football_sim_core/core/field/field_grid.dart';
 import 'package:football_sim_core/core/field/zone.dart';
 import 'package:football_sim_core/core/field/zone_types.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
+import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
 import 'package:football_sim_core/model/team_id.dart';
 

@@ -1,3 +1,4 @@
+import 'package:football_sim_core/ai/config/field_geometry.dart';
 import 'package:football_sim_core/ai/fsm/messaging/messaging.dart';
 import 'package:football_sim_core/ai/fsm/states/referee/play_state.dart';
 import 'package:football_sim_core/ai/fsm/states/referee/referee_base_state.dart';
@@ -110,11 +111,24 @@ class KickoffState extends RefereeBaseState {
   }
 
   TeamId? _selectKickoffTeam(RefereeEntity referee, EcsWorld world) {
-    final teamPossession = referee.getComponent<TeamPossessionComponent>();
-    final match = world.getResource<MatchComponent>()?.home;
+    final outComp = world.ball?.getComponent<BallOutOfBoundsComponent>();
+    final ballPos = world.requiredBall
+        .getComponent<MovingComponent>()!
+        .currentPosition;
 
-    // In futuro potresti usare sorteggio, ranking, ecc.
-    teamPossession?.teamId = match;
-    return match;
+    if (outComp?.type == OutOfBoundsType.goalScored) {
+      final goalResult = FieldGeometry.checkGoal(ballPos);
+      final match = world.getResource<MatchComponent>();
+
+      if (goalResult == 1) {
+        // Goal a Sinistra -> Subito da Home -> Batte HOME
+        return match?.home;
+      } else if (goalResult == 2) {
+        // Goal a Destra -> Subito da Away -> Batte AWAY
+        return match?.away;
+      }
+    }
+    // Se è l'inizio del match (o fallback), batte Home
+    return world.getResource<MatchComponent>()?.home;
   }
 }

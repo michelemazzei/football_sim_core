@@ -22,7 +22,8 @@ class DefensiveDecisionModule extends DecisionModule {
       // L'intento qui dovrebbe essere: "Corri verso la palla" o "Copri lo spazio"
       return ActionIntent(
         action: PlayerAction.advance,
-        targetPosition: world.ball.position, // O un riferimento alla palla
+        targetPosition:
+            world.requiredBall.position, // O un riferimento alla palla
       );
     }
 

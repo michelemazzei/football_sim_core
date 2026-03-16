@@ -9,7 +9,7 @@ class GameClockComponent extends EcsComponent {
   final double duration;
 
   /// Fattore di velocità: 1.0 = tempo reale, >1.0 = simulazione accelerata
-  final double speedFactor;
+  double speedFactor;
 
   GameClockComponent({
     this.duration = 90.0,

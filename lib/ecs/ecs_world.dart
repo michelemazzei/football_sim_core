@@ -93,6 +93,9 @@ class EcsWorld {
 
 extension EcsWorldFinderX on EcsWorld {
   BallEntity? get ball => entitiesOf<BallEntity>().firstOrNull;
+  // Questa è la soluzione elegante: una proprietà che garantisce l'esistenza
+  // Se la palla non c'è, il problema è a monte (nello spawn del mondo)
+  BallEntity get requiredBall => entitiesOf<BallEntity>().first;
   // Ora puoi fare: world.player(TeamId.home, 10)
   PlayerEntity? player(TeamId teamId, int number) {
     return entitiesOf<PlayerEntity>().firstWhereOrNull(

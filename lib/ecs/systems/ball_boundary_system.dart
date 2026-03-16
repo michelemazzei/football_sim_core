@@ -1,7 +1,7 @@
 // lib/systems/ball_boundary_system.dart
 
-import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
+import 'package:football_sim_core/ai/config/field_geometry.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/systems/ecs_system.dart';
@@ -13,41 +13,40 @@ class BallBoundarySystem extends EcsSystem {
   final FootballGame game;
 
   BallBoundarySystem(this.game);
-
   @override
   void update(EcsWorld world, double dt) {
-    final fieldPos = game.fieldComponent.position;
-    final fieldSize = game.fieldComponent.size;
-    final leftBound = fieldPos.x;
-    final rightBound = fieldPos.x + fieldSize.x;
-    final topBound = fieldPos.y;
-    final bottomBound = fieldPos.y + fieldSize.y;
-
-    // Filtra solo le entità che hanno un BallLogicComponent
     for (final e in world.entitiesWith<BallOutOfBoundsComponent>()) {
-      final posComp = e.getComponent<MovingComponent>()?.currentPosition;
-      final sizeComp = e.getComponent<SizeComponent>();
+      final pos = e.getComponent<MovingComponent>()?.currentPosition;
+      final outComp = e.getComponent<BallOutOfBoundsComponent>()!;
 
-      if (posComp == null) continue;
+      if (pos == null || outComp.isOutOfBounds) continue;
 
-      // Calcola posizione assoluta (campo + percentuale)
-      final absX = fieldPos.x + posComp.x * fieldSize.x;
-      final absY = fieldPos.y + posComp.y * fieldSize.y;
-      final absolute = Vector2(absX, absY);
+      int lateralSign = FieldGeometry.checkLateralBounds(pos);
+      int endLineSign = FieldGeometry.checkEndLineBounds(pos);
 
-      // Determina la mezza dimensione (per l’anchor center)
+      if (lateralSign != 0) {
+        outComp.isOutOfBounds = true;
+        outComp.type = OutOfBoundsType.sideLine;
+        debugPrint(
+          "Palla fuori lateralmente verso ${lateralSign == -1 ? 'Sopra' : 'Sotto'}",
+        );
+      } else if (endLineSign != 0) {
+        outComp.isOutOfBounds = true;
+        int goal = FieldGeometry.checkGoal(pos);
 
-      final Vector2 size = sizeComp?.size ?? Vector2.all(32);
-      final halfSize = size / 2;
+        if (goal != 0) {
+          outComp.type = OutOfBoundsType.goalScored;
+          debugPrint("GOAL nella porta $goal!");
+        } else {
+          outComp.type = OutOfBoundsType.goalLine;
+          debugPrint(
+            "Fondo campo a ${endLineSign == -1 ? 'Sinistra' : 'Destra'}",
+          );
+        }
+      }
 
-      // Verifica fuori campo
-      final outLeft = absolute.x - halfSize.x < leftBound;
-      final outRight = absolute.x + halfSize.x > rightBound;
-      final outTop = absolute.y - halfSize.y < topBound;
-      final outBottom = absolute.y + halfSize.y > bottomBound;
-
-      if (outLeft || outRight || outTop || outBottom) {
-        debugPrint('out of bounds: $absolute');
+      if (outComp.isOutOfBounds) {
+        world.getResource<GameClockComponent>()?.speedFactor = 0.0;
       }
     }
   }

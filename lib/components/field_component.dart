@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:football_sim_core/ai/config/field_geometry.dart';
 import '../game/football_game.dart';
 
 class FieldComponent extends PositionComponent
@@ -52,8 +53,10 @@ class FieldComponent extends PositionComponent
   }
 
   void renderGoalAreas(Canvas canvas, Size size) {
-    final areaWidth = size.width * 0.08; // larghezza orizzontale
-    final areaHeight = size.height * 0.25; // altezza verticale
+    // Usiamo i ratio definiti nella geometria
+    final areaWidth = size.width * FieldGeometry.penaltyAreaWidthRatio;
+    final areaHeight = size.height * FieldGeometry.penaltyAreaHeightRatio;
+
     final linePaint = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.stroke
@@ -80,7 +83,7 @@ class FieldComponent extends PositionComponent
 
   void renderGoalRight(Canvas canvas, Size size) {
     final double goalWidth = 20;
-    final double goalHeight = size.height * 0.18;
+    final double goalHeight = size.height * FieldGeometry.goalHeightRatio;
     final double goalTop = (size.height - goalHeight) / 2;
     final double netSpacing = 8;
     final double shift = 20; // Sposta la porta fuori dal bordo destro
@@ -147,9 +150,13 @@ class FieldComponent extends PositionComponent
   }
 
   void renderGoalLeft(Canvas canvas, Size size) {
-    final double goalWidth = 20;
-    final double goalHeight = size.height * 0.18;
+    // Invece di hardcoded: final double goalHeight = size.height * 0.18;
+    // Usiamo la geometria:
+
+    final double goalHeight = size.height * FieldGeometry.goalHeightRatio;
     final double goalTop = (size.height - goalHeight) / 2;
+
+    final double goalWidth = 20;
     final double netSpacing = 8;
     final double shift = 20; // Sposta la porta fuori dal bordo sinistro
 

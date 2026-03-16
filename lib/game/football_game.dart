@@ -1,6 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:football_sim_core/ai/config/field_geometry.dart';
 import 'package:football_sim_core/ai/config/soccer_parameters.dart';
 import 'package:football_sim_core/components/spalti_component.dart';
 import 'package:football_sim_core/core/bootstrap/tactical_bootstrap.dart';
