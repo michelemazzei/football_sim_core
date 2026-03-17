@@ -22,17 +22,11 @@ class BallPossessionState extends BallBaseState {
   int get hashCode => owner.id.hashCode;
 
   PlayerEntity _getOwner(BallEntity entity, EcsWorld world) {
-    var possession = entity.getComponent<BallPossessionComponent>();
-    if (possession == null) {
-      possession = BallPossessionComponent(
-        teamId: owner.teamId,
-        playerId: owner.id,
-      );
-      entity.addOrReplaceComponent(possession);
-    }
+    var possession = entity.getComponent<BallPossessionComponent>()!;
+    possession.updatePossession(newPlayerId: owner.id, newTeamId: owner.teamId);
 
     final player = world.entitiesOf<PlayerEntity>().firstWhere(
-      (player) => player.id == possession!.playerId,
+      (player) => player.id == possession.lastPlayerId,
     );
 
     if (_lastOwner?.id != player.id) {

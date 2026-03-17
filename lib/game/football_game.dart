@@ -30,9 +30,9 @@ class FootballGame extends FlameGame {
 
   final Vector2 padding = Vector2(40, 40);
 
+  final EcsEntityRegistry registry = EcsEntityRegistry.instance();
   // Accesso rapido al mondo ECS
   EcsWorld get ecsWorld => registry.ecsWorld;
-  final EcsEntityRegistry registry = EcsEntityRegistry.instance();
 
   @override
   Color backgroundColor() => Colors.lightGreen.shade800;

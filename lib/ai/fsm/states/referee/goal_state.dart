@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:football_sim_core/ai/config/field_geometry.dart';
 import 'package:football_sim_core/ai/fsm/states/referee/kick_off_state.dart';
 import 'package:football_sim_core/ai/fsm/states/referee/referee_base_state.dart';
+import 'package:football_sim_core/ecs/components/ball_possession_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/referee_entity.dart';
+import 'package:football_sim_core/model/goal_event.dart';
 
 class GoalState extends RefereeBaseState {
   double _timer = 0.0;
@@ -13,30 +15,52 @@ class GoalState extends RefereeBaseState {
 
   @override
   void doEnter(RefereeEntity entity, EcsWorld world) {
-    // 1. Ferma il tempo immediatamente
+    // 1. Ferma il tempo
     world.getResource<GameClockComponent>()?.speedFactor = 0.0;
 
-    // 2. Recuperiamo il MatchComponent (la tua risorsa)
     final match = world.getResource<MatchComponent>();
-    final ballPos = world.ball
-        ?.getComponent<MovingComponent>()
-        ?.currentPosition;
+    final clock = world.getResource<GameClockComponent>();
+    final ball = world.requiredBall;
+    final ballMoving = ball.getComponent<MovingComponent>();
+    final ballPossession = world.getResource<BallPossessionComponent>()!;
 
-    if (match != null && ballPos != null) {
+    if (match != null && ballMoving != null && clock != null) {
+      final ballPos = ballMoving.currentPosition;
       final goalResult = FieldGeometry.checkGoal(ballPos);
 
-      if (goalResult == 1) {
-        // Palla nella porta sinistra -> Segna la squadra AWAY
-        match.scoreAway++;
-        debugPrint(
-          "GOAL AWAY! Nuovo punteggio: ${match.scoreHome} - ${match.scoreAway}",
+      if (goalResult != 0) {
+        // Determiniamo quale team ha segnato (1 = Home, 2 = Away)
+        // Se goalResult è 1 (porta sinistra), segna il team Away (2)
+        // Se goalResult è 2 (porta destra), segna il team Home (1)
+        final int scoringTeamId = (goalResult == 1) ? 2 : 1;
+
+        // Logica Autogol: se l'ultimo che ha toccato è di un team diverso da chi riceve il punto
+        final bool ownGoal =
+            (ballPossession.lastPlayerId ?? scoringTeamId) != scoringTeamId;
+
+        // 2. CREAZIONE E REGISTRAZIONE DELL'EVENTO
+        final event = GoalEvent(
+          minute: clock.minutes.toInt(),
+          teamId: ballPossession.lastTeamId!,
+          scorerId: ballPossession.lastPlayerId ?? -1,
+          assistantId: ownGoal ? null : ballPossession.secondLastPlayerId,
+          assistantTeamId: ballPossession.secondLastTeamId,
+          isOwnGoal: ownGoal,
         );
-      } else if (goalResult == 2) {
-        // Palla nella porta destra -> Segna la squadra HOME
-        match.scoreHome++;
+
+        match.goalHistory.add(event);
+
+        // 3. Aggiornamento punteggio classico
+        if (scoringTeamId == 1) {
+          match.scoreHome++;
+        } else {
+          match.scoreAway++;
+        }
+
         debugPrint(
-          "GOAL HOME! Nuovo punteggio: ${match.scoreHome} - ${match.scoreAway}",
+          "REGISTRO ARBITRO: ${event.isOwnGoal ? 'AUTOGOL' : 'GOAL'} al minuto ${event.minute}",
         );
+        debugPrint("Punteggio: ${match.scoreHome} - ${match.scoreAway}");
       }
     }
   }

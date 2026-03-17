@@ -5,6 +5,7 @@ import 'package:football_sim_core/core/ecs/systems/player_brain_system.dart';
 import 'package:football_sim_core/core/ecs/systems/zone_tactic_activator_system.dart';
 import 'package:football_sim_core/core/field/field_grid.dart';
 import 'package:football_sim_core/core/tactics/tactical_roles.dart';
+import 'package:football_sim_core/ecs/components/ball_possession_component.dart';
 import 'package:football_sim_core/ecs/components/ecs_components.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/ball_entity.dart';
@@ -58,6 +59,8 @@ class EcsEntityRegistry {
     ecsWorld.addResource<MatchComponent>(
       MatchComponent(home: teamRed.id, away: teamBlue.id),
     );
+    // Aggiungiamo il possesso, anche se vuoto all'inizio
+    ecsWorld.addResource<BallPossessionComponent>(BallPossessionComponent());
   }
 
   // --- LOGICA DI CREAZIONE IDEMPOTENTE (Interroga il World, non una mappa extra) ---
@@ -98,20 +101,47 @@ class EcsEntityRegistry {
     _systemsAdded = true;
 
     ecsWorld
-      ..addSystem(MovementSystem(game))
-      ..addSystem(PlayerActionHandlerSystem())
-      ..addSystem(BallFsmSystem())
-      ..addSystem(PlayerFsmSystem())
-      ..addSystem(BallInteractSystem())
-      ..addSystem(RefereeFsmSystem())
-      ..addSystem(BallProximitySystem())
-      ..addSystem(ResizeSystem(game))
-      ..addSystem(BallReceptionSystem(game))
-      ..addSystem(PossessionEventSystem())
-      ..addSystem(MatchStartSystem())
-      ..addSystem(GamePhaseSystem())
-      ..addSystem(ZoneTacticActivatorSystem())
-      ..addSystem(PlayerBrainSystem());
+      // 1. GESTIONE STATO GLOBALE E FASI
+      ..addSystem(
+        MatchStartSystem(),
+      ) // Gestisce l'inizio (kick-off, posizionamento)
+      ..addSystem(
+        GamePhaseSystem(),
+      ) // Verifica se la palla è uscita, goal, ecc.
+      ..addSystem(
+        ZoneTacticActivatorSystem(),
+      ) // Aggiorna le zone tattiche in base alla fase
+      // 2. INTELLIGENZA E DECISIONI (Brain & FSM)
+      ..addSystem(
+        PlayerBrainSystem(),
+      ) // L'IA decide cosa fare in base alla tattica
+      ..addSystem(
+        PlayerFsmSystem(),
+      ) // Aggiorna lo stato del giocatore (Idle -> Run -> Kick)
+      ..addSystem(
+        BallFsmSystem(),
+      ) // Aggiorna lo stato della palla (Free -> Controlled)
+      ..addSystem(RefereeFsmSystem()) // L'arbitro valuta la situazione
+      // 3. INTERAZIONE E PROSSIMITÀ
+      ..addSystem(BallProximitySystem()) // Calcola chi è vicino alla palla
+      ..addSystem(BallInteractSystem()) // Gestisce il contatto fisico/contrasti
+      ..addSystem(
+        BallReceptionSystem(game),
+      ) // Gestisce lo stop e il controllo palla
+      ..addSystem(
+        PossessionEventSystem(),
+      ) // Notifica il cambio di possesso (ora che i dati sono certi)
+      // 4. ESECUZIONE AZIONI E MOVIMENTO
+      ..addSystem(
+        PlayerActionHandlerSystem(),
+      ) // Esegue materialmente il calcio o il passaggio
+      ..addSystem(
+        MovementSystem(game),
+      ) // Applica i vettori di movimento alle entità
+      // 5. UTILITY E RENDER (Sistemi di servizio)
+      ..addSystem(
+        ResizeSystem(game),
+      ); // Adatta il campo se la finestra cambia  }
   }
 
   // Helper per il clock

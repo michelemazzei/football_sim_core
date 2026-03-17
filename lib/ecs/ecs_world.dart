@@ -4,6 +4,7 @@ import 'package:football_sim_core/ecs/components/game_clock_component.dart';
 import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
+import 'package:football_sim_core/ecs/entities/referee_entity.dart';
 import 'package:football_sim_core/ecs/systems/ecs_system.dart';
 import 'package:football_sim_core/model/team_id.dart';
 
@@ -12,9 +13,43 @@ class EcsWorld {
   final Map<Type, EcsSystem> _systems = {};
 
   final Map<Type, dynamic> _resources = {};
+  // 1. Aggiungiamo una mappa per l'accesso rapido O(1)
+  final Map<int, EcsEntity> _entitiesById = {};
 
-  void addResource<T>(T resource) {
+  void clear() {
+    _entities.clear();
+    _systems.clear();
+    _resources.clear();
+    _entitiesById.clear();
+  }
+
+  void addEntity(EcsEntity entity) {
+    _entities.add(entity);
+    _entitiesById[entity.id] = entity; // Registra l'ID
+  }
+
+  void removeEntity(EcsEntity entity) {
+    _entities.remove(entity);
+    _entitiesById.remove(entity.id); // Rimuovi l'ID
+  }
+
+  // 2. Il metodo richiesto: veloce e tipizzato
+  T? getEntityById<T extends EcsEntity>(int id) {
+    final entity = _entitiesById[id];
+    if (entity is T) {
+      return entity;
+    }
+    return null;
+  }
+
+  // Helper per ottenere tutte le entità di un tipo (già presente nel tuo codice)
+  Iterable<T> entitiesOf<T extends EcsEntity>() {
+    return _entities.whereType<T>();
+  }
+
+  T addResource<T>(T resource) {
     _resources[resource.runtimeType] = resource;
+    return resource;
   }
 
   T? getResource<T>({T Function()? ifAbsent}) {
@@ -28,9 +63,7 @@ class EcsWorld {
     return item;
   }
 
-  void removeResource<T>() {
-    _resources.remove(T);
-  }
+  T removeResource<T>() => _resources.remove(T);
 
   int _nextId = 0;
 
@@ -48,14 +81,6 @@ class EcsWorld {
 
   void removeSystemLater<T>(T system) {
     _pendingRemovals.add(system.runtimeType);
-  }
-
-  void addEntity(EcsEntity entity) {
-    _entities.add(entity);
-  }
-
-  void removeEntity(EcsEntity entity) {
-    _entities.remove(entity);
   }
 
   void addSystem(EcsSystem system) {
@@ -77,11 +102,6 @@ class EcsWorld {
     return _entities.where((e) => e.hasComponent<T>()).toList();
   }
 
-  /// Utility: restituisce tutte le entità di tipo T
-  List<T> entitiesOf<T extends EcsEntity>() {
-    return _entities.whereType<T>().toList();
-  }
-
   /// Utility: restituisce tutte le entità
   List<EcsEntity> entities() => _entities.toList();
 
@@ -93,10 +113,11 @@ class EcsWorld {
 
 extension EcsWorldFinderX on EcsWorld {
   BallEntity? get ball => entitiesOf<BallEntity>().firstOrNull;
-  // Questa è la soluzione elegante: una proprietà che garantisce l'esistenza
-  // Se la palla non c'è, il problema è a monte (nello spawn del mondo)
   BallEntity get requiredBall => entitiesOf<BallEntity>().first;
-  // Ora puoi fare: world.player(TeamId.home, 10)
+
+  RefereeEntity? get referee => entitiesOf<RefereeEntity>().firstOrNull;
+  RefereeEntity get requiredReferee => entitiesOf<RefereeEntity>().first;
+
   PlayerEntity? player(TeamId teamId, int number) {
     return entitiesOf<PlayerEntity>().firstWhereOrNull(
       (p) => p.teamId == teamId && p.number == number,

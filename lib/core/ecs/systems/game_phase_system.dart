@@ -29,7 +29,7 @@ class GamePhaseSystem extends EcsSystem {
       return;
     }
 
-    final currentPossession = ballPossession.teamId;
+    final currentPossession = ballPossession.lastTeamId;
 
     // 1. Cambio possesso → attiva transizione
     if (currentPossession != previousPossession) {

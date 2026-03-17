@@ -2,39 +2,40 @@ import 'package:football_sim_core/ecs/components/ball_possession_component.dart'
 import 'package:football_sim_core/ecs/components/ball_touch_event_component.dart';
 import 'package:football_sim_core/ecs/components/team_reference_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
+import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
-import 'package:football_sim_core/ecs/entities/referee_entity.dart';
 import 'package:football_sim_core/ecs/systems/ecs_system.dart';
 
 class PossessionEventSystem extends EcsSystem {
   @override
   void update(EcsWorld world, double dt) {
-    final referee = world.entitiesOf<RefereeEntity>().firstOrNull;
-    if (referee == null) return;
+    // 1. Recuperiamo la risorsa (Sappiamo che esiste grazie al Bootstrap)
+    final possession = world.getResource<BallPossessionComponent>()!;
+    // 2. Troviamo gli eventi di tocco palla
+    final touchEvents = world.entitiesWith<BallTouchEventComponent>();
+    if (touchEvents.isEmpty) return;
 
-    final events = world.entitiesWith<BallTouchEventComponent>();
+    // Prendiamo il tocco più rilevante (o l'ultimo, o il primo)
+    final eventEntity = touchEvents.first;
+    final touchData = eventEntity.getComponent<BallTouchEventComponent>()!;
 
-    for (final event in events) {
-      final playerId = event.getComponent<BallTouchEventComponent>()?.playerId;
-      if (playerId == null) continue;
+    // 3. Recuperiamo il TeamId direttamente dal giocatore che ha toccato la palla
+    // Supponendo che il giocatore abbia un TeamReferenceComponent
+    final player = world.getEntityById<PlayerEntity>(touchData.playerId);
+    final teamId = player?.getComponent<TeamReferenceComponent>()?.teamId;
 
-      // Aggiorna possesso di squadra (opzionale)
-      final player = world
-          .entitiesOf<PlayerEntity>()
-          .where((player) => player.id == playerId)
-          .firstOrNull;
-      final teamComp = player?.getComponent<TeamReferenceComponent>();
-      if (teamComp != null) {
-        referee
-          ..removeComponent<BallPossessionComponent>()
-          ..addComponent(
-            BallPossessionComponent(
-              teamId: teamComp.teamId,
-              playerId: playerId,
-            ),
-          );
-      }
-      break; // solo il primo evento per frame
+    if (teamId != null) {
+      possession.updatePossession(
+        newPlayerId: touchData.playerId,
+        newTeamId: teamId,
+      );
+    }
+
+    // IMPORTANTE: Consumiamo gli eventi del frame corrente
+    // per evitare di riprocessarli al prossimo tick.
+    for (final e in touchEvents) {
+      world.removeEntity(e);
+      // Oppure: e.removeComponent<BallTouchEventComponent>();
     }
   }
 }

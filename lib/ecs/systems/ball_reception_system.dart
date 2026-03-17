@@ -38,9 +38,8 @@ class BallReceptionSystem extends EcsSystem {
         // Intercettazione riuscita
         ball.addOrReplaceComponent(
           BallPossessionComponent(
-            teamId: player.getComponent<TeamReferenceComponent>()!.teamId,
-
-            playerId: player.id,
+            lastTeamId: player.getComponent<TeamReferenceComponent>()!.teamId,
+            lastPlayerId: player.id,
           ),
         );
         ball.getComponent<MovingComponent>()?.velocity.setZero();

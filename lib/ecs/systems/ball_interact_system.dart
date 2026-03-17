@@ -6,30 +6,25 @@ import 'package:football_sim_core/ecs/components/team_reference_component.dart';
 import 'package:football_sim_core/ecs/ecs_world.dart';
 import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
-import 'package:football_sim_core/ecs/entities/referee_entity.dart';
 import 'package:football_sim_core/ecs/systems/ecs_system.dart';
 
 class BallInteractSystem extends EcsSystem {
   @override
   void update(EcsWorld world, double dt) {
-    final referee = world.entitiesOf<RefereeEntity>().firstOrNull;
-    if (referee == null) return; // Aggiorna possesso di squadra (opzionale)
-    final ball = world.entitiesOf<BallEntity>().firstOrNull;
-    if (ball == null) return;
+    final referee = world.requiredReferee;
+    final ball = world.requiredBall;
 
-    final ballPos = ball.getComponent<MovingComponent>()?.currentPosition;
-    if (ballPos == null) return;
+    final ballPos = ball.position;
 
     final players = world
         .entitiesWith<EcsPlayerComponent>()
         .whereType<PlayerEntity>();
 
     final closestPlayers = PlayerUtils.findClosestPlayersToBall(players, ball);
-    if (closestPlayers.isEmpty) {
+    final closest = closestPlayers.firstOrNull;
+    if (closest == null) {
       return;
     }
-
-    final closest = closestPlayers.first;
     final distance = closest
         .getComponent<MovingComponent>()!
         .currentPosition
@@ -37,13 +32,21 @@ class BallInteractSystem extends EcsSystem {
 
     if (distance <= SoccerParameters.possessionRadius) {
       final teamComp = closest.getComponent<TeamReferenceComponent>();
-      if (teamComp != null) {
+      final ballPossession = referee.getComponent<BallPossessionComponent>();
+      if (ballPossession == null) {
         referee.addOrReplaceComponent(
           BallPossessionComponent(
-            teamId: teamComp.teamId,
-            playerId: closest.id,
+            lastPlayerId: closest.id,
+            lastTeamId: teamComp!.teamId,
           ),
         );
+      } else {
+        if (ballPossession.lastPlayerId != closest.id) {
+          ballPossession.updatePossession(
+            newPlayerId: closest.id,
+            newTeamId: teamComp!.teamId,
+          );
+        }
       }
     }
   }

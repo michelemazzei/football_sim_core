@@ -1,4 +1,5 @@
 import 'package:football_sim_core/ecs/components/ecs_component.dart';
+import 'package:football_sim_core/model/goal_event.dart';
 import 'package:football_sim_core/model/team_id.dart'; // o dove hai definito Match
 
 class MatchComponent extends EcsComponent {
@@ -13,5 +14,6 @@ class MatchComponent extends EcsComponent {
   int minute = 0;
   int aggregateScoreHome = 0; // per competizioni con andata e ritorno
   int aggregateScoreAway = 0; // per competizioni con andata e ritorno
+  final List<GoalEvent> goalHistory = [];
   MatchComponent({required this.home, required this.away});
 }
