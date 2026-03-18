@@ -14,6 +14,7 @@ class BallCarrierDecisionModule extends DecisionModule {
     required super.grid,
   });
 
+  @override
   ActionIntent decideAction(
     PlayerEntity me,
     List<PlayerEntity> teammates,
@@ -23,7 +24,7 @@ class BallCarrierDecisionModule extends DecisionModule {
 
     // 1. Generiamo le proposte per ogni categoria
     var shootProp = _calculateShoot(me);
-    var passProp = _calculatePass(me, teammates, opponents, direction);
+    var passProp = _calculateGroundPass(me, teammates, opponents, direction);
     var dribbleProp = _calculateDribble(me, opponents, direction);
     var advanceProp = _calculateAdvance(me, opponents, direction);
 
@@ -35,14 +36,6 @@ class BallCarrierDecisionModule extends DecisionModule {
         advanceProp.score;
     if (totalScore <= 0) {
       return advanceProp.intent; // Default: prova ad avanzare
-    }
-
-    double roll = _random.nextDouble() * totalScore;
-
-    if (roll < shootProp.score) return shootProp.intent;
-    if (roll < shootProp.score + passProp.score) return passProp.intent;
-    if (roll < shootProp.score + passProp.score + dribbleProp.score) {
-      return dribbleProp.intent;
     }
 
     return advanceProp.intent;
@@ -113,7 +106,7 @@ class BallCarrierDecisionModule extends DecisionModule {
   }
 
   // --- LOGICA DI PASSAGGIO ---
-  _ActionProposal _calculatePass(
+  _ActionProposal _calculateGroundPass(
     PlayerEntity me,
     List<PlayerEntity> teammates,
     List<PlayerEntity> opponents,
@@ -177,6 +170,52 @@ class BallCarrierDecisionModule extends DecisionModule {
     return _ActionProposal(
       bestPassValue.clamp(0.0, 0.95),
       ActionIntent(action: PlayerAction.pass, targetPlayer: bestTeammate),
+    );
+  }
+
+  _ActionProposal _calculateLobPass(
+    PlayerEntity me,
+    PlayerEntity teammate,
+    List<PlayerEntity> opponents,
+  ) {
+    double lobValue = 0.0;
+
+    // 1. Verifica se il lob è NECESSARIO
+    bool groundLineBlocked = !perception.isPassLineClear(
+      me.position,
+      teammate.position,
+      opponents,
+    );
+    if (groundLineBlocked) {
+      lobValue += 0.4; // Bonus necessità: non posso passarla a terra
+    }
+
+    // 2. Verifica se il lob è POSSIBILE (spazio dietro i difensori)
+    // Se ci sono avversari troppo vicini al compagno, il lob è rischioso
+    var opponentsNearTarget = opponents
+        .where((o) => o.position.distanceTo(teammate.position) < 0.05)
+        .length;
+
+    double safety = (1.0 - (opponentsNearTarget * 0.4)).clamp(0.0, 1.0);
+
+    // 3. Calcolo della coordinata di atterraggio (Target Position)
+    // Nel lob spesso passiamo sulla CORSA, non sui piedi.
+    Vector2 landingPoint = _predictLandingPoint(teammate);
+
+    // Sintesi finale
+    double finalScore = (lobValue * 0.6) + (safety * 0.4);
+
+    return _ActionProposal(
+      finalScore.clamp(
+        0.0,
+        0.9,
+      ), // Spesso un lob è meno preciso di un ground pass
+      ActionIntent(
+        action: PlayerAction.pass,
+        targetPlayer: teammate,
+        targetPosition: landingPoint,
+        passType: PassType.lob,
+      ),
     );
   }
 

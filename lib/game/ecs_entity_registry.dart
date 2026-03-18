@@ -1,5 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
+import 'package:football_sim_core/core/ecs/components/user_input_component.dart';
 import 'package:football_sim_core/core/ecs/systems/game_phase_system.dart';
 import 'package:football_sim_core/core/ecs/systems/player_brain_system.dart';
 import 'package:football_sim_core/core/ecs/systems/zone_tactic_activator_system.dart';
@@ -61,6 +62,8 @@ class EcsEntityRegistry {
     );
     // Aggiungiamo il possesso, anche se vuoto all'inizio
     ecsWorld.addResource<BallPossessionComponent>(BallPossessionComponent());
+    // Aggiungiamo i comandi utente
+    ecsWorld.addResource<UserInputComponent>(UserInputComponent());
   }
 
   // --- LOGICA DI CREAZIONE IDEMPOTENTE (Interroga il World, non una mappa extra) ---

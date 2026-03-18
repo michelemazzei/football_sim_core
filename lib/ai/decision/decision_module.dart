@@ -18,7 +18,6 @@ part 'defensive_decision_module.dart';
 part 'support_decision_module.dart';
 
 sealed class DecisionModule {
-  final Random _random = Random();
   final PerceptionModule perception;
   final FieldGrid grid;
   final EcsWorld world;
@@ -33,9 +32,4 @@ sealed class DecisionModule {
     List<PlayerEntity> teammates,
     List<PlayerEntity> opponents,
   );
-
-  /// Genera un numero con distribuzione più centrale (meno caotica)
-  double centralRandom() {
-    return (_random.nextDouble() + _random.nextDouble()) / 2;
-  }
 }

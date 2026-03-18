@@ -38,11 +38,7 @@ class DefensiveDecisionModule extends DecisionModule {
     // Voglia di marcare (sale se c'è un avversario pericoloso libero)
     double markingWeight = (dangerousOpponent != null) ? 0.5 : 0.0;
 
-    // Usiamo il tuo amato centralRandom() per aggiungere variabilità "umana"
-    double roll = centralRandom();
-
-    if (pressureWeight > roll &&
-        me.position.distanceTo(carrier.position) < 0.3) {
+    if (me.position.distanceTo(carrier.position) < 0.3) {
       // Vado a chiudere il portatore
       return ActionIntent(
         action: PlayerAction.advance,

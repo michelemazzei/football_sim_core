@@ -37,7 +37,6 @@ class PlayerEntity extends EcsEntity {
     addComponent(PlayerStateComponent(PlayerState.idle));
     addComponent(GameReferenceComponent(game));
     addComponent(TeamReferenceComponent(team.id));
-    addComponent(PossessionComponent());
     addComponent(CooldownComponent());
     addComponent(PlayerTacticBrainComponent());
 
@@ -61,7 +60,9 @@ class PlayerEntity extends EcsEntity {
 }
 
 extension PlaterEntityX on PlayerEntity {
-  bool get hasBall => getComponent<PossessionComponent>()!.hasBall;
+  bool get hasBall =>
+      id ==
+      world.requiredBall.getComponent<BallOutOfBoundsComponent>()?.lastPlayerId;
   Fsm<PlayerEntity> get fsm => getComponent<FsmComponent<PlayerEntity>>()!.fsm;
   int get number => getComponent<PlayerNumberComponent>()!.number;
   TeamId get teamId => getComponent<TeamReferenceComponent>()!.teamId;

@@ -18,7 +18,7 @@ class EcsEntitySpawner {
 
   // Restituisce la palla esistente o ne crea una nuova
   BallEntity spawnBall() {
-    final existing = world.entitiesOf<BallEntity>().firstOrNull;
+    final existing = world.ball;
     if (existing != null) return existing;
 
     return BallEntity(world.genId(), world)..addToWorld(world);
@@ -33,7 +33,7 @@ class EcsEntitySpawner {
     required FootballGame game,
     required TacticalRole role,
   }) {
-    final existing = world.entitiesOf<PlayerEntity>().firstWhereOrNull(
+    final existing = world.players.firstWhereOrNull(
       (p) => p.teamId == team.id && p.number == number,
     );
     if (existing != null) return existing;
@@ -57,7 +57,7 @@ class EcsEntitySpawner {
 
   // Dentro EcsEntitySpawner
   RefereeEntity spawnReferee(FootballGame game) {
-    final existing = world.entitiesOf<RefereeEntity>().firstOrNull;
+    final existing = world.referee;
     if (existing != null) return existing;
 
     final referee = RefereeEntity(world.genId(), game);

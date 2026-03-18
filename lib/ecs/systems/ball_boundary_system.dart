@@ -15,39 +15,37 @@ class BallBoundarySystem extends EcsSystem {
   BallBoundarySystem(this.game);
   @override
   void update(EcsWorld world, double dt) {
-    for (final e in world.entitiesWith<BallOutOfBoundsComponent>()) {
-      final pos = e.getComponent<MovingComponent>()?.currentPosition;
-      final outComp = e.getComponent<BallOutOfBoundsComponent>()!;
+    final ball = world.requiredBall;
+    final pos = ball.getComponent<MovingComponent>()?.currentPosition;
+    final outComp = ball.getComponent<BallOutOfBoundsComponent>()!;
 
-      if (pos == null || outComp.isOutOfBounds) continue;
+    if (pos == null || outComp.isOutOfBounds) return;
 
-      int lateralSign = FieldGeometry.checkLateralBounds(pos);
-      int endLineSign = FieldGeometry.checkEndLineBounds(pos);
+    int lateralSign = FieldGeometry.checkLateralBounds(pos);
+    int endLineSign = FieldGeometry.checkEndLineBounds(pos);
 
-      if (lateralSign != 0) {
-        outComp.isOutOfBounds = true;
-        outComp.type = OutOfBoundsType.sideLine;
+    if (lateralSign != 0) {
+      outComp.isOutOfBounds = true;
+      outComp.type = OutOfBoundsType.sideLine;
+      debugPrint(
+        "Palla fuori lateralmente verso ${lateralSign == -1 ? 'Sopra' : 'Sotto'}",
+      );
+    } else if (endLineSign != 0) {
+      outComp.isOutOfBounds = true;
+      int goal = FieldGeometry.checkGoal(pos);
+
+      if (goal != 0) {
+        outComp.type = OutOfBoundsType.goalScored;
+        debugPrint("GOAL nella porta $goal!");
+      } else {
+        outComp.type = OutOfBoundsType.goalLine;
         debugPrint(
-          "Palla fuori lateralmente verso ${lateralSign == -1 ? 'Sopra' : 'Sotto'}",
+          "Fondo campo a ${endLineSign == -1 ? 'Sinistra' : 'Destra'}",
         );
-      } else if (endLineSign != 0) {
-        outComp.isOutOfBounds = true;
-        int goal = FieldGeometry.checkGoal(pos);
-
-        if (goal != 0) {
-          outComp.type = OutOfBoundsType.goalScored;
-          debugPrint("GOAL nella porta $goal!");
-        } else {
-          outComp.type = OutOfBoundsType.goalLine;
-          debugPrint(
-            "Fondo campo a ${endLineSign == -1 ? 'Sinistra' : 'Destra'}",
-          );
-        }
       }
-
-      if (outComp.isOutOfBounds) {
-        world.getResource<GameClockComponent>()?.speedFactor = 0.0;
-      }
+    }
+    if (outComp.isOutOfBounds) {
+      world.getResource<GameClockComponent>()?.speedFactor = 0.0;
     }
   }
 }

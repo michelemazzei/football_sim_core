@@ -5,32 +5,45 @@ import 'package:football_sim_core/ecs/entities/ball_entity.dart';
 import 'package:football_sim_core/ecs/entities/ecs_entity.dart';
 import 'package:football_sim_core/ecs/entities/player_entity.dart';
 import 'package:football_sim_core/ecs/entities/referee_entity.dart';
+import 'package:football_sim_core/ecs/entities_index.dart';
 import 'package:football_sim_core/ecs/systems/ecs_system.dart';
 import 'package:football_sim_core/model/team_id.dart';
 
 class EcsWorld {
-  final List<EcsEntity> _entities = [];
+  // 1. Aggiungiamo una mappa per l'accesso rapido O(1)
+  final EntitiesIndex _entitiesById = EntitiesIndex();
+  // 1. Aggiungiamo una mappa per l'accesso rapido O(1)
+  final EntitiesByType _entitiesByType = EntitiesByType();
+  final PlayersIndex _playersIndex = PlayersIndex();
+
+  // final List<EcsEntity> _entities = [];
   final Map<Type, EcsSystem> _systems = {};
 
   final Map<Type, dynamic> _resources = {};
-  // 1. Aggiungiamo una mappa per l'accesso rapido O(1)
-  final Map<int, EcsEntity> _entitiesById = {};
 
   void clear() {
-    _entities.clear();
+    _entitiesById.clear();
+    _entitiesByType.clear();
+    _playersIndex.clear();
     _systems.clear();
     _resources.clear();
-    _entitiesById.clear();
   }
 
   void addEntity(EcsEntity entity) {
-    _entities.add(entity);
-    _entitiesById[entity.id] = entity; // Registra l'ID
+    _entitiesByType.add(entity);
+    _entitiesById.add(entity); // Registra l'ID
+    if (entity.runtimeType == PlayerEntity) {
+      _playersIndex.add(entity as PlayerEntity);
+    }
   }
 
   void removeEntity(EcsEntity entity) {
-    _entities.remove(entity);
-    _entitiesById.remove(entity.id); // Rimuovi l'ID
+    // _entities.remove(entity);
+    _entitiesById.remove(entity); // Rimuovi l'ID
+    _entitiesByType.remove(entity);
+    if (entity.runtimeType == PlayerEntity) {
+      _playersIndex.remove(entity as PlayerEntity);
+    }
   }
 
   // 2. Il metodo richiesto: veloce e tipizzato
@@ -40,11 +53,6 @@ class EcsWorld {
       return entity;
     }
     return null;
-  }
-
-  // Helper per ottenere tutte le entità di un tipo (già presente nel tuo codice)
-  Iterable<T> entitiesOf<T extends EcsEntity>() {
-    return _entities.whereType<T>();
   }
 
   T addResource<T>(T resource) {
@@ -99,11 +107,11 @@ class EcsWorld {
 
   /// Utility: restituisce tutte le entità che hanno un dato componente
   List<EcsEntity> entitiesWith<T extends EcsComponent>() {
-    return _entities.where((e) => e.hasComponent<T>()).toList();
+    return _entitiesById.get().where((e) => e.hasComponent<T>()).toList();
   }
 
   /// Utility: restituisce tutte le entità
-  List<EcsEntity> entities() => _entities.toList();
+  Iterable<EcsEntity> entities() => _entitiesById.get();
 
   Iterable<EcsEntity>
   entitiesWithAll<T1 extends EcsComponent, T2 extends EcsComponent>() {
@@ -112,15 +120,50 @@ class EcsWorld {
 }
 
 extension EcsWorldFinderX on EcsWorld {
-  BallEntity? get ball => entitiesOf<BallEntity>().firstOrNull;
-  BallEntity get requiredBall => entitiesOf<BallEntity>().first;
+  Iterable<T> entitiesOf<T extends EcsEntity>() {
+    return _entitiesByType.byType(T).whereType<T>();
+  }
 
-  RefereeEntity? get referee => entitiesOf<RefereeEntity>().firstOrNull;
-  RefereeEntity get requiredReferee => entitiesOf<RefereeEntity>().first;
+  Iterable<PlayerEntity> get players {
+    // 1. Chiamiamo l'indice usando il tipo 'BallEntity' come chiave
+    return _entitiesByType.byType(PlayerEntity).whereType<PlayerEntity>();
+  }
 
-  PlayerEntity? player(TeamId teamId, int number) {
-    return entitiesOf<PlayerEntity>().firstWhereOrNull(
-      (p) => p.teamId == teamId && p.number == number,
-    );
+  Iterable<PlayerEntity> playersInTeam(TeamId team) =>
+      _playersIndex.byTeams(team);
+  BallEntity? get ball {
+    // 1. Chiamiamo l'indice usando il tipo 'BallEntity' come chiave
+    final Iterable<EcsEntity> results = _entitiesByType.byType(BallEntity);
+
+    // 2. Usiamo .firstOrNull (dalla libreria collection o standard Dart)
+    // e facciamo il cast a BallEntity
+    return results.firstOrNull as BallEntity?;
+  }
+
+  BallEntity get requiredBall {
+    // 1. Chiamiamo l'indice usando il tipo 'BallEntity' come chiave
+    final Iterable<EcsEntity> results = _entitiesByType.byType(BallEntity);
+
+    // 2. Usiamo .firstOrNull (dalla libreria collection o standard Dart)
+    // e facciamo il cast a BallEntity
+    return results.first as BallEntity;
+  }
+
+  RefereeEntity? get referee {
+    // 1. Chiamiamo l'indice usando il tipo 'BallEntity' come chiave
+    final Iterable<EcsEntity> results = _entitiesByType.byType(RefereeEntity);
+
+    // 2. Usiamo .firstOrNull (dalla libreria collection o standard Dart)
+    // e facciamo il cast a BallEntity
+    return results.firstOrNull as RefereeEntity?;
+  }
+
+  RefereeEntity? get requiredReferee {
+    // 1. Chiamiamo l'indice usando il tipo 'BallEntity' come chiave
+    final Iterable<EcsEntity> results = _entitiesByType.byType(RefereeEntity);
+
+    // 2. Usiamo .firstOrNull (dalla libreria collection o standard Dart)
+    // e facciamo il cast a BallEntity
+    return results.first as RefereeEntity;
   }
 }

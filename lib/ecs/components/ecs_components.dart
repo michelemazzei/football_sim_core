@@ -9,7 +9,6 @@ export 'is_fsm_component.dart';
 export 'match_component.dart';
 export 'movement_config_component.dart';
 export 'moving_component.dart';
-export 'possession_component.dart';
 export 'possession_timer_component.dart';
 export 'game_clock_component.dart';
 export 'render_component.dart';
